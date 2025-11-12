@@ -157,7 +157,7 @@ class LoginController extends Controller
 
         // TEMPORARY: Skip email verification dan is_active check untuk debugging
         // Hapus comment ini setelah login berhasil
-        
+
         /*
         if (isset($user->is_active) && !$user->is_active) {
             Log::warning('Account inactive', ['user_id' => $user->id]);
@@ -176,7 +176,7 @@ class LoginController extends Controller
 
         // redirect berdasarkan user type
         $route = null;
-        
+
         switch ($user->user_type) {
             case 'student':
                 $route = route('student.dashboard');
@@ -185,7 +185,7 @@ class LoginController extends Controller
                     'route' => $route,
                 ]);
                 break;
-                
+
             case 'institution':
                 $route = route('institution.dashboard');
                 Log::info('Redirecting to institution dashboard', [
@@ -193,23 +193,52 @@ class LoginController extends Controller
                     'route' => $route,
                 ]);
                 break;
-                
+
             default:
                 Log::error('Invalid user type', [
                     'user_id' => $user->id,
                     'user_type' => $user->user_type,
                 ]);
                 Auth::logout();
+
+                if ($request->expectsJson() || $request->ajax()) {
+                    return response()->json([
+                        'success' => false,
+                        'message' => 'Tipe user tidak valid.'
+                    ], 400);
+                }
+
                 return redirect()->route('login')
                     ->withErrors(['email' => 'tipe user tidak valid.']);
         }
 
         $request->session()->save();
-        
+
         Log::info('Session saved, redirecting', [
             'user_id' => $user->id,
             'redirect_to' => $route,
         ]);
+
+        // cek apakah request adalah AJAX/API
+        if ($request->expectsJson() || $request->ajax()) {
+            // buat token untuk API authentication
+            $token = $user->createToken('api-token')->plainTextToken;
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Login berhasil',
+                'data' => [
+                    'token' => $token,
+                    'user' => [
+                        'id' => $user->id,
+                        'name' => $user->name,
+                        'email' => $user->email,
+                        'user_type' => $user->user_type,
+                    ],
+                    'redirect_url' => $route
+                ]
+            ], 200);
+        }
 
         return redirect()->intended($route);
     }

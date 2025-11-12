@@ -21,11 +21,11 @@ use App\Http\Controllers\Institution\ApplicationReviewController;
 use App\Http\Controllers\Institution\ProjectManagementController;
 use App\Http\Controllers\Institution\ProfileController as InstitutionProfileController;
 use App\Http\Controllers\Institution\ReviewController;
+use App\Http\Controllers\Institution\VerificationController;
 use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\AboutController;
 use App\Http\Controllers\Auth\ValidationController;
 use App\Http\Controllers\ContactController;
-use App\Http\Controllers\PriceController;
 
 /*
 |--------------------------------------------------------------------------
@@ -47,9 +47,6 @@ Route::get('/', [HomeController::class, 'index'])->name('home');
 
 // about us page
 Route::get('/about', [AboutController::class, 'index'])->name('about');
-
-// price/pricing page
-Route::get('/price', [PriceController::class, 'index'])->name('price');
 
 // contact page
 Route::get('/contact', [ContactController::class, 'index'])->name('contact');
@@ -287,6 +284,14 @@ Route::middleware(['auth', 'check.user.type:institution'])->prefix('institution'
         Route::get('/edit', [InstitutionProfileController::class, 'edit'])->name('edit');
         Route::put('/', [InstitutionProfileController::class, 'update'])->name('update');
         Route::put('/password', [InstitutionProfileController::class, 'updatePassword'])->name('password.update');
+    });
+
+    // verification (Feature 1: AI Document Verification)
+    Route::prefix('verification')->name('verification.')->group(function () {
+        Route::get('/upload', [VerificationController::class, 'showUploadPage'])->name('upload');
+        Route::post('/upload', [VerificationController::class, 'uploadDocuments'])->name('upload.submit');
+        Route::post('/trigger', [VerificationController::class, 'triggerVerification'])->name('trigger');
+        Route::get('/status', [VerificationController::class, 'showStatus'])->name('status');
     });
 
 

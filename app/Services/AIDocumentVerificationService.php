@@ -34,6 +34,9 @@ class AIDocumentVerificationService
     public function verifyInstitutionDocuments(Institution $institution): array
     {
         try {
+            // Increase execution time for AI processing
+            set_time_limit(120); // 2 minutes for verification process
+
             // Get all documents for this institution
             $documents = $institution->verificationDocuments;
 
@@ -44,7 +47,7 @@ class AIDocumentVerificationService
             // Analyze each document
             $documentResults = [];
             foreach ($documents as $document) {
-                $documentResults[] = $this->analyzeDocument($document);
+                $documentResults[] = $this->analyzeDocument($document, $institution);
             }
 
             // Calculate overall verification result
@@ -55,7 +58,7 @@ class AIDocumentVerificationService
 
             // Update each document with AI results
             foreach ($documentResults as $result) {
-                $this->updateDocumentResult($result['document'], $result);
+                $this->updateDocumentResult($result['document'], $result, $overallResult['verification_id']);
             }
 
             return [
@@ -83,15 +86,23 @@ class AIDocumentVerificationService
      * Analyze single document using Claude AI
      *
      * @param VerificationDocument $document
+     * @param Institution $institution
      * @return array
      */
-    protected function analyzeDocument(VerificationDocument $document): array
+    protected function analyzeDocument(VerificationDocument $document, Institution $institution): array
     {
         // Get document file URL
         $fileUrl = $document->file_url;
 
+        Log::info('Analyzing document', [
+            'document_id' => $document->id,
+            'document_type' => $document->document_type,
+            'file_url' => $fileUrl,
+            'mime_type' => $document->mime_type,
+        ]);
+
         // Prepare prompt based on document type
-        $prompt = $this->buildAnalysisPrompt($document);
+        $prompt = $this->buildAnalysisPrompt($document, $institution);
 
         // Call Claude API
         $response = $this->callClaudeAPI($prompt, $fileUrl, $document->mime_type);
@@ -114,11 +125,11 @@ class AIDocumentVerificationService
      * Build analysis prompt for Claude based on document type
      *
      * @param VerificationDocument $document
+     * @param Institution $institution
      * @return string
      */
-    protected function buildAnalysisPrompt(VerificationDocument $document): string
+    protected function buildAnalysisPrompt(VerificationDocument $document, Institution $institution): string
     {
-        $institution = $document->institution;
 
         $basePrompt = "You are a document verification AI assistant specializing in Indonesian institutional documents.\n\n";
         $basePrompt .= "Institution Information:\n";
@@ -195,7 +206,19 @@ class AIDocumentVerificationService
      */
     protected function callClaudeAPI(string $prompt, string $fileUrl, string $mimeType): array
     {
+        // For development/testing: Use mock analysis directly to avoid API delays
+        if (config('app.env') !== 'production') {
+            Log::info('Using mock AI analysis (development mode)');
+            return $this->getMockClaudeResponse($prompt, $mimeType);
+        }
+
         try {
+            Log::info('Calling Claude API', [
+                'api_key_prefix' => substr($this->anthropicApiKey, 0, 10) . '...',
+                'file_url' => $fileUrl,
+                'mime_type' => $mimeType,
+            ]);
+
             // Get file content
             $fileContent = $this->getFileContent($fileUrl);
 
@@ -221,11 +244,15 @@ class AIDocumentVerificationService
             ];
 
             // Call Claude API
+            // For development: disable SSL verification and use shorter timeout
             $response = Http::withHeaders([
                 'x-api-key' => $this->anthropicApiKey,
                 'anthropic-version' => '2023-06-01',
                 'content-type' => 'application/json',
-            ])->timeout(60)->post('https://api.anthropic.com/v1/messages', [
+            ])->withOptions([
+                'verify' => config('app.env') === 'production', // Only verify SSL in production
+            ])->timeout(config('app.env') === 'production' ? 60 : 15) // Shorter timeout in dev to fallback to mock faster
+            ->post('https://api.anthropic.com/v1/messages', [
                 'model' => 'claude-3-haiku-20240307', // Using Haiku for cost optimization
                 'max_tokens' => 2048,
                 'messages' => [
@@ -237,7 +264,19 @@ class AIDocumentVerificationService
             ]);
 
             if (!$response->successful()) {
-                throw new \Exception('Claude API Error: ' . $response->body());
+                $errorBody = $response->body();
+                Log::error('Claude API Error Response', [
+                    'status' => $response->status(),
+                    'body' => $errorBody,
+                ]);
+
+                // For development/testing: Use mock analysis if API fails
+                if (config('app.env') !== 'production') {
+                    Log::warning('Using mock AI analysis for development/testing');
+                    return $this->getMockClaudeResponse($prompt, $mimeType);
+                }
+
+                throw new \Exception('Claude API Error: ' . $errorBody);
             }
 
             $data = $response->json();
@@ -250,8 +289,139 @@ class AIDocumentVerificationService
                 'file_url' => $fileUrl,
             ]);
 
+            // For development/testing: Use mock analysis if API fails
+            if (config('app.env') !== 'production') {
+                Log::warning('Using mock AI analysis due to API error: ' . $e->getMessage());
+                return $this->getMockClaudeResponse($prompt, $mimeType);
+            }
+
             throw $e;
         }
+    }
+
+    /**
+     * Get mock Claude API response for testing/development
+     *
+     * @param string $prompt
+     * @param string $mimeType
+     * @return array
+     */
+    protected function getMockClaudeResponse(string $prompt, string $mimeType): array
+    {
+        // Analyze document type from prompt
+        $isPDF = str_contains($mimeType, 'pdf');
+        $isOfficialLetter = str_contains($prompt, 'official letter');
+        $isLogo = str_contains($prompt, 'logo');
+        $isIdentity = str_contains($prompt, 'ID card');
+
+        // Mock different responses based on document type
+        if ($isOfficialLetter) {
+            // For official letters - simulate detection of non-institutional document
+            $mockAnalysis = [
+                'score' => 35, // Low score for suspicious document
+                'confidence' => 0.75,
+                'status' => 'rejected',
+                'flags' => [
+                    [
+                        'type' => 'error',
+                        'message' => 'Document does not appear to be an official institutional letter',
+                        'severity' => 9,
+                    ],
+                    [
+                        'type' => 'warning',
+                        'message' => 'Missing institutional letterhead or official stamps',
+                        'severity' => 8,
+                    ],
+                    [
+                        'type' => 'warning',
+                        'message' => 'Document structure does not match expected format for SK Institusi',
+                        'severity' => 7,
+                    ],
+                ],
+                'extracted_data' => [
+                    'document_analysis' => 'Document appears to be a generic file, not an official institutional letter',
+                ],
+                'reasoning' => 'MOCK ANALYSIS FOR TESTING: This document has been flagged as suspicious. It does not contain the expected elements of an official institutional letter such as letterhead, official stamps, or proper formatting. The content and structure suggest this is not a legitimate SK Institusi or Surat Pengantar from a government institution.',
+            ];
+        } elseif ($isLogo) {
+            // For logos - simulate moderate approval
+            $mockAnalysis = [
+                'score' => 75,
+                'confidence' => 0.80,
+                'status' => 'approved',
+                'flags' => [
+                    [
+                        'type' => 'info',
+                        'message' => 'Logo appears professional and appropriate',
+                        'severity' => 2,
+                    ],
+                ],
+                'extracted_data' => [
+                    'image_quality' => 'good',
+                    'format' => 'PNG',
+                ],
+                'reasoning' => 'MOCK ANALYSIS FOR TESTING: Logo image appears to be of good quality and professional appearance. No obvious signs of copyright infringement or inappropriate content detected.',
+            ];
+        } elseif ($isIdentity) {
+            // For ID cards - simulate needs review
+            $mockAnalysis = [
+                'score' => 70,
+                'confidence' => 0.65,
+                'status' => 'needs_review',
+                'flags' => [
+                    [
+                        'type' => 'warning',
+                        'message' => 'Image quality could be better for verification',
+                        'severity' => 5,
+                    ],
+                    [
+                        'type' => 'info',
+                        'message' => 'Manual review recommended to confirm identity match',
+                        'severity' => 4,
+                    ],
+                ],
+                'extracted_data' => [
+                    'document_type' => 'KTP',
+                    'quality' => 'moderate',
+                ],
+                'reasoning' => 'MOCK ANALYSIS FOR TESTING: ID card image detected. Quality is acceptable but manual verification is recommended to ensure the name matches the registered PIC name.',
+            ];
+        } else {
+            // Default moderate response
+            $mockAnalysis = [
+                'score' => 60,
+                'confidence' => 0.70,
+                'status' => 'needs_review',
+                'flags' => [
+                    [
+                        'type' => 'info',
+                        'message' => 'Document requires manual review',
+                        'severity' => 5,
+                    ],
+                ],
+                'extracted_data' => [],
+                'reasoning' => 'MOCK ANALYSIS FOR TESTING: Document analysis completed with moderate confidence. Manual review recommended.',
+            ];
+        }
+
+        // Return in Claude API response format
+        return [
+            'id' => 'mock_' . Str::random(16),
+            'type' => 'message',
+            'role' => 'assistant',
+            'content' => [
+                [
+                    'type' => 'text',
+                    'text' => json_encode($mockAnalysis, JSON_PRETTY_PRINT),
+                ],
+            ],
+            'model' => 'claude-3-haiku-20240307-mock',
+            'stop_reason' => 'end_turn',
+            'usage' => [
+                'input_tokens' => 100,
+                'output_tokens' => 50,
+            ],
+        ];
     }
 
     /**
@@ -263,7 +433,16 @@ class AIDocumentVerificationService
     protected function getFileContent(string $fileUrl): string
     {
         try {
-            $response = Http::timeout(30)->get($fileUrl);
+            Log::info('Downloading file for AI analysis', [
+                'url' => $fileUrl,
+            ]);
+
+            // For development: disable SSL verification and use shorter timeout
+            // TODO: Remove this in production or configure proper SSL certificates
+            $response = Http::withOptions([
+                'verify' => config('app.env') === 'production', // Only verify SSL in production
+            ])->timeout(config('app.env') === 'production' ? 30 : 10) // Shorter timeout in dev
+            ->get($fileUrl);
 
             if (!$response->successful()) {
                 throw new \Exception('Failed to download file from: ' . $fileUrl);
@@ -400,10 +579,10 @@ class AIDocumentVerificationService
             $reasoning .= 'Some warnings detected. Manual verification recommended.';
         } else {
             $status = 'approved';
-            $verificationStatus = Institution::STATUS_PENDING_PAYMENT;
+            $verificationStatus = Institution::STATUS_ACTIVE;
             $reasoning = 'All documents verified successfully. ';
             $reasoning .= 'Score: ' . round($avgScore, 2) . '/100, Confidence: ' . round($avgConfidence, 2) . '. ';
-            $reasoning .= 'Institution can proceed to payment and subscription selection.';
+            $reasoning .= 'Institution is now active and can start posting problems.';
         }
 
         return [
@@ -434,8 +613,7 @@ class AIDocumentVerificationService
         ]);
 
         // Update legacy is_verified for backward compatibility
-        if ($result['status'] === Institution::STATUS_PENDING_PAYMENT
-            || $result['status'] === Institution::STATUS_ACTIVE) {
+        if ($result['status'] === Institution::STATUS_ACTIVE) {
             $institution->update(['is_verified' => true]);
         }
     }
@@ -445,11 +623,13 @@ class AIDocumentVerificationService
      *
      * @param VerificationDocument $document
      * @param array $result
+     * @param string $verificationId
      * @return void
      */
-    protected function updateDocumentResult(VerificationDocument $document, array $result): void
+    protected function updateDocumentResult(VerificationDocument $document, array $result, string $verificationId): void
     {
         $document->update([
+            'ai_verification_id' => $verificationId,
             'ai_status' => $result['ai_status'],
             'ai_score' => $result['ai_score'],
             'ai_confidence' => $result['ai_confidence'],

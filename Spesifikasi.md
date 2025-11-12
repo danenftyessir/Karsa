@@ -1772,7 +1772,1302 @@ const rateLimits = {
 
 ---
 
-## 🚀 Future Roadmap
+## 🛡️ Comprehensive Security Enhancements
+
+### Security Architecture Overview
+
+Platform KKN-GO menangani data sensitif mahasiswa dan institusi, termasuk NIK, NPWP, dokumen identitas, dan informasi finansial. Implementasi keamanan menggunakan **Defense in Depth** strategy dengan multiple layers of protection.
+
+### Security Threat Model
+
+| Threat | Risk Level | Mitigation |
+|--------|-----------|------------|
+| **Data Breach** | CRITICAL | Encryption at rest, access control, audit logging |
+| **SQL Injection** | HIGH | Parameterized queries, ORM, input validation |
+| **XSS (Cross-Site Scripting)** | HIGH | Input sanitization, output escaping, CSP headers |
+| **CSRF** | HIGH | CSRF tokens, SameSite cookies |
+| **File Upload Attack** | HIGH | Magic byte validation, antivirus scanning, size limits |
+| **Brute Force** | MEDIUM | Rate limiting, account lockout, 2FA |
+| **Session Hijacking** | MEDIUM | Secure cookies, session regeneration, HTTPS only |
+| **API Abuse** | MEDIUM | Rate limiting, authentication, API keys |
+| **Social Engineering** | MEDIUM | User education, verification process |
+| **DDoS** | LOW | CloudFlare, rate limiting, load balancing |
+
+---
+
+### Enhancement 1: Data Encryption at Rest & In Transit
+
+#### 🎯 Objective
+Protect sensitive PII (Personally Identifiable Information) from database breaches and unauthorized access.
+
+#### 📋 Implementation
+
+**1.1. Field-Level Encryption (Laravel Native)**
+
+```php
+// app/Models/Student.php
+<?php
+
+namespace App\Models;
+
+use Illuminate\Database\Eloquent\Model;
+
+class Student extends Model
+{
+    protected $fillable = [
+        'user_id',
+        'first_name',
+        'last_name',
+        'nim',
+        'phone',
+        'address',
+        'university_id',
+        'major',
+        'semester',
+    ];
+
+    /**
+     * Laravel automatically encrypts/decrypts these fields
+     * Uses AES-256-CBC encryption with APP_KEY
+     */
+    protected $casts = [
+        'nim' => 'encrypted',              // Student ID Number
+        'phone' => 'encrypted',            // Phone number
+        'address' => 'encrypted',          // Home address
+        'questionnaire_data' => 'encrypted:array',
+    ];
+
+    /**
+     * Attributes that should be hashed for search
+     */
+    protected static function boot()
+    {
+        parent::boot();
+
+        static::saving(function ($student) {
+            // Create hash for searchable encrypted fields
+            if ($student->isDirty('nim')) {
+                $student->nim_hash = hash_hmac('sha256', $student->nim, config('app.key'));
+            }
+            if ($student->isDirty('phone')) {
+                $student->phone_hash = hash_hmac('sha256', $student->phone, config('app.key'));
+            }
+        });
+    }
+}
+
+// app/Models/Institution.php
+class Institution extends Model
+{
+    protected $casts = [
+        'phone' => 'encrypted',
+        'address' => 'encrypted',
+        'pic_name' => 'encrypted',
+        'pic_position' => 'encrypted',
+        'description' => 'encrypted',
+    ];
+}
+```
+
+**1.2. Database Migration for Encrypted Fields**
+
+```php
+// database/migrations/2025_01_15_add_encrypted_field_support.php
+<?php
+
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+
+return new class extends Migration
+{
+    public function up(): void
+    {
+        Schema::table('students', function (Blueprint $table) {
+            // Change to LONGTEXT to accommodate encrypted data
+            $table->longText('nim')->change();
+            $table->longText('phone')->change();
+            $table->longText('address')->nullable()->change();
+
+            // Add hash columns for searching encrypted data
+            $table->string('nim_hash', 64)->nullable()->after('nim');
+            $table->string('phone_hash', 64)->nullable()->after('phone');
+
+            // Indexes for fast search
+            $table->index('nim_hash');
+            $table->index('phone_hash');
+        });
+
+        Schema::table('institutions', function (Blueprint $table) {
+            $table->longText('phone')->change();
+            $table->longText('address')->change();
+            $table->longText('pic_name')->change();
+            $table->longText('pic_position')->change();
+
+            $table->string('phone_hash', 64)->nullable()->after('phone');
+            $table->index('phone_hash');
+        });
+    }
+
+    public function down(): void
+    {
+        Schema::table('students', function (Blueprint $table) {
+            $table->dropColumn(['nim_hash', 'phone_hash']);
+            $table->string('nim', 50)->change();
+            $table->string('phone', 20)->change();
+            $table->text('address')->nullable()->change();
+        });
+
+        Schema::table('institutions', function (Blueprint $table) {
+            $table->dropColumn('phone_hash');
+            $table->string('phone', 20)->change();
+            $table->text('address')->change();
+            $table->string('pic_name', 100)->change();
+            $table->string('pic_position', 100)->change();
+        });
+    }
+};
+```
+
+**1.3. Encryption Service for Advanced Use Cases**
+
+```php
+// app/Services/EncryptionService.php
+<?php
+
+namespace App\Services;
+
+use Illuminate\Support\Facades\Crypt;
+use Illuminate\Contracts\Encryption\DecryptException;
+use Illuminate\Support\Facades\Log;
+
+class EncryptionService
+{
+    /**
+     * Encrypt sensitive document metadata
+     */
+    public function encryptDocumentMetadata(array $metadata): string
+    {
+        return Crypt::encryptString(json_encode($metadata));
+    }
+
+    /**
+     * Decrypt document metadata
+     */
+    public function decryptDocumentMetadata(string $encrypted): array
+    {
+        try {
+            return json_decode(Crypt::decryptString($encrypted), true);
+        } catch (DecryptException $e) {
+            Log::error('Metadata decryption failed', ['error' => $e->getMessage()]);
+            return [];
+        }
+    }
+
+    /**
+     * Create searchable hash (HMAC-SHA256)
+     */
+    public function createSearchHash(string $value): string
+    {
+        return hash_hmac('sha256', $value, config('app.key'));
+    }
+
+    /**
+     * Search encrypted field by hash
+     */
+    public function searchEncryptedField(string $model, string $field, string $value)
+    {
+        $hash = $this->createSearchHash($value);
+        $hashField = $field . '_hash';
+
+        return $model::where($hashField, $hash)->first();
+    }
+
+    /**
+     * Mask sensitive data for logs (PII protection)
+     */
+    public function maskForLogging(string $value, int $visibleChars = 4): string
+    {
+        if (strlen($value) <= $visibleChars) {
+            return str_repeat('*', strlen($value));
+        }
+
+        $visible = substr($value, 0, $visibleChars);
+        $masked = str_repeat('*', strlen($value) - $visibleChars);
+
+        return $visible . $masked;
+    }
+}
+```
+
+**1.4. Usage Examples**
+
+```php
+// Creating a student with encrypted data
+$student = Student::create([
+    'first_name' => 'John',
+    'last_name' => 'Doe',
+    'nim' => '1234567890',        // Automatically encrypted
+    'phone' => '+628123456789',   // Automatically encrypted
+    'address' => 'Jl. Example 123', // Automatically encrypted
+]);
+
+// Retrieving (automatically decrypted)
+$student = Student::find(1);
+echo $student->nim; // Output: "1234567890" (decrypted)
+
+// Searching by encrypted field (using hash)
+$encryptionService = app(EncryptionService::class);
+$phoneHash = $encryptionService->createSearchHash('+628123456789');
+$student = Student::where('phone_hash', $phoneHash)->first();
+
+// Logging with masked data
+Log::info('Student registration', [
+    'nim' => $encryptionService->maskForLogging($student->nim, 4),
+    'phone' => $encryptionService->maskForLogging($student->phone, 4),
+]);
+// Output: "nim": "1234******", "phone": "+628********"
+```
+
+**1.5. Environment Configuration**
+
+```bash
+# .env - CRITICAL SECURITY SETTINGS
+
+# Application Key (MUST be 32 bytes for AES-256)
+# NEVER commit this to Git
+# NEVER change in production (encrypted data will be unrecoverable)
+APP_KEY=base64:RANDOM_32_BYTE_KEY_HERE
+
+# Generate secure key
+php artisan key:generate
+
+# IMPORTANT: Backup APP_KEY securely
+# - Store in password manager
+# - Document in secure location
+# - Keep offline backup
+
+# TLS/SSL (ALWAYS use in production)
+APP_URL=https://yourdomain.com
+FORCE_HTTPS=true
+SESSION_SECURE_COOKIE=true
+SESSION_SAME_SITE=strict
+```
+
+**1.6. Key Rotation Strategy**
+
+```php
+// app/Console/Commands/RotateEncryptionKey.php
+<?php
+
+namespace App\Console\Commands;
+
+use Illuminate\Console\Command;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Crypt;
+use App\Models\Student;
+use App\Models\Institution;
+
+class RotateEncryptionKey extends Command
+{
+    protected $signature = 'security:rotate-key {--old-key=}';
+    protected $description = 'Rotate encryption key and re-encrypt all data';
+
+    public function handle()
+    {
+        $oldKey = $this->option('old-key');
+
+        if (!$oldKey) {
+            $this->error('Old key is required. Use --old-key=');
+            return 1;
+        }
+
+        $this->info('Starting encryption key rotation...');
+        $this->warn('This operation may take a while for large datasets.');
+
+        // Decrypt with old key and re-encrypt with new key
+        DB::transaction(function () use ($oldKey) {
+            $students = Student::all();
+
+            foreach ($students as $student) {
+                // Decrypt with old key
+                config(['app.key' => $oldKey]);
+                $nim = $student->nim;
+                $phone = $student->phone;
+
+                // Re-encrypt with new key
+                config(['app.key' => env('APP_KEY')]);
+                $student->nim = $nim;
+                $student->phone = $phone;
+                $student->save();
+            }
+
+            $this->info("Rotated keys for {$students->count()} students");
+        });
+
+        $this->info('Key rotation completed successfully!');
+        return 0;
+    }
+}
+```
+
+---
+
+### Enhancement 2: Input Sanitization & XSS Prevention
+
+#### 🎯 Objective
+Prevent XSS attacks by sanitizing all user input and escaping output properly.
+
+#### 📋 Implementation
+
+**2.1. Global Sanitization Middleware**
+
+```php
+// app/Http/Middleware/SanitizeInput.php
+<?php
+
+namespace App\Http\Middleware;
+
+use Closure;
+use Illuminate\Http\Request;
+
+class SanitizeInput
+{
+    /**
+     * Fields yang tidak boleh di-sanitasi
+     */
+    protected $except = [
+        'password',
+        'password_confirmation',
+        'current_password',
+        '_token',
+        'api_token',
+    ];
+
+    /**
+     * Fields yang allow limited HTML (untuk rich text editors)
+     */
+    protected $richTextFields = [
+        'description',
+        'problem_description',
+        'project_description',
+        'solution_description',
+    ];
+
+    /**
+     * Allowed HTML tags untuk rich text
+     */
+    protected $allowedTags = '<p><br><strong><em><u><ul><ol><li><a>';
+
+    /**
+     * Handle incoming request
+     */
+    public function handle(Request $request, Closure $next)
+    {
+        $input = $request->except($this->except);
+        $sanitized = $this->sanitizeArray($input);
+        $request->merge($sanitized);
+
+        return $next($request);
+    }
+
+    /**
+     * Recursively sanitize array
+     */
+    protected function sanitizeArray(array $data): array
+    {
+        foreach ($data as $key => $value) {
+            if (is_array($value)) {
+                $data[$key] = $this->sanitizeArray($value);
+            } elseif (is_string($value)) {
+                $data[$key] = $this->sanitizeString($key, $value);
+            }
+        }
+
+        return $data;
+    }
+
+    /**
+     * Sanitize individual string
+     */
+    protected function sanitizeString(string $key, string $value): string
+    {
+        // Allow limited HTML for rich text fields
+        if (in_array($key, $this->richTextFields)) {
+            // Strip dangerous tags but keep formatting
+            $value = strip_tags($value, $this->allowedTags);
+
+            // Remove event handlers (onclick, onload, etc.)
+            $value = preg_replace('/\s*on\w+\s*=\s*["\'].*?["\']/i', '', $value);
+
+            // Remove javascript: protocol
+            $value = preg_replace('/javascript:/i', '', $value);
+
+            return $value;
+        }
+
+        // For other fields, strip all HTML
+        $value = strip_tags($value);
+
+        // Remove null bytes
+        $value = str_replace(chr(0), '', $value);
+
+        // Remove control characters except newlines and tabs
+        $value = preg_replace('/[\x00-\x08\x0B\x0C\x0E-\x1F\x7F]/', '', $value);
+
+        // Normalize whitespace
+        $value = preg_replace('/\s+/', ' ', $value);
+
+        // Trim
+        return trim($value);
+    }
+}
+```
+
+**2.2. Register Middleware**
+
+```php
+// bootstrap/app.php
+<?php
+
+use Illuminate\Foundation\Application;
+use Illuminate\Foundation\Configuration\Middleware;
+use App\Http\Middleware\SanitizeInput;
+use App\Http\Middleware\SecurityHeaders;
+
+return Application::configure(basePath: dirname(__DIR__))
+    ->withMiddleware(function (Middleware $middleware): void {
+        // Global middleware
+        $middleware->append([
+            SecurityHeaders::class,
+        ]);
+
+        // Web middleware group
+        $middleware->web(append: [
+            SanitizeInput::class,
+        ]);
+
+        // API middleware group
+        $middleware->api(append: [
+            SanitizeInput::class,
+        ]);
+    })
+    ->create();
+```
+
+**2.3. Request-Level Sanitization**
+
+```php
+// app/Http/Requests/InstitutionRegisterRequest.php
+<?php
+
+namespace App\Http\Requests;
+
+use Illuminate\Foundation\Http\FormRequest;
+
+class InstitutionRegisterRequest extends FormRequest
+{
+    protected function prepareForValidation(): void
+    {
+        $this->merge([
+            'institution_name' => $this->sanitizeName($this->institution_name ?? ''),
+            'pic_name' => $this->sanitizeName($this->pic_name ?? ''),
+            'official_email' => strtolower(strip_tags($this->official_email ?? '')),
+            'username' => strtolower(strip_tags($this->username ?? '')),
+            'description' => $this->sanitizeHtml($this->description ?? ''),
+            'website' => $this->sanitizeUrl($this->website ?? ''),
+        ]);
+    }
+
+    /**
+     * Sanitize name (only letters, spaces, dots, hyphens)
+     */
+    private function sanitizeName(string $name): string
+    {
+        $name = strip_tags($name);
+        $name = preg_replace('/[^a-zA-Z\s.\'-]/u', '', $name);
+        $name = preg_replace('/\s+/', ' ', $name);
+        return ucwords(strtolower(trim($name)));
+    }
+
+    /**
+     * Sanitize HTML content
+     */
+    private function sanitizeHtml(string $html): string
+    {
+        // Remove script tags
+        $html = preg_replace('/<script\b[^>]*>(.*?)<\/script>/is', '', $html);
+
+        // Remove event handlers
+        $html = preg_replace('/\s*on\w+\s*=\s*["\'].*?["\']/i', '', $html);
+
+        // Remove dangerous protocols
+        $html = preg_replace('/(javascript|data|vbscript):/i', '', $html);
+
+        // Allow only safe tags
+        $html = strip_tags($html, '<p><br><strong><em><u><ul><ol><li>');
+
+        return trim($html);
+    }
+
+    /**
+     * Sanitize URL
+     */
+    private function sanitizeUrl(string $url): string
+    {
+        $url = strip_tags($url);
+        $url = filter_var($url, FILTER_SANITIZE_URL);
+
+        // Only allow http/https protocols
+        if (!preg_match('/^https?:\/\//i', $url)) {
+            return '';
+        }
+
+        return $url;
+    }
+}
+```
+
+**2.4. Output Escaping in Blade Templates**
+
+```blade
+{{-- resources/views/institution/show.blade.php --}}
+
+{{-- ✅ SAFE: Automatically escaped --}}
+<h1>{{ $institution->name }}</h1>
+<p>{{ $institution->description }}</p>
+
+{{-- ✅ SAFE: Escaped email --}}
+<a href="mailto:{{ $institution->email }}">Contact</a>
+
+{{-- ⚠️ DANGEROUS: Unescaped HTML --}}
+{{-- Only use if content is from trusted source --}}
+<div>{!! $institution->description !!}</div>
+
+{{-- ✅ BEST PRACTICE: Use HTML Purifier --}}
+<div>{{ Purifier::clean($institution->description) }}</div>
+
+{{-- ✅ SAFE: Escaped in attributes --}}
+<div data-name="{{ $institution->name }}"
+     data-id="{{ $institution->id }}">
+</div>
+
+{{-- ✅ SAFE: JSON data for JavaScript --}}
+<script>
+    const institution = @json($institution);
+    // Laravel automatically escapes and encodes
+</script>
+```
+
+**2.5. Install and Configure HTML Purifier**
+
+```bash
+composer require mews/purifier
+php artisan vendor:publish --provider="Mews\Purifier\PurifierServiceProvider"
+```
+
+```php
+// config/purifier.php
+<?php
+
+return [
+    'encoding'      => 'UTF-8',
+    'finalize'      => true,
+    'cachePath'     => storage_path('app/purifier'),
+    'cacheFileMode' => 0755,
+    'settings'      => [
+        'default' => [
+            'HTML.Doctype'             => 'HTML 4.01 Transitional',
+            'HTML.Allowed'             => 'p,br,strong,em,u,a[href|title],ul,ol,li',
+            'CSS.AllowedProperties'    => '',
+            'AutoFormat.AutoParagraph' => false,
+            'AutoFormat.RemoveEmpty'   => true,
+            'Attr.AllowedFrameTargets' => ['_blank'],
+        ],
+        'strict' => [
+            'HTML.Allowed' => 'p,br,strong,em',
+        ],
+    ],
+];
+```
+
+```php
+// Usage in controllers
+use Mews\Purifier\Facades\Purifier;
+
+$clean = Purifier::clean($dirtyHtml);
+$clean = Purifier::clean($dirtyHtml, 'strict');
+```
+
+**2.6. XSS Testing**
+
+```php
+// tests/Feature/XSSPreventionTest.php
+<?php
+
+namespace Tests\Feature;
+
+use Tests\TestCase;
+use App\Models\User;
+use App\Models\Institution;
+use Illuminate\Foundation\Testing\RefreshDatabase;
+
+class XSSPreventionTest extends TestCase
+{
+    use RefreshDatabase;
+
+    /**
+     * Test XSS prevention in institution name
+     */
+    public function test_xss_script_tags_are_stripped_from_name()
+    {
+        $user = User::factory()->create(['user_type' => 'institution']);
+
+        $xssPayloads = [
+            '<script>alert("XSS")</script>Desa Test',
+            '<img src=x onerror=alert("XSS")>',
+            '<svg/onload=alert("XSS")>',
+            'javascript:alert("XSS")',
+            '<iframe src="javascript:alert(\'XSS\')">',
+        ];
+
+        foreach ($xssPayloads as $payload) {
+            $response = $this->actingAs($user)->postJson('/api/institutions', [
+                'institution_name' => $payload,
+                'institution_type' => 'pemerintah_desa',
+                'official_email' => 'test@example.com',
+                'username' => 'testuser',
+                'password' => 'Password123!',
+                'password_confirmation' => 'Password123!',
+                // ... other required fields
+            ]);
+
+            $institution = Institution::latest()->first();
+
+            $this->assertStringNotContainsString('<script>', $institution->name);
+            $this->assertStringNotContainsString('javascript:', $institution->name);
+            $this->assertStringNotContainsString('onerror=', $institution->name);
+            $this->assertStringNotContainsString('<iframe', $institution->name);
+        }
+    }
+
+    /**
+     * Test that safe HTML is preserved in description
+     */
+    public function test_safe_html_is_preserved_in_description()
+    {
+        $user = User::factory()->create(['user_type' => 'institution']);
+
+        $safeHtml = '<p>This is <strong>safe</strong> content</p>';
+
+        $response = $this->actingAs($user)->postJson('/api/institutions', [
+            'description' => $safeHtml . '<script>alert("XSS")</script>',
+            // ... other fields
+        ]);
+
+        $institution = Institution::latest()->first();
+
+        // Safe HTML preserved
+        $this->assertStringContainsString('<p>', $institution->description);
+        $this->assertStringContainsString('<strong>', $institution->description);
+
+        // Malicious script removed
+        $this->assertStringNotContainsString('<script>', $institution->description);
+    }
+}
+```
+
+---
+
+### Enhancement 3: Advanced File Upload Security
+
+#### 🎯 Objective
+Prevent malicious file uploads including executable files, viruses, and files with embedded code.
+
+#### 📋 Implementation
+
+**3.1. Enhanced File Validation Request**
+
+```php
+// app/Http/Requests/DocumentUploadRequest.php
+<?php
+
+namespace App\Http\Requests;
+
+use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rules\File;
+use App\Services\FileSecurityService;
+
+class DocumentUploadRequest extends FormRequest
+{
+    public function authorize(): bool
+    {
+        return $this->user()->user_type === 'institution';
+    }
+
+    public function rules(): array
+    {
+        return [
+            'official_letter' => [
+                'required',
+                'file',
+                File::types(['pdf'])
+                    ->max(5 * 1024) // 5MB
+                    ->rules([
+                        'mimes:pdf',
+                        'mimetypes:application/pdf',
+                        function ($attribute, $value, $fail) {
+                            $this->validatePDFSecurity($value, $fail);
+                        },
+                    ]),
+            ],
+            'logo' => [
+                'required',
+                'file',
+                File::image()
+                    ->max(2 * 1024) // 2MB
+                    ->dimensions([
+                        'min_width' => 100,
+                        'min_height' => 100,
+                        'max_width' => 4000,
+                        'max_height' => 4000,
+                    ])
+                    ->rules([
+                        function ($attribute, $value, $fail) {
+                            $this->validateImageSecurity($value, $fail);
+                        },
+                    ]),
+            ],
+            'pic_identity' => [
+                'required',
+                'file',
+                File::image()
+                    ->max(2 * 1024)
+                    ->rules([
+                        function ($attribute, $value, $fail) {
+                            $this->validateImageSecurity($value, $fail);
+                        },
+                    ]),
+            ],
+            'npwp' => [
+                'nullable',
+                'file',
+                File::types(['pdf', 'jpg', 'jpeg', 'png'])
+                    ->max(3 * 1024),
+            ],
+        ];
+    }
+
+    /**
+     * Validate PDF security (magic bytes, no JavaScript)
+     */
+    protected function validatePDFSecurity($file, $fail): void
+    {
+        // Check magic bytes
+        $handle = fopen($file->getRealPath(), 'rb');
+        $header = fread($handle, 4);
+        fclose($handle);
+
+        if ($header !== '%PDF') {
+            $fail('Invalid PDF file format. File may be corrupted or malicious.');
+            return;
+        }
+
+        // Check for embedded JavaScript (XSS vector)
+        $content = file_get_contents($file->getRealPath(), false, null, 0, 100000);
+
+        $dangerousPatterns = [
+            '/\/JavaScript/i',
+            '/\/JS\s/i',
+            '/\/OpenAction/i',
+            '/\/Launch/i',
+            '/\/EmbeddedFile/i',
+        ];
+
+        foreach ($dangerousPatterns as $pattern) {
+            if (preg_match($pattern, $content)) {
+                $fail('PDF contains potentially malicious content (JavaScript or embedded files).');
+                return;
+            }
+        }
+
+        // Check file size consistency
+        if (filesize($file->getRealPath()) !== $file->getSize()) {
+            $fail('File size mismatch. File may be corrupted.');
+            return;
+        }
+    }
+
+    /**
+     * Validate image security (magic bytes, no PHP code)
+     */
+    protected function validateImageSecurity($file, $fail): void
+    {
+        // Check magic bytes
+        $handle = fopen($file->getRealPath(), 'rb');
+        $header = fread($handle, 8);
+        fclose($handle);
+
+        $validHeaders = [
+            'jpeg' => "\xFF\xD8\xFF",
+            'png'  => "\x89\x50\x4E\x47\x0D\x0A\x1A\x0A",
+            'gif'  => "GIF89a",
+        ];
+
+        $isValid = false;
+        foreach ($validHeaders as $type => $validHeader) {
+            if (strpos($header, $validHeader) === 0) {
+                $isValid = true;
+                break;
+            }
+        }
+
+        if (!$isValid) {
+            $fail('Invalid image file format.');
+            return;
+        }
+
+        // Verify with getimagesize (more thorough check)
+        $imageInfo = @getimagesize($file->getRealPath());
+        if ($imageInfo === false) {
+            $fail('File is not a valid image or is corrupted.');
+            return;
+        }
+
+        // Check for PHP code embedded in image
+        $content = file_get_contents($file->getRealPath());
+
+        $dangerousPatterns = [
+            '/<\?php/i',
+            '/<\?=/i',
+            '/<script/i',
+            '/<?xml/i',
+        ];
+
+        foreach ($dangerousPatterns as $pattern) {
+            if (preg_match($pattern, $content)) {
+                $fail('Image contains malicious code.');
+                return;
+            }
+        }
+
+        // Validate image dimensions match EXIF data
+        if ($imageInfo[0] <= 0 || $imageInfo[1] <= 0) {
+            $fail('Invalid image dimensions.');
+            return;
+        }
+    }
+
+    /**
+     * Custom error messages
+     */
+    public function messages(): array
+    {
+        return [
+            'official_letter.required' => 'Surat pengantar resmi wajib diunggah',
+            'official_letter.mimes' => 'Surat pengantar harus berformat PDF',
+            'official_letter.max' => 'Ukuran file surat pengantar maksimal 5MB',
+            'logo.required' => 'Logo institusi wajib diunggah',
+            'logo.image' => 'Logo harus berupa file gambar',
+            'logo.max' => 'Ukuran logo maksimal 2MB',
+            'pic_identity.required' => 'KTP penanggung jawab wajib diunggah',
+            'npwp.max' => 'Ukuran file NPWP maksimal 3MB',
+        ];
+    }
+}
+```
+
+**3.2. File Security Service**
+
+```php
+// app/Services/FileSecurityService.php
+<?php
+
+namespace App\Services;
+
+use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Str;
+
+class FileSecurityService
+{
+    /**
+     * Scan file for malware
+     */
+    public function scanFile(UploadedFile $file): array
+    {
+        // Skip in development
+        if (!app()->isProduction()) {
+            Log::info('File scan skipped (development mode)', [
+                'filename' => $file->getClientOriginalName(),
+            ]);
+
+            return [
+                'safe' => true,
+                'scanner' => 'skipped',
+                'reason' => 'Development environment',
+            ];
+        }
+
+        // Try ClamAV first (if available)
+        if ($this->isClamAVAvailable()) {
+            return $this->scanWithClamAV($file);
+        }
+
+        // Fallback to VirusTotal API
+        if (config('services.virustotal.api_key')) {
+            return $this->scanWithVirusTotal($file);
+        }
+
+        // No scanner available
+        Log::warning('No antivirus scanner configured', [
+            'filename' => $file->getClientOriginalName(),
+        ]);
+
+        return [
+            'safe' => true,
+            'scanner' => 'none',
+            'warning' => 'No antivirus scanner configured',
+        ];
+    }
+
+    /**
+     * Check if ClamAV is installed and running
+     */
+    protected function isClamAVAvailable(): bool
+    {
+        try {
+            $output = shell_exec('which clamscan 2>&1');
+            return !empty($output);
+        } catch (\Exception $e) {
+            return false;
+        }
+    }
+
+    /**
+     * Scan with ClamAV
+     */
+    protected function scanWithClamAV(UploadedFile $file): array
+    {
+        $filePath = escapeshellarg($file->getRealPath());
+        $output = shell_exec("clamscan --no-summary {$filePath} 2>&1");
+
+        $isSafe = strpos($output, 'OK') !== false;
+
+        Log::info('ClamAV scan completed', [
+            'filename' => $file->getClientOriginalName(),
+            'safe' => $isSafe,
+            'output' => $output,
+        ]);
+
+        return [
+            'safe' => $isSafe,
+            'scanner' => 'clamav',
+            'details' => $output,
+        ];
+    }
+
+    /**
+     * Scan with VirusTotal API
+     */
+    protected function scanWithVirusTotal(UploadedFile $file): array
+    {
+        try {
+            $apiKey = config('services.virustotal.api_key');
+
+            // Upload file
+            $response = Http::withHeaders([
+                'x-apikey' => $apiKey,
+            ])->attach(
+                'file',
+                file_get_contents($file->getRealPath()),
+                $file->getClientOriginalName()
+            )->post('https://www.virustotal.com/api/v3/files');
+
+            if (!$response->successful()) {
+                Log::error('VirusTotal upload failed', [
+                    'status' => $response->status(),
+                    'body' => $response->body(),
+                ]);
+
+                return [
+                    'safe' => true,
+                    'scanner' => 'virustotal',
+                    'error' => 'API request failed',
+                ];
+            }
+
+            $data = $response->json();
+            $analysisId = $data['data']['id'];
+
+            // Wait for analysis (simplified - use queue in production)
+            sleep(15);
+
+            // Get result
+            $resultResponse = Http::withHeaders([
+                'x-apikey' => $apiKey,
+            ])->get("https://www.virustotal.com/api/v3/analyses/{$analysisId}");
+
+            $result = $resultResponse->json();
+            $stats = $result['data']['attributes']['stats'] ?? [];
+
+            $isSafe = ($stats['malicious'] ?? 0) === 0 &&
+                      ($stats['suspicious'] ?? 0) === 0;
+
+            Log::info('VirusTotal scan completed', [
+                'filename' => $file->getClientOriginalName(),
+                'safe' => $isSafe,
+                'stats' => $stats,
+            ]);
+
+            return [
+                'safe' => $isSafe,
+                'scanner' => 'virustotal',
+                'stats' => $stats,
+            ];
+
+        } catch (\Exception $e) {
+            Log::error('VirusTotal scan error', [
+                'error' => $e->getMessage(),
+                'filename' => $file->getClientOriginalName(),
+            ]);
+
+            return [
+                'safe' => true,
+                'scanner' => 'virustotal',
+                'error' => $e->getMessage(),
+            ];
+        }
+    }
+
+    /**
+     * Sanitize filename (prevent directory traversal)
+     */
+    public function sanitizeFilename(string $filename): string
+    {
+        // Remove directory separators
+        $filename = str_replace(['/', '\\', '..', "\0"], '', $filename);
+
+        // Remove dangerous extensions
+        $filename = preg_replace('/\.(php|phtml|php3|php4|php5|phar|exe|sh|bat|cmd)$/i', '.txt', $filename);
+
+        // Keep only safe characters
+        $filename = preg_replace('/[^a-zA-Z0-9._-]/', '_', $filename);
+
+        // Limit length
+        if (strlen($filename) > 200) {
+            $extension = pathinfo($filename, PATHINFO_EXTENSION);
+            $filename = substr($filename, 0, 190) . '.' . $extension;
+        }
+
+        return $filename;
+    }
+
+    /**
+     * Generate secure random filename
+     */
+    public function generateSecureFilename(UploadedFile $file, string $prefix = ''): string
+    {
+        $extension = strtolower($file->getClientOriginalExtension());
+        $timestamp = now()->format('YmdHis');
+        $random = Str::random(16);
+
+        $filename = $prefix ? "{$prefix}_{$timestamp}_{$random}" : "{$timestamp}_{$random}";
+
+        return "{$filename}.{$extension}";
+    }
+
+    /**
+     * Validate file extension against mime type
+     */
+    public function validateExtension(UploadedFile $file): bool
+    {
+        $extension = strtolower($file->getClientOriginalExtension());
+        $mimeType = $file->getMimeType();
+
+        $validCombinations = [
+            'pdf' => ['application/pdf', 'application/x-pdf'],
+            'jpg' => ['image/jpeg', 'image/pjpeg'],
+            'jpeg' => ['image/jpeg', 'image/pjpeg'],
+            'png' => ['image/png', 'image/x-png'],
+            'gif' => ['image/gif'],
+        ];
+
+        if (!isset($validCombinations[$extension])) {
+            return false;
+        }
+
+        return in_array($mimeType, $validCombinations[$extension]);
+    }
+}
+```
+
+**3.3. Usage in Controller**
+
+```php
+// app/Http/Controllers/API/DocumentVerificationController.php
+<?php
+
+namespace App\Http\Controllers\API;
+
+use App\Http\Controllers\Controller;
+use App\Http\Requests\DocumentUploadRequest;
+use App\Services\FileSecurityService;
+use App\Services\SupabaseStorageService;
+use App\Models\VerificationDocument;
+use Illuminate\Http\JsonResponse;
+
+class DocumentVerificationController extends Controller
+{
+    public function __construct(
+        protected FileSecurityService $fileSecurityService,
+        protected SupabaseStorageService $storageService
+    ) {}
+
+    /**
+     * Upload verification documents
+     */
+    public function uploadDocuments(DocumentUploadRequest $request, int $institutionId): JsonResponse
+    {
+        $institution = $request->user()->institution;
+
+        if (!$institution || $institution->id !== $institutionId) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Unauthorized',
+            ], 403);
+        }
+
+        $uploadedDocuments = [];
+
+        // Process each file
+        $files = $request->allFiles();
+        foreach ($files as $fieldName => $file) {
+            // Scan for malware
+            $scanResult = $this->fileSecurityService->scanFile($file);
+
+            if (!$scanResult['safe']) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'File contains malicious content and cannot be uploaded.',
+                    'field' => $fieldName,
+                    'scanner' => $scanResult['scanner'],
+                    'details' => $scanResult['details'] ?? 'Malware detected',
+                ], 422);
+            }
+
+            // Validate extension matches mime type
+            if (!$this->fileSecurityService->validateExtension($file)) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'File extension does not match file type.',
+                    'field' => $fieldName,
+                ], 422);
+            }
+
+            // Generate secure filename
+            $secureFilename = $this->fileSecurityService->generateSecureFilename($file, $fieldName);
+
+            // Upload to Supabase
+            $path = $this->storageService->uploadDocument(
+                $file,
+                $secureFilename,
+                "institutions/{$institutionId}/verification"
+            );
+
+            // Save to database
+            $document = VerificationDocument::create([
+                'institution_id' => $institutionId,
+                'document_type' => $this->getDocumentType($fieldName),
+                'file_url' => $path,
+                'file_name' => $secureFilename,
+                'file_size' => $file->getSize(),
+                'mime_type' => $file->getMimeType(),
+            ]);
+
+            $uploadedDocuments[] = [
+                'id' => $document->id,
+                'type' => $document->document_type,
+                'filename' => $document->file_name,
+                'size' => $document->file_size,
+            ];
+        }
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Documents uploaded successfully',
+            'data' => [
+                'documents' => $uploadedDocuments,
+                'institution_id' => $institutionId,
+            ],
+        ], 201);
+    }
+
+    /**
+     * Map field name to document type
+     */
+    protected function getDocumentType(string $fieldName): string
+    {
+        return match($fieldName) {
+            'official_letter' => VerificationDocument::TYPE_OFFICIAL_LETTER,
+            'logo' => VerificationDocument::TYPE_LOGO,
+            'pic_identity' => VerificationDocument::TYPE_PIC_IDENTITY,
+            'npwp' => VerificationDocument::TYPE_NPWP,
+            default => 'other',
+        };
+    }
+}
+```
+
+**3.4. Configuration**
+
+```bash
+# .env
+VIRUSTOTAL_API_KEY=your_virustotal_api_key_here
+
+# Install ClamAV (Ubuntu/Debian)
+sudo apt-get update
+sudo apt-get install clamav clamav-daemon
+
+# Start ClamAV daemon
+sudo systemctl enable clamav-daemon
+sudo systemctl start clamav-daemon
+
+# Update virus definitions
+sudo freshclam
+
+# Test ClamAV
+clamscan --version
+```
+
+```php
+// config/services.php
+return [
+    // ... other services
+
+    'virustotal' => [
+        'api_key' => env('VIRUSTOTAL_API_KEY'),
+        'timeout' => 30, // seconds
+    ],
+
+    'file_upload' => [
+        'max_size' => [
+            'pdf' => 5120, // 5MB in KB
+            'image' => 2048, // 2MB in KB
+        ],
+        'allowed_mime_types' => [
+            'pdf' => ['application/pdf'],
+            'image' => ['image/jpeg', 'image/png', 'image/jpg'],
+        ],
+        'scan_enabled' => env('FILE_SCAN_ENABLED', true),
+    ],
+];
+```
+
+---
+
+*[Content continues... Due to length, I'll create multiple parts. Would you like me to continue with Enhancements 4-12?]*
 
 ### Phase 1: MVP (Month 1-3)
 - ✅ Basic registration flows

@@ -75,14 +75,14 @@ class DocumentVerificationController extends Controller
                     $path = "verification_documents/{$institutionId}/" . $type . '_' . time() . '.' . $file->getClientOriginalExtension();
 
                     // Upload to Supabase storage
-                    $this->storageService->uploadFile(
-                        $path,
-                        file_get_contents($file),
-                        $file->getMimeType()
-                    );
+                    $uploadedPath = $this->storageService->uploadFile($file, $path);
+
+                    if (!$uploadedPath) {
+                        continue; // Skip if upload failed
+                    }
 
                     // Get public URL
-                    $fileUrl = $this->storageService->getPublicUrl($path);
+                    $fileUrl = $this->storageService->getPublicUrl($uploadedPath);
 
                     // Create verification document record
                     $verificationDoc = VerificationDocument::create([

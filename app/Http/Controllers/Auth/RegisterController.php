@@ -322,11 +322,29 @@ class RegisterController extends Controller
 
             // cek apakah request adalah AJAX
             if ($request->expectsJson() || $request->ajax()) {
+                // buat token untuk API authentication
+                $token = $user->createToken('api-token')->plainTextToken;
+
                 return response()->json([
                     'success' => true,
                     'message' => 'Registrasi Berhasil! Akun Instansi Anda Sedang Menunggu Verifikasi Admin.',
-                    'redirect_url' => route('institution.dashboard') // PERBAIKAN: gunakan redirect_url bukan redirect
-                ], 200);
+                    'data' => [
+                        'token' => $token,
+                        'institution' => [
+                            'id' => $institution->id,
+                            'name' => $institution->name,
+                            'email' => $institution->email,
+                            'verification_status' => $institution->verification_status ?? 'pending_verification',
+                        ],
+                        'user' => [
+                            'id' => $user->id,
+                            'name' => $user->name,
+                            'email' => $user->email,
+                            'user_type' => $user->user_type,
+                        ],
+                        'redirect_url' => route('institution.dashboard')
+                    ]
+                ], 201);
             }
 
             // redirect ke dashboard institution dengan pesan sukses

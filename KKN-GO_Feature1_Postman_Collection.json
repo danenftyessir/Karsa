@@ -1,0 +1,226 @@
+{
+  "info": {
+    "name": "KKN-GO - Feature 1: AI Document Verification",
+    "description": "Testing collection for Feature 1 - AI Document Verification",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "1. Auth",
+      "item": [
+        {
+          "name": "Register Institution",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "if (pm.response.code === 201) {",
+                  "    var jsonData = pm.response.json();",
+                  "    pm.environment.set(\"token\", jsonData.data.token);",
+                  "    pm.environment.set(\"institution_id\", jsonData.data.institution.id);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"name\": \"Desa Sukamaju\",\n    \"type\": \"Desa\",\n    \"email\": \"desa.sukamaju@example.com\",\n    \"password\": \"password123\",\n    \"password_confirmation\": \"password123\",\n    \"phone\": \"081234567890\",\n    \"address\": \"Jl. Raya Sukamaju No. 123\",\n    \"province_id\": 32,\n    \"regency_id\": 3201,\n    \"pic_name\": \"Budi Santoso\",\n    \"pic_position\": \"Kepala Desa\",\n    \"pic_phone\": \"081234567890\",\n    \"website\": \"https://sukamaju.desa.id\",\n    \"description\": \"Desa Sukamaju adalah desa yang terletak di Jawa Barat\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/register/institution",
+              "host": ["{{base_url}}"],
+              "path": ["register", "institution"]
+            }
+          }
+        },
+        {
+          "name": "Login",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "if (pm.response.code === 200) {",
+                  "    var jsonData = pm.response.json();",
+                  "    pm.environment.set(\"token\", jsonData.data.token);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"email\": \"desa.sukamaju@example.com\",\n    \"password\": \"password123\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/login",
+              "host": ["{{base_url}}"],
+              "path": ["login"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "2. Upload Documents",
+      "item": [
+        {
+          "name": "Upload Verification Documents",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "official_letter",
+                  "type": "file",
+                  "src": ""
+                },
+                {
+                  "key": "logo",
+                  "type": "file",
+                  "src": ""
+                },
+                {
+                  "key": "pic_identity",
+                  "type": "file",
+                  "src": ""
+                },
+                {
+                  "key": "npwp",
+                  "type": "file",
+                  "src": "",
+                  "disabled": true
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{api_url}}/institutions/{{institution_id}}/documents",
+              "host": ["{{api_url}}"],
+              "path": ["institutions", "{{institution_id}}", "documents"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "3. AI Verification",
+      "item": [
+        {
+          "name": "Trigger AI Verification",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "if (pm.response.code === 200) {",
+                  "    var jsonData = pm.response.json();",
+                  "    pm.environment.set(\"verification_id\", jsonData.data.verification_id);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"institution_id\": {{institution_id}}\n}"
+            },
+            "url": {
+              "raw": "{{api_url}}/ai/verify-documents",
+              "host": ["{{api_url}}"],
+              "path": ["ai", "verify-documents"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "4. Check Status",
+      "item": [
+        {
+          "name": "Get Verification Status",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{api_url}}/institutions/{{institution_id}}/verification-status",
+              "host": ["{{api_url}}"],
+              "path": ["institutions", "{{institution_id}}", "verification-status"]
+            }
+          }
+        },
+        {
+          "name": "Get Detailed Verification Result",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{api_url}}/ai/verification/{{verification_id}}",
+              "host": ["{{api_url}}"],
+              "path": ["ai", "verification", "{{verification_id}}"]
+            }
+          }
+        }
+      ]
+    }
+  ],
+  "variable": [
+    {
+      "key": "base_url",
+      "value": "http://127.0.0.1:8000"
+    },
+    {
+      "key": "api_url",
+      "value": "{{base_url}}/api"
+    }
+  ]
+}

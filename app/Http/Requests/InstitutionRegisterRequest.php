@@ -93,7 +93,7 @@ class InstitutionRegisterRequest extends FormRequest
                 'max:2048' // 2MB
             ],
             'verification_document' => [
-                'required',
+                'nullable', // Changed to nullable for API requests
                 'file',
                 'mimes:pdf',
                 'max:5120' // 5MB

@@ -154,10 +154,6 @@
                        class="text-gray-700 hover:text-black px-3 py-2 text-sm font-semibold transition-all duration-300 rounded-lg hover:bg-gray-100 {{ request()->routeIs('about') ? 'text-black bg-gray-100' : '' }}">
                         About Us
                     </a>
-                    <a href="{{ route('price') }}"
-                       class="text-gray-700 hover:text-black px-3 py-2 text-sm font-semibold transition-all duration-300 rounded-lg hover:bg-gray-100 {{ request()->routeIs('price') ? 'text-black bg-gray-100' : '' }}">
-                        Pricing
-                    </a>
                     <a href="{{ route('contact') }}"
                        class="text-gray-700 hover:text-black px-3 py-2 text-sm font-semibold transition-all duration-300 rounded-lg hover:bg-gray-100 {{ request()->routeIs('contact') ? 'text-black bg-gray-100' : '' }}">
                         Contact
@@ -275,10 +271,6 @@
                 <a href="{{ route('about') }}"
                    class="block px-4 py-3 rounded-md text-base font-medium text-gray-700 hover:text-blue-600 hover:bg-blue-50 transition-colors {{ request()->routeIs('about') ? 'text-blue-600 bg-blue-50' : '' }}">
                     About Us
-                </a>
-                <a href="{{ route('price') }}"
-                   class="block px-4 py-3 rounded-md text-base font-medium text-gray-700 hover:text-blue-600 hover:bg-blue-50 transition-colors {{ request()->routeIs('price') ? 'text-blue-600 bg-blue-50' : '' }}">
-                    Pricing
                 </a>
                 <a href="{{ route('contact') }}"
                    class="block px-4 py-3 rounded-md text-base font-medium text-gray-700 hover:text-blue-600 hover:bg-blue-50 transition-colors {{ request()->routeIs('contact') ? 'text-blue-600 bg-blue-50' : '' }}">

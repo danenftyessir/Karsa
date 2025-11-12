@@ -3,6 +3,8 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Auth\ValidationController;
+use App\Http\Controllers\Auth\RegisterController;
+use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Student\BrowseProblemsController;
 use App\Http\Controllers\API\DocumentVerificationController;
 use App\Models\Regency;
@@ -27,21 +29,40 @@ use App\Models\Province;
 |--------------------------------------------------------------------------
 */
 
+// ========================================
+// AUTHENTICATION ROUTES (No CSRF Required)
+// ========================================
+
+// Register Student
+// POST /api/register/student
+Route::post('/register/student', [RegisterController::class, 'registerStudent'])
+     ->name('api.register.student');
+
+// Register Institution
+// POST /api/register/institution
+Route::post('/register/institution', [RegisterController::class, 'registerInstitution'])
+     ->name('api.register.institution');
+
+// Login
+// POST /api/login
+Route::post('/login', [LoginController::class, 'login'])
+     ->name('api.login');
+
 Route::prefix('public')->name('api.public.')->group(function () {
-    
+
     // validasi step by step untuk form registrasi
     // endpoint ini digunakan untuk validasi real-time saat user mengisi form
-    
+
     // validasi step registrasi student
     // POST /api/public/validate/student/step
     Route::post('/validate/student/step', [ValidationController::class, 'validateStudentStep'])
          ->name('validate.student.step');
-    
+
     // validasi step registrasi institution
     // POST /api/public/validate/institution/step
     Route::post('/validate/institution/step', [ValidationController::class, 'validateInstitutionStep'])
          ->name('validate.institution.step');
-    
+
     // get regencies berdasarkan province (untuk dropdown dinamis)
     // GET /api/public/regencies/{provinceId}
     Route::get('/regencies/{provinceId}', function ($provinceId) {

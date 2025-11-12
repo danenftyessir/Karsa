@@ -12,6 +12,73 @@
             <p class="text-gray-600 mt-1">Selamat datang, {{ $institution->name }}</p>
         </div>
 
+        {{-- Verification Alert (Feature 1) --}}
+        @if(in_array($institution->verification_status, ['pending_verification', 'rejected', 'needs_review']))
+        <div class="mb-6 fade-in-up" style="animation-delay: 0.05s;">
+            @if($institution->verification_status === 'pending_verification' || $institution->verification_status === null)
+            <div class="bg-blue-50 border-l-4 border-blue-400 p-4 rounded">
+                <div class="flex items-start">
+                    <svg class="w-6 h-6 text-blue-400 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                    </svg>
+                    <div class="ml-3 flex-1">
+                        <h3 class="text-sm font-semibold text-blue-800">Verifikasi Dokumen Diperlukan</h3>
+                        <p class="mt-1 text-sm text-blue-700">
+                            Institusi Anda belum terverifikasi. Upload dokumen untuk verifikasi otomatis menggunakan AI.
+                        </p>
+                        <div class="mt-3">
+                            <a href="{{ route('institution.verification.upload') }}" class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 font-semibold text-sm inline-block transition-colors">
+                                Upload Dokumen Verifikasi
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            @elseif($institution->verification_status === 'rejected')
+            <div class="bg-red-50 border-l-4 border-red-400 p-4 rounded">
+                <div class="flex items-start">
+                    <svg class="w-6 h-6 text-red-400 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                    </svg>
+                    <div class="ml-3 flex-1">
+                        <h3 class="text-sm font-semibold text-red-800">Dokumen Ditolak</h3>
+                        <p class="mt-1 text-sm text-red-700">
+                            Dokumen verifikasi Anda tidak lolos verifikasi AI. Harap periksa hasil verifikasi dan upload ulang dokumen yang sesuai.
+                        </p>
+                        <div class="mt-3 flex gap-2">
+                            <a href="{{ route('institution.verification.status') }}" class="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 font-semibold text-sm inline-block transition-colors">
+                                Lihat Hasil Verifikasi
+                            </a>
+                            <a href="{{ route('institution.verification.upload') }}" class="px-4 py-2 bg-white text-red-600 border border-red-600 rounded-lg hover:bg-red-50 font-semibold text-sm inline-block transition-colors">
+                                Upload Ulang Dokumen
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            @elseif($institution->verification_status === 'needs_review')
+            <div class="bg-orange-50 border-l-4 border-orange-400 p-4 rounded">
+                <div class="flex items-start">
+                    <svg class="w-6 h-6 text-orange-400 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                    </svg>
+                    <div class="ml-3 flex-1">
+                        <h3 class="text-sm font-semibold text-orange-800">Perlu Review Manual</h3>
+                        <p class="mt-1 text-sm text-orange-700">
+                            Dokumen Anda memerlukan review manual oleh tim kami. Kami akan menghubungi Anda dalam 1-2 hari kerja.
+                        </p>
+                        <div class="mt-3">
+                            <a href="{{ route('institution.verification.status') }}" class="px-4 py-2 bg-orange-600 text-white rounded-lg hover:bg-orange-700 font-semibold text-sm inline-block transition-colors">
+                                Lihat Detail Verifikasi
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            @endif
+        </div>
+        @endif
+
         {{-- urgent items --}}
         @if($urgentItems['pending_applications'] > 0 || $urgentItems['pending_reviews'] > 0 || $urgentItems['overdue_milestones'] > 0)
         <div class="bg-yellow-50 border-l-4 border-yellow-400 p-4 mb-6 fade-in-up" style="animation-delay: 0.1s;">
