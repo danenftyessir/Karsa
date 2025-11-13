@@ -11,9 +11,17 @@ use Illuminate\Support\Facades\Log;
  *
  * Service untuk retrieve dokumen relevan dari knowledge repository
  * Digunakan untuk memberikan context ke AI chatbot
+ *
+ * Uses Cohere for semantic search with embeddings
  */
 class DocumentRetrieverService
 {
+    protected $cohereService;
+
+    public function __construct(CohereAIService $cohereService)
+    {
+        $this->cohereService = $cohereService;
+    }
     /**
      * Search documents berdasarkan query dan filters
      *
@@ -182,13 +190,75 @@ class DocumentRetrieverService
     }
 
     /**
-     * Calculate relevance score untuk document
+     * Calculate relevance score untuk document using hybrid approach
+     * Combines semantic similarity (Cohere) + keyword matching
      *
      * @param Document $document
      * @param string $query
      * @return float
      */
     protected function calculateRelevanceScore(Document $document, string $query): float
+    {
+        // Hybrid scoring: 60% semantic + 40% keyword-based
+        $semanticScore = $this->calculateSemanticScore($document, $query);
+        $keywordScore = $this->calculateKeywordScore($document, $query);
+
+        // Weight: Semantic (60%) + Keyword (40%)
+        $finalScore = ($semanticScore * 0.6) + ($keywordScore * 0.4);
+
+        Log::debug('📊 Relevance scores', [
+            'document_id' => $document->id,
+            'title' => $document->title,
+            'semantic_score' => round($semanticScore, 3),
+            'keyword_score' => round($keywordScore, 3),
+            'final_score' => round($finalScore, 3)
+        ]);
+
+        return $finalScore;
+    }
+
+    /**
+     * Calculate semantic similarity score using Cohere embeddings
+     *
+     * @param Document $document
+     * @param string $query
+     * @return float
+     */
+    protected function calculateSemanticScore(Document $document, string $query): float
+    {
+        try {
+            // Combine title + description for document representation
+            $documentText = $document->title . '. ' . ($document->description ?? '');
+
+            // Calculate semantic similarity using Cohere
+            $similarity = $this->cohereService->calculateSimilarity($query, $documentText);
+
+            Log::debug('🔍 Cohere semantic similarity', [
+                'document_id' => $document->id,
+                'similarity' => round($similarity, 3)
+            ]);
+
+            return $similarity;
+
+        } catch (\Exception $e) {
+            Log::warning('⚠️ Cohere semantic scoring failed, fallback to keyword', [
+                'document_id' => $document->id,
+                'error' => $e->getMessage()
+            ]);
+
+            // Fallback to keyword-based if Cohere fails
+            return $this->calculateKeywordScore($document, $query);
+        }
+    }
+
+    /**
+     * Calculate keyword-based score (fallback/complement)
+     *
+     * @param Document $document
+     * @param string $query
+     * @return float
+     */
+    protected function calculateKeywordScore(Document $document, string $query): float
     {
         $score = 0.0;
         $keywords = $this->extractKeywords($query);
