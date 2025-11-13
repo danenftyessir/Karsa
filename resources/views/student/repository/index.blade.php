@@ -227,6 +227,27 @@
         </div>
         @endif
 
+        {{-- AI Chatbot CTA Section --}}
+        <div class="mb-12 repository-fade-in" style="animation-delay: 0.3s;">
+            <div class="bg-gray-50 border border-gray-200 rounded-2xl p-8 hover:border-gray-300 transition-all duration-300">
+                <div class="flex flex-col md:flex-row items-center justify-between gap-6">
+                    <div class="flex-1">
+                        <h3 class="text-2xl font-bold mb-2 text-gray-900">Bingung mau cari dokumen KKN yang seperti apa?</h3>
+                        <p class="text-gray-600 text-lg">Tanyain aja ke KARA! Dapatkan rekomendasi dokumen yang sesuai dengan kebutuhanmu.</p>
+                    </div>
+                    <div>
+                        <a href="{{ route('student.chatbot.index') }}"
+                           class="inline-flex items-center justify-center px-8 py-3 bg-gray-900 text-white font-semibold rounded-lg hover:bg-gray-800 transition-all duration-300 shadow-sm hover:shadow-md whitespace-nowrap">
+                            <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z"/>
+                            </svg>
+                            <span>Tanya KARA</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
         {{-- search and filter section --}}
         <div class="grid grid-cols-1 lg:grid-cols-4 gap-6 mb-8">
 
