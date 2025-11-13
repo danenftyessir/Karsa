@@ -193,26 +193,29 @@ class ChatbotService
 
             $conversation->incrementMessageCount();
 
-            // Step 7: Save document references
-            foreach ($documentExcerpts as $excerpt) {
-                ChatDocumentReference::create([
-                    'message_id' => $botMsg->id,
-                    'document_id' => $excerpt['document_id'],
-                    'relevance_score' => $excerpt['relevance_score'],
-                    'excerpt' => $excerpt['excerpt'],
-                    'metadata' => [
-                        'title' => $excerpt['title'],
-                        'author' => $excerpt['author'],
-                        'year' => $excerpt['year'],
-                    ],
-                ]);
+            // Step 7: Save document references (only if AI actually used them)
+            $usedSources = $this->shouldShowSources($aiResponse['content'], $documentExcerpts);
+
+            if ($usedSources) {
+                foreach ($documentExcerpts as $excerpt) {
+                    ChatDocumentReference::create([
+                        'message_id' => $botMsg->id,
+                        'document_id' => $excerpt['document_id'],
+                        'relevance_score' => $excerpt['relevance_score'],
+                        'excerpt' => $excerpt['excerpt'],
+                        'metadata' => [
+                            'title' => $excerpt['title'],
+                            'author' => $excerpt['author'],
+                            'year' => $excerpt['year'],
+                        ],
+                    ]);
+                }
             }
 
             // Step 8: Update conversation title if first message
             if ($conversation->message_count <= 2 && $conversation->title === 'Percakapan Baru') {
-                $conversation->update([
-                    'title' => mb_substr($userMessage, 0, 50) . (strlen($userMessage) > 50 ? '...' : '')
-                ]);
+                $title = $this->generateConversationTitle($userMessage);
+                $conversation->update(['title' => $title]);
             }
 
             DB::commit();
@@ -227,7 +230,7 @@ class ChatbotService
                 'success' => true,
                 'message' => $aiResponse['content'],
                 'message_id' => $botMsg->id,
-                'sources' => $this->formatSources($documentExcerpts),
+                'sources' => $usedSources ? $this->formatSources($documentExcerpts) : [],
                 'token_usage' => $aiResponse['usage'] ?? null,
             ];
 
@@ -467,5 +470,120 @@ class ChatbotService
     public function deleteConversation(ChatConversation $conversation): bool
     {
         return $conversation->delete();
+    }
+
+    /**
+     * Determine if sources should be shown based on AI response
+     *
+     * @param string $aiResponse
+     * @param array $documentExcerpts
+     * @return bool
+     */
+    protected function shouldShowSources(string $aiResponse, array $documentExcerpts): bool
+    {
+        // If no documents were retrieved, don't show sources
+        if (empty($documentExcerpts)) {
+            return false;
+        }
+
+        // Keywords that indicate AI is rejecting/not using documents
+        $rejectKeywords = [
+            'tidak menemukan',
+            'tidak dapat menjawab',
+            'tidak dapat membantu',
+            'di luar cakupan',
+            'di luar scope',
+            'tidak tersedia',
+            'belum tersedia',
+            'tidak dapat menjawab pertanyaan yang',
+            'tidak dapat merespons',
+            'maaf, pertanyaan',
+            'mohon maaf, pertanyaan',
+            'saya khusus membantu',
+            'saya fokus pada',
+            'apakah ada hal lain',
+            'ada yang bisa saya bantu',
+            'tidak berkaitan dengan',
+            'tidak terkait dengan',
+        ];
+
+        // Check if response contains rejection keywords
+        $lowerResponse = mb_strtolower($aiResponse);
+
+        // Get first 200 characters to check for early rejection signals
+        $responseStart = mb_substr($lowerResponse, 0, 200);
+
+        foreach ($rejectKeywords as $keyword) {
+            if (mb_strpos($responseStart, $keyword) !== false) {
+                Log::info('🚫 Sources hidden - AI response indicates rejection or no information found', [
+                    'keyword_matched' => $keyword
+                ]);
+                return false;
+            }
+        }
+
+        // Check if AI is asking for confirmation/clarification without providing info
+        $clarificationPatterns = [
+            'apakah anda',
+            'apakah kamu',
+            'bisa anda jelaskan',
+            'bisa kamu jelaskan',
+            'maksud anda',
+            'maksudnya',
+        ];
+
+        foreach ($clarificationPatterns as $pattern) {
+            if (mb_strpos($lowerResponse, $pattern) !== false &&
+                mb_strlen($aiResponse) < 300) {
+                Log::info('🚫 Sources hidden - AI asking for clarification', [
+                    'pattern_matched' => $pattern
+                ]);
+                return false;
+            }
+        }
+
+        Log::info('✅ Sources will be shown - AI provided substantive answer');
+        return true;
+    }
+
+    /**
+     * Generate a meaningful conversation title from the first user message
+     *
+     * @param string $userMessage
+     * @return string
+     */
+    protected function generateConversationTitle(string $userMessage): string
+    {
+        try {
+            $prompt = "Buatlah judul percakapan yang singkat dan informatif (maksimal 50 karakter) berdasarkan pertanyaan berikut. Judul harus menangkap inti/topik utama dari pertanyaan, bukan hanya memotong awalnya.\n\nPertanyaan: \"$userMessage\"\n\nJudul harus:\n- Fokus pada topik utama/kata kunci penting\n- Maksimal 50 karakter\n- Tanpa tanda petik\n- Bahasa Indonesia yang natural\n\nContoh:\nPertanyaan: \"saya lagi ga pengen dokumen tapi saya ingin tutorial, saya pas kkn disuruh bersiin kamar mandi gimana ya caranya\"\nJudul: \"Tutorial Membersihkan Kamar Mandi saat KKN\"\n\nJawab hanya dengan judulnya saja, tanpa penjelasan tambahan.";
+
+            $response = $this->callClaudeAPI($prompt, $maxTokens = 100);
+            $title = trim($response['content']);
+
+            // Pastikan title tidak terlalu panjang
+            if (strlen($title) > 60) {
+                $title = mb_substr($title, 0, 57) . '...';
+            }
+
+            // Fallback jika title kosong
+            if (empty($title)) {
+                return mb_substr($userMessage, 0, 50) . (strlen($userMessage) > 50 ? '...' : '');
+            }
+
+            Log::info('✅ Generated conversation title', [
+                'original_length' => strlen($userMessage),
+                'title' => $title
+            ]);
+
+            return $title;
+
+        } catch (\Exception $e) {
+            Log::error('❌ Failed to generate conversation title', [
+                'error' => $e->getMessage()
+            ]);
+
+            // Fallback to original method
+            return mb_substr($userMessage, 0, 50) . (strlen($userMessage) > 50 ? '...' : '');
+        }
     }
 }
