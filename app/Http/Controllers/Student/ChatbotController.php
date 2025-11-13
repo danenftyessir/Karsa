@@ -20,8 +20,6 @@ class ChatbotController extends Controller
 
     public function __construct(ChatbotService $chatbotService)
     {
-        $this->middleware('auth');
-        $this->middleware('student');
         $this->chatbotService = $chatbotService;
     }
 
