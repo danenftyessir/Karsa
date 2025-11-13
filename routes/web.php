@@ -15,6 +15,7 @@ use App\Http\Controllers\Student\ProfileController as StudentProfileController;
 use App\Http\Controllers\Student\WishlistController;
 use App\Http\Controllers\Student\FriendController;
 use App\Http\Controllers\Student\KnowledgeRepositoryController;
+use App\Http\Controllers\Student\ChatbotController;
 use App\Http\Controllers\Institution\DashboardController as InstitutionDashboardController;
 use App\Http\Controllers\Institution\ProblemController;
 use App\Http\Controllers\Institution\ApplicationReviewController;
@@ -219,9 +220,20 @@ Route::middleware(['auth', 'check.user.type:student'])->prefix('student')->name(
         Route::get('/', [KnowledgeRepositoryController::class, 'index'])->name('index');
         Route::get('/{id}', [KnowledgeRepositoryController::class, 'show'])->name('show');
         Route::get('/{id}/download', [KnowledgeRepositoryController::class, 'download'])->name('download');
-        Route::get('/api/get-regencies', [KnowledgeRepositoryController::class, 'getRegencies'])->name('get-regencies');    
+        Route::get('/api/get-regencies', [KnowledgeRepositoryController::class, 'getRegencies'])->name('get-regencies');
     });
-    
+
+    // AI chatbot assistant
+    Route::prefix('chatbot')->name('chatbot.')->group(function () {
+        Route::get('/', [ChatbotController::class, 'index'])->name('index');
+        Route::get('/create', [ChatbotController::class, 'create'])->name('create');
+        Route::get('/{id}', [ChatbotController::class, 'show'])->name('show');
+        Route::post('/send', [ChatbotController::class, 'sendMessage'])->name('send');
+        Route::get('/api/conversations', [ChatbotController::class, 'getConversations'])->name('conversations');
+        Route::post('/{id}/archive', [ChatbotController::class, 'archive'])->name('archive');
+        Route::delete('/{id}', [ChatbotController::class, 'destroy'])->name('destroy');
+    });
+
 });
 
 /*

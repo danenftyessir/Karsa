@@ -15,14 +15,40 @@ use Carbon\Carbon;
 
 /**
  * seeder untuk membuat data projects, milestones, reports, documents, dan reviews
- * 
+ *
  * FIXED: batch insert untuk menghindari prepared statement error di PostgreSQL
- * 
+ * FIXED: gunakan file PDF yang benar-benar ada di Supabase
+ *
  * path: database/seeders/ProjectsSeeder.php
  * jalankan: php artisan db:seed --class=ProjectsSeeder
  */
 class ProjectsSeeder extends Seeder
 {
+    /**
+     * Daftar file PDF yang ada di Supabase folder documents/reports/
+     */
+    private array $existingPdfs = [
+        '3341b-laporan_kkn_hasbi_mudzaki_fix-1-.pdf',
+        'aaLAPORAN-PROGRAM-KERJA-KKN.pdf',
+        'bc4f599c360deae829ef0952f9200a4f.pdf',
+        'd5460592f2ee74a2f9f5910138d650e6.pdf',
+        'f3f3ec539ee2d963e804d3a964b3290f.pdf',
+        'KKN_III.D.3_REG.96_2022.pdf',
+        'LAPORAN AKHIR KKN .pdf',
+        'laporan akhir KKN PPM OK.pdf',
+        'LAPORAN KELOMPOK KKN 1077fix.pdf',
+        'LAPORAN KKN DEMAPESA.pdf',
+        'LAPORAN KKN KELOMPOK 2250.pdf',
+        'LAPORAN KKN_1.A.2_REG.119_2024.pdf',
+        'LAPORAN KKN.pdf',
+        'laporan_3460160906115724.pdf',
+        'laporan_akhir_201_35_2.pdf',
+        'laporan_akhir_3011_45_5.pdf',
+        'laporan-kelompok.pdf',
+        'Laporan-KKN-2019.pdf',
+        'Laporan-Tugas-Akhir-KKN-156.pdf',
+    ];
+
     /**
      * run seeder
      */
@@ -193,12 +219,15 @@ class ProjectsSeeder extends Seeder
                     'updated_at' => $endDate->copy()->addDays(rand(1, 7)),
                 ];
                 
+                // ✅ PENTING: Ambil random PDF dari daftar file yang ada di Supabase
+                $randomPdf = $this->existingPdfs[array_rand($this->existingPdfs)];
+
                 // document data
                 $documentsData[] = [
                     'application_id' => $application->id,
                     'title' => 'Laporan Akhir KKN - ' . $problem->title,
                     'description' => 'Laporan lengkap pelaksanaan program KKN di ' . $problem->regency->name . ' dengan fokus pada ' . $problem->title,
-                    'file_path' => 'documents/reports/dummy_report_' . $application->id . '.pdf',
+                    'file_path' => 'documents/reports/' . $randomPdf, // ✅ Gunakan file yang benar-benar ada
                     'file_size' => rand(500000, 2000000),
                     'file_type' => 'application/pdf',
                     'uploaded_by' => $application->student->user_id,

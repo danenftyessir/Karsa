@@ -200,6 +200,7 @@ class KnowledgeRepositoryController extends Controller
 
     /**
      * download dokumen dan increment counter
+     * dengan nama file yang user-friendly berdasarkan title
      */
     public function download($id)
     {
@@ -213,8 +214,68 @@ class KnowledgeRepositoryController extends Controller
         // generate URL dari supabase
         $url = document_url($document->file_path);
 
-        // redirect ke URL file
-        return redirect($url);
+        // ✅ Generate user-friendly filename dari title dokumen
+        // Remove special characters dan replace spaces dengan underscore
+        $sanitizedTitle = preg_replace('/[^A-Za-z0-9\s\-_]/', '', $document->title);
+        $sanitizedTitle = preg_replace('/\s+/', '_', trim($sanitizedTitle));
+        $sanitizedTitle = substr($sanitizedTitle, 0, 100); // Limit panjang filename
+
+        // ✅ Extract file extension dari file_type atau file_path
+        // Handle case where file_type might be 'application/pdf' or just 'pdf'
+        $fileType = $document->file_type ?? 'pdf';
+
+        // If file_type contains '/', ambil bagian setelah '/' (eg: 'application/pdf' -> 'pdf')
+        if (strpos($fileType, '/') !== false) {
+            $fileExtension = strtolower(substr(strrchr($fileType, '/'), 1));
+        } else {
+            $fileExtension = strtolower($fileType);
+        }
+
+        // Fallback: extract dari file_path jika ada
+        if (empty($fileExtension) || !preg_match('/^[a-z0-9]+$/', $fileExtension)) {
+            $pathInfo = pathinfo($document->file_path);
+            $fileExtension = strtolower($pathInfo['extension'] ?? 'pdf');
+        }
+
+        $downloadFilename = $sanitizedTitle . '.' . $fileExtension;
+
+        // Determine MIME type
+        $mimeTypes = [
+            'pdf' => 'application/pdf',
+            'doc' => 'application/msword',
+            'docx' => 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+            'xls' => 'application/vnd.ms-excel',
+            'xlsx' => 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+            'ppt' => 'application/vnd.ms-powerpoint',
+            'pptx' => 'application/vnd.openxmlformats-officedocument.presentationml.presentation',
+        ];
+        $mimeType = $mimeTypes[$fileExtension] ?? 'application/octet-stream';
+
+        // ✅ Download file dari Supabase dengan nama yang user-friendly
+        try {
+            $fileContents = file_get_contents($url);
+
+            if ($fileContents === false) {
+                abort(404, 'File tidak dapat diakses dari storage.');
+            }
+
+            return response($fileContents)
+                ->header('Content-Type', $mimeType)
+                ->header('Content-Disposition', 'attachment; filename="' . $downloadFilename . '"')
+                ->header('Cache-Control', 'no-cache, no-store, must-revalidate')
+                ->header('Pragma', 'no-cache')
+                ->header('Expires', '0');
+
+        } catch (\Exception $e) {
+            \Log::error('Download error: ' . $e->getMessage(), [
+                'document_id' => $document->id,
+                'file_path' => $document->file_path,
+                'url' => $url
+            ]);
+
+            // Fallback: redirect langsung ke URL jika gagal download
+            return redirect($url);
+        }
     }
 
     /**

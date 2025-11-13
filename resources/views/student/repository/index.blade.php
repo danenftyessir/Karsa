@@ -87,7 +87,7 @@
     .document-card:hover {
         transform: translate3d(0, -4px, 0);
         box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.15);
-        border-color: #3b82f6;
+        border-color: #9333ea;
     }
     
     /* featured document styling */
@@ -99,8 +99,8 @@
     
     .featured-document:hover {
         transform: translate3d(0, -6px, 0);
-        box-shadow: 0 15px 35px -5px rgba(59, 130, 246, 0.3);
-        border-color: #3b82f6;
+        box-shadow: 0 15px 35px -5px rgba(147, 51, 234, 0.3);
+        border-color: #9333ea;
     }
     
     /* filter section styling */
@@ -173,7 +173,7 @@
                 @foreach($featuredDocuments as $document)
                 <div class="featured-document p-6 rounded-xl group">
                     <div class="flex items-start gap-4 mb-4">
-                        <div class="w-12 h-12 bg-gradient-to-br from-blue-500 to-blue-600 rounded-lg flex items-center justify-center flex-shrink-0">
+                        <div class="w-12 h-12 bg-gradient-to-br from-purple-500 to-purple-600 rounded-lg flex items-center justify-center flex-shrink-0">
                             <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
                             </svg>
@@ -204,20 +204,22 @@
                         @if($document->file_path)
                         <a href="{{ document_url($document->file_path) }}"
                            target="_blank"
-                           class="flex-1 inline-flex items-center justify-center gap-1 px-3 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors text-xs font-medium">
-                            <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                           class="flex-1 inline-flex items-center justify-center gap-1 px-3 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors text-xs font-medium">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
                             </svg>
-                            Lihat
+                            Lihat Online
                         </a>
                         @endif
-                        <a href="{{ route('student.repository.download', $document->id) }}"
-                           class="flex-1 inline-flex items-center justify-center gap-1 px-3 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors text-xs font-medium">
-                            <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <button onclick="downloadDocument({{ $document->id }}, '{{ addslashes($document->title) }}')"
+                           class="flex-1 inline-flex items-center justify-center gap-1 px-3 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors text-xs font-medium disabled:opacity-50 disabled:cursor-not-allowed"
+                           id="download-btn-featured-{{ $document->id }}">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/>
                             </svg>
-                            Download
-                        </a>
+                            <span class="download-text">Download</span>
+                        </button>
                     </div>
                 </div>
                 @endforeach
@@ -285,17 +287,17 @@
                         {{-- search --}}
                         <div>
                             <label class="block text-sm font-medium text-gray-700 mb-2">Cari Dokumen</label>
-                            <input type="text" 
-                                name="search" 
-                                value="{{ request('search') }}" 
+                            <input type="text"
+                                name="search"
+                                value="{{ request('search') }}"
                                 placeholder="Judul, deskripsi, tags..."
-                                class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                                class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent">
                         </div>
 
                         {{-- kategori SDG menggunakan integer value 1-17 --}}
                         <div>
                             <label class="block text-sm font-medium text-gray-700 mb-2">Kategori SDG</label>
-                            <select name="category" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                            <select name="category" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent">
                                 <option value="">Semua Kategori</option>
                                 <option value="1" {{ request('category') == '1' ? 'selected' : '' }}>1. Tanpa Kemiskinan</option>
                                 <option value="2" {{ request('category') == '2' ? 'selected' : '' }}>2. Tanpa Kelaparan</option>
@@ -320,7 +322,7 @@
                         {{-- province --}}
                         <div>
                             <label class="block text-sm font-medium text-gray-700 mb-2">Provinsi</label>
-                            <select name="province_id" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                            <select name="province_id" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent">
                                 <option value="">Semua Provinsi</option>
                                 @foreach($provinces as $province)
                                     <option value="{{ $province->id }}" {{ request('province_id') == $province->id ? 'selected' : '' }}>
@@ -333,7 +335,7 @@
                         {{-- year --}}
                         <div>
                             <label class="block text-sm font-medium text-gray-700 mb-2">Tahun</label>
-                            <select name="year" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                            <select name="year" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent">
                                 <option value="">Semua Tahun</option>
                                 @foreach($years as $year)
                                     <option value="{{ $year }}" {{ request('year') == $year ? 'selected' : '' }}>{{ $year }}</option>
@@ -344,7 +346,7 @@
                         {{-- sort --}}
                         <div>
                             <label class="block text-sm font-medium text-gray-700 mb-2">Urutkan</label>
-                            <select name="sort" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                            <select name="sort" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent">
                                 <option value="latest" {{ request('sort') == 'latest' ? 'selected' : '' }}>Terbaru</option>
                                 <option value="popular" {{ request('sort') == 'popular' ? 'selected' : '' }}>Paling Populer</option>
                                 <option value="most_viewed" {{ request('sort') == 'most_viewed' ? 'selected' : '' }}>Paling Dilihat</option>
@@ -352,12 +354,12 @@
                             </select>
                         </div>
 
-                        <button type="submit" class="w-full px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors">
+                        <button type="submit" class="w-full px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors">
                             Terapkan Filter
                         </button>
-                        
+
                         @if(request()->hasAny(['search', 'category', 'province_id', 'year', 'sort']))
-                        <a href="{{ route('student.repository.index') }}" 
+                        <a href="{{ route('student.repository.index') }}"
                         class="block w-full text-center px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors">
                             Reset Filter
                         </a>
@@ -374,7 +376,7 @@
                         <div class="document-card p-6 content-card" style="animation-delay: {{ 0.3 + ($index * 0.05) }}s;">
                             <div class="flex items-start gap-4">
                                 {{-- icon --}}
-                                <div class="w-16 h-16 bg-gradient-to-br from-blue-500 to-green-500 rounded-xl flex items-center justify-center flex-shrink-0">
+                                <div class="w-16 h-16 bg-gradient-to-br from-purple-500 to-purple-600 rounded-xl flex items-center justify-center flex-shrink-0">
                                     <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
                                     </svg>
@@ -382,8 +384,8 @@
 
                                 {{-- content --}}
                                 <div class="flex-1">
-                                    <a href="{{ route('student.repository.show', $document->id) }}" 
-                                       class="text-xl font-bold text-gray-900 hover:text-blue-600 transition-colors">
+                                    <a href="{{ route('student.repository.show', $document->id) }}"
+                                       class="text-xl font-bold text-gray-900 hover:text-purple-600 transition-colors">
                                         {{ $document->title }}
                                     </a>
                                     
@@ -442,7 +444,7 @@
                                                 : json_decode($document->categories, true) ?? [];
                                         @endphp
                                         @foreach(array_slice($categories, 0, 3) as $category)
-                                        <span class="px-2 py-1 bg-blue-100 text-blue-700 text-xs rounded-full">
+                                        <span class="px-2 py-1 bg-purple-100 text-purple-700 text-xs rounded-full">
                                             {{ ucwords(str_replace('_', ' ', $category)) }}
                                         </span>
                                         @endforeach
@@ -467,7 +469,7 @@
                                         @if($document->file_path)
                                         <a href="{{ document_url($document->file_path) }}"
                                            target="_blank"
-                                           class="inline-flex items-center gap-2 px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors text-sm font-medium">
+                                           class="inline-flex items-center gap-2 px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors text-sm font-medium">
                                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
@@ -476,13 +478,14 @@
                                         </a>
                                         @endif
 
-                                        <a href="{{ route('student.repository.download', $document->id) }}"
-                                           class="inline-flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors text-sm font-medium">
+                                        <button onclick="downloadDocument({{ $document->id }}, '{{ addslashes($document->title) }}')"
+                                           class="inline-flex items-center gap-2 px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors text-sm font-medium disabled:opacity-50 disabled:cursor-not-allowed"
+                                           id="download-btn-{{ $document->id }}">
                                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/>
                                             </svg>
-                                            Download
-                                        </a>
+                                            <span class="download-text">Download</span>
+                                        </button>
                                     </div>
                                 </div>
                             </div>
@@ -503,8 +506,8 @@
                         </svg>
                         <h3 class="text-xl font-bold text-gray-900 mb-2">Tidak Ada Dokumen Ditemukan</h3>
                         <p class="text-gray-600 mb-4">Maaf, tidak ada dokumen yang sesuai dengan kriteria pencarian Anda.</p>
-                        <a href="{{ route('student.repository.index') }}" 
-                           class="inline-flex items-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors">
+                        <a href="{{ route('student.repository.index') }}"
+                           class="inline-flex items-center px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors">
                             Lihat Semua Dokumen
                         </a>
                     </div>
@@ -513,4 +516,126 @@
         </div>
     </div>
 </div>
+
+@push('scripts')
+<script>
+/**
+ * Download document without page refresh
+ */
+async function downloadDocument(documentId, documentTitle) {
+    // Try to find button with both possible IDs (for featured and regular documents)
+    const button = document.getElementById(`download-btn-${documentId}`) ||
+                   document.getElementById(`download-btn-featured-${documentId}`);
+
+    if (!button) {
+        console.error('Download button not found');
+        return;
+    }
+
+    const textElement = button.querySelector('.download-text');
+    const originalText = textElement ? textElement.textContent : 'Download';
+
+    // Disable button dan show loading state
+    button.disabled = true;
+    if (textElement) {
+        textElement.textContent = 'Mengunduh...';
+    }
+
+    try {
+        // Fetch file dari server
+        const response = await fetch(`/student/repository/${documentId}/download`, {
+            method: 'GET',
+            headers: {
+                'Accept': 'application/octet-stream',
+                'X-Requested-With': 'XMLHttpRequest'
+            }
+        });
+
+        if (!response.ok) {
+            throw new Error('Download failed');
+        }
+
+        // Get filename from Content-Disposition header or use default
+        let filename = `${documentTitle}.pdf`;
+        const contentDisposition = response.headers.get('Content-Disposition');
+        if (contentDisposition) {
+            const filenameMatch = contentDisposition.match(/filename="?(.+)"?/i);
+            if (filenameMatch && filenameMatch[1]) {
+                filename = filenameMatch[1];
+            }
+        }
+
+        // Convert response to blob
+        const blob = await response.blob();
+
+        // Create download link
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.style.display = 'none';
+        a.href = url;
+        a.download = filename;
+
+        // Trigger download
+        document.body.appendChild(a);
+        a.click();
+
+        // Cleanup
+        window.URL.revokeObjectURL(url);
+        document.body.removeChild(a);
+
+        // Show success message
+        showNotification('Dokumen berhasil diunduh!', 'success');
+
+    } catch (error) {
+        console.error('Download error:', error);
+        showNotification('Gagal mengunduh dokumen. Silakan coba lagi.', 'error');
+    } finally {
+        // Re-enable button
+        button.disabled = false;
+        if (textElement) {
+            textElement.textContent = originalText;
+        }
+    }
+}
+
+/**
+ * Show notification toast
+ */
+function showNotification(message, type = 'info') {
+    const notification = document.createElement('div');
+    notification.className = `fixed top-4 right-4 px-6 py-4 rounded-lg shadow-lg z-50 animate-slide-in ${
+        type === 'success' ? 'bg-purple-500 text-white' :
+        type === 'error' ? 'bg-red-500 text-white' :
+        'bg-purple-500 text-white'
+    }`;
+    notification.textContent = message;
+
+    document.body.appendChild(notification);
+
+    // Auto remove after 3 seconds
+    setTimeout(() => {
+        notification.classList.add('opacity-0', 'transition-opacity');
+        setTimeout(() => notification.remove(), 300);
+    }, 3000);
+}
+</script>
+
+<style>
+@keyframes slide-in {
+    from {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+.animate-slide-in {
+    animation: slide-in 0.3s ease-out;
+}
+</style>
+@endpush
+
 @endsection

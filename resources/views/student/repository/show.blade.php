@@ -37,7 +37,7 @@
 .related-card:hover {
     transform: translateY(-4px);
     box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.15);
-    border-color: #3b82f6;
+    border-color: #9333ea;
 }
 
 /* download button animation */
@@ -47,7 +47,7 @@
 
 .download-btn:hover {
     transform: translateY(-2px);
-    box-shadow: 0 10px 20px rgba(59, 130, 246, 0.3);
+    box-shadow: 0 10px 20px rgba(147, 51, 234, 0.3);
 }
 
 /* accessibility - prefers reduced motion */
@@ -84,7 +84,7 @@
                 {{-- document header --}}
                 <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-8 fade-in-up" style="animation-delay: 0.1s;">
                     <div class="flex items-start gap-4 mb-6">
-                        <div class="w-16 h-16 bg-gradient-to-br from-blue-500 to-green-500 rounded-xl flex items-center justify-center flex-shrink-0">
+                        <div class="w-16 h-16 bg-gradient-to-br from-purple-500 to-purple-600 rounded-xl flex items-center justify-center flex-shrink-0">
                             <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
                             </svg>
@@ -119,7 +119,7 @@
                                 : json_decode($document->categories, true) ?? [];
                         @endphp
                         @foreach($categories as $category)
-                        <span class="px-3 py-1 bg-blue-100 text-blue-700 text-sm rounded-full">
+                        <span class="px-3 py-1 bg-purple-100 text-purple-700 text-sm rounded-full">
                             {{ ucwords(str_replace('_', ' ', $category)) }}
                         </span>
                         @endforeach
@@ -207,7 +207,7 @@
                         @if($document->file_path)
                         <a href="{{ document_url($document->file_path) }}"
                            target="_blank"
-                           class="download-btn inline-flex items-center gap-2 px-6 py-3 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors">
+                           class="download-btn inline-flex items-center gap-2 px-6 py-3 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors">
                             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
@@ -217,13 +217,14 @@
                         @endif
 
                         {{-- Download Button --}}
-                        <a href="{{ route('student.repository.download', $document->id) }}"
-                           class="download-btn inline-flex items-center gap-2 px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors">
+                        <button onclick="downloadDocument({{ $document->id }}, '{{ addslashes($document->title) }}')"
+                           class="download-btn inline-flex items-center gap-2 px-6 py-3 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                           id="download-btn-{{ $document->id }}">
                             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path>
                             </svg>
-                            <span>Unduh Dokumen ({{ strtoupper($document->file_type ?? 'PDF') }})</span>
-                        </a>
+                            <span class="download-text">Unduh Dokumen ({{ strtoupper($document->file_type ?? 'PDF') }})</span>
+                        </button>
                     </div>
                 </div>
             </div>
@@ -237,9 +238,9 @@
                     <h3 class="text-lg font-bold text-gray-900 mb-4">Dokumen Terkait</h3>
                     <div class="space-y-4">
                         @foreach($relatedDocuments as $relatedDoc)
-                        <a href="{{ route('student.repository.show', $relatedDoc->id) }}" 
+                        <a href="{{ route('student.repository.show', $relatedDoc->id) }}"
                            class="related-card block p-4 rounded-lg bg-gray-50">
-                            <h4 class="font-semibold text-gray-900 mb-2 hover:text-blue-600 transition-colors">
+                            <h4 class="font-semibold text-gray-900 mb-2 hover:text-purple-600 transition-colors">
                                 {{ Str::limit($relatedDoc->title, 60) }}
                             </h4>
                             <div class="flex items-center gap-4 text-xs text-gray-500">
@@ -265,8 +266,8 @@
 
                 {{-- back to repository --}}
                 <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6 fade-in-up" style="animation-delay: 0.5s;">
-                    <a href="{{ route('student.repository.index') }}" 
-                       class="inline-flex items-center gap-2 text-blue-600 hover:text-blue-700 transition-colors">
+                    <a href="{{ route('student.repository.index') }}"
+                       class="inline-flex items-center gap-2 text-purple-600 hover:text-purple-700 transition-colors">
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
                         </svg>
@@ -277,4 +278,113 @@
         </div>
     </div>
 </div>
+
+@push('scripts')
+<script>
+/**
+ * Download document without page refresh
+ */
+async function downloadDocument(documentId, documentTitle) {
+    const button = document.getElementById(`download-btn-${documentId}`);
+    const originalText = button.querySelector('.download-text').textContent;
+
+    // Disable button dan show loading state
+    button.disabled = true;
+    button.querySelector('.download-text').textContent = 'Mengunduh...';
+
+    try {
+        // Fetch file dari server
+        const response = await fetch(`/student/repository/${documentId}/download`, {
+            method: 'GET',
+            headers: {
+                'Accept': 'application/octet-stream',
+                'X-Requested-With': 'XMLHttpRequest'
+            }
+        });
+
+        if (!response.ok) {
+            throw new Error('Download failed');
+        }
+
+        // Get filename from Content-Disposition header or use default
+        let filename = `${documentTitle}.pdf`;
+        const contentDisposition = response.headers.get('Content-Disposition');
+        if (contentDisposition) {
+            const filenameMatch = contentDisposition.match(/filename="?(.+)"?/i);
+            if (filenameMatch && filenameMatch[1]) {
+                filename = filenameMatch[1];
+            }
+        }
+
+        // Convert response to blob
+        const blob = await response.blob();
+
+        // Create download link
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.style.display = 'none';
+        a.href = url;
+        a.download = filename;
+
+        // Trigger download
+        document.body.appendChild(a);
+        a.click();
+
+        // Cleanup
+        window.URL.revokeObjectURL(url);
+        document.body.removeChild(a);
+
+        // Show success message
+        showNotification('Dokumen berhasil diunduh!', 'success');
+
+    } catch (error) {
+        console.error('Download error:', error);
+        showNotification('Gagal mengunduh dokumen. Silakan coba lagi.', 'error');
+    } finally {
+        // Re-enable button
+        button.disabled = false;
+        button.querySelector('.download-text').textContent = originalText;
+    }
+}
+
+/**
+ * Show notification toast
+ */
+function showNotification(message, type = 'info') {
+    const notification = document.createElement('div');
+    notification.className = `fixed top-4 right-4 px-6 py-4 rounded-lg shadow-lg z-50 animate-slide-in ${
+        type === 'success' ? 'bg-purple-500 text-white' :
+        type === 'error' ? 'bg-red-500 text-white' :
+        'bg-purple-500 text-white'
+    }`;
+    notification.textContent = message;
+
+    document.body.appendChild(notification);
+
+    // Auto remove after 3 seconds
+    setTimeout(() => {
+        notification.classList.add('opacity-0', 'transition-opacity');
+        setTimeout(() => notification.remove(), 300);
+    }, 3000);
+}
+</script>
+
+<style>
+@keyframes slide-in {
+    from {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+.animate-slide-in {
+    animation: slide-in 0.3s ease-out;
+}
+</style>
+@endpush
+
 @endsection

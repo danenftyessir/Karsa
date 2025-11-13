@@ -3,6 +3,7 @@
 namespace App\Console\Commands;
 
 use App\Models\Document;
+use App\Models\ProjectReport;
 use Illuminate\Console\Command;
 
 class FixDummyDocuments extends Command
@@ -20,7 +21,7 @@ class FixDummyDocuments extends Command
      *
      * @var string
      */
-    protected $description = 'Fix all documents with dummy file paths to use real Supabase files';
+    protected $description = 'Fix all documents and project reports with dummy file paths to use real Supabase files';
 
     /**
      * Real PDF files available in Supabase storage
@@ -60,24 +61,42 @@ class FixDummyDocuments extends Command
         }
 
         // Step 1: Find all documents with dummy files
-        $this->info('📊 Analyzing documents...');
+        $this->info('📊 Analyzing documents table...');
         $dummyDocs = Document::where('file_path', 'like', '%dummy%')->get();
-        $totalDummy = $dummyDocs->count();
+        $totalDummyDocs = $dummyDocs->count();
+
+        $this->info('📊 Analyzing project_reports table...');
+        $dummyReports = ProjectReport::where('document_path', 'like', '%dummy%')->get();
+        $totalDummyReports = $dummyReports->count();
+
+        $totalDummy = $totalDummyDocs + $totalDummyReports;
 
         if ($totalDummy === 0) {
-            $this->info('✅ No dummy files found! All documents are using real files.');
+            $this->info('✅ No dummy files found! All documents and reports are using real files.');
             return 0;
         }
 
-        $this->warn("⚠️  Found {$totalDummy} documents with dummy files");
+        $this->warn("⚠️  Found {$totalDummyDocs} documents with dummy files");
+        $this->warn("⚠️  Found {$totalDummyReports} project reports with dummy files");
+        $this->warn("⚠️  Total: {$totalDummy} records to fix");
         $this->newLine();
 
-        // Step 2: Show sample of dummy documents
-        $this->info('Sample dummy documents:');
-        $dummyDocs->take(5)->each(function ($doc) {
-            $this->line("  ID {$doc->id}: {$doc->file_path}");
-        });
-        $this->newLine();
+        // Step 2: Show sample of dummy files
+        if ($totalDummyDocs > 0) {
+            $this->info('Sample dummy documents:');
+            $dummyDocs->take(5)->each(function ($doc) {
+                $this->line("  Document ID {$doc->id}: {$doc->file_path}");
+            });
+            $this->newLine();
+        }
+
+        if ($totalDummyReports > 0) {
+            $this->info('Sample dummy project reports:');
+            $dummyReports->take(5)->each(function ($report) {
+                $this->line("  Report ID {$report->id}: {$report->document_path}");
+            });
+            $this->newLine();
+        }
 
         // Step 3: Confirm update
         if (!$dryRun && !$this->confirm('Do you want to update these documents?', true)) {
@@ -85,12 +104,14 @@ class FixDummyDocuments extends Command
             return 1;
         }
 
-        // Step 4: Update dummy documents
-        $this->info('🔧 Updating documents...');
+        // Step 4: Update dummy documents and reports
+        $this->info('🔧 Updating records...');
         $progressBar = $this->output->createProgressBar($totalDummy);
         $progressBar->start();
 
         $updated = 0;
+
+        // Update documents table
         foreach ($dummyDocs as $doc) {
             $randomFile = $this->realFiles[array_rand($this->realFiles)];
             $newPath = 'documents/reports/' . $randomFile;
@@ -104,21 +125,38 @@ class FixDummyDocuments extends Command
             $progressBar->advance();
         }
 
+        // Update project_reports table
+        foreach ($dummyReports as $report) {
+            $randomFile = $this->realFiles[array_rand($this->realFiles)];
+            $newPath = 'documents/reports/' . $randomFile;
+
+            if (!$dryRun) {
+                $report->document_path = $newPath;
+                $report->save();
+            }
+
+            $updated++;
+            $progressBar->advance();
+        }
+
         $progressBar->finish();
         $this->newLine(2);
 
         // Step 5: Verify results
         if (!$dryRun) {
-            $remainingDummy = Document::where('file_path', 'like', '%dummy%')->count();
+            $remainingDummyDocs = Document::where('file_path', 'like', '%dummy%')->count();
+            $remainingDummyReports = ProjectReport::where('document_path', 'like', '%dummy%')->count();
+            $remainingTotal = $remainingDummyDocs + $remainingDummyReports;
 
-            if ($remainingDummy === 0) {
-                $this->info("✅ Successfully updated {$updated} documents!");
+            if ($remainingTotal === 0) {
+                $this->info("✅ Successfully updated {$updated} records!");
                 $this->info('✅ No dummy files remaining!');
             } else {
-                $this->error("⚠️  Still {$remainingDummy} dummy files remaining!");
+                $this->error("⚠️  Still {$remainingDummyDocs} dummy documents remaining!");
+                $this->error("⚠️  Still {$remainingDummyReports} dummy reports remaining!");
             }
         } else {
-            $this->info("ℹ️  Would update {$updated} documents (dry run)");
+            $this->info("ℹ️  Would update {$updated} records (dry run)");
         }
 
         $this->newLine();
