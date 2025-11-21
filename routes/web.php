@@ -27,6 +27,10 @@ use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\AboutController;
 use App\Http\Controllers\Auth\ValidationController;
 use App\Http\Controllers\ContactController;
+use App\Http\Controllers\Company\DashboardController as CompanyDashboardController;
+use App\Http\Controllers\Company\TalentController as CompanyTalentController;
+use App\Http\Controllers\Company\JobPostingController as CompanyJobPostingController;
+use App\Http\Controllers\Company\JobApplicationController as CompanyJobApplicationController;
 
 /*
 |--------------------------------------------------------------------------
@@ -319,6 +323,55 @@ Route::middleware(['auth', 'check.user.type:institution'])->prefix('institution'
 // digunakan di form create/edit problem untuk dynamic dropdown
 Route::get('/api/regencies/{provinceId}', [ProblemController::class, 'getRegencies'])->name('api.regencies');
 
+});
+
+/*
+|--------------------------------------------------------------------------
+| Company Routes
+|--------------------------------------------------------------------------
+*/
+
+Route::middleware(['auth', 'check.user.type:company'])->prefix('company')->name('company.')->group(function () {
+
+    // dashboard
+    Route::get('/dashboard', [CompanyDashboardController::class, 'index'])->name('dashboard');
+
+    // job postings management
+    Route::prefix('jobs')->name('jobs.')->group(function () {
+        Route::get('/', [CompanyJobPostingController::class, 'index'])->name('index');
+        Route::get('/create', [CompanyJobPostingController::class, 'create'])->name('create');
+        Route::post('/', [CompanyJobPostingController::class, 'store'])->name('store');
+        Route::get('/{id}', [CompanyJobPostingController::class, 'show'])->name('show');
+        Route::get('/{id}/edit', [CompanyJobPostingController::class, 'edit'])->name('edit');
+        Route::put('/{id}', [CompanyJobPostingController::class, 'update'])->name('update');
+        Route::delete('/{id}', [CompanyJobPostingController::class, 'destroy'])->name('destroy');
+    });
+
+    // talent search/browse
+    Route::prefix('talents')->name('talents.')->group(function () {
+        Route::get('/', [CompanyTalentController::class, 'index'])->name('index');
+        Route::get('/saved', [CompanyTalentController::class, 'saved'])->name('saved');
+        Route::post('/{id}/toggle-save', [CompanyTalentController::class, 'toggleSave'])->name('toggle-save');
+        Route::post('/{id}/contact', [CompanyTalentController::class, 'contact'])->name('contact');
+        Route::get('/{id}', [CompanyTalentController::class, 'show'])->name('show');
+    });
+
+    // job applications review
+    Route::prefix('applications')->name('applications.')->group(function () {
+        Route::get('/', [CompanyJobApplicationController::class, 'index'])->name('index');
+        Route::get('/{id}', [CompanyJobApplicationController::class, 'show'])->name('show');
+        Route::post('/{id}/status', [CompanyJobApplicationController::class, 'updateStatus'])->name('update-status');
+        Route::post('/{id}/shortlist', [CompanyJobApplicationController::class, 'shortlist'])->name('shortlist');
+        Route::post('/{id}/reject', [CompanyJobApplicationController::class, 'reject'])->name('reject');
+        Route::post('/{id}/hire', [CompanyJobApplicationController::class, 'hire'])->name('hire');
+    });
+
+    // TO DO: tambahkan routes untuk company profile
+    // Route::prefix('profile')->name('profile.')->group(function () {
+    //     Route::get('/', [CompanyProfileController::class, 'index'])->name('index');
+    //     Route::get('/edit', [CompanyProfileController::class, 'edit'])->name('edit');
+    //     Route::put('/', [CompanyProfileController::class, 'update'])->name('update');
+    // });
 });
 
 /*

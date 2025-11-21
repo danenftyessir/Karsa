@@ -1,0 +1,496 @@
+================================================================================
+NICE TO HAVE FEATURES & TO DO
+================================================================================
+
+================================================================================
+TO DO - WAJIB DISELESAIKAN
+================================================================================
+
+Berikut adalah daftar TO DO yang sudah ditandai di dalam kode dan perlu
+diselesaikan untuk membuat fitur Company berfungsi penuh:
+
+--------------------------------------------------------------------------------
+A. MODEL & DATABASE
+--------------------------------------------------------------------------------
+   File: app/Models/Company.php
+   - [ ] Buat relasi ke JobPosting (hasMany)
+   - [ ] Buat relasi ke JobApplication (hasManyThrough)
+
+   File: database/migrations/
+   - [ ] Buat migration untuk tabel job_postings
+   - [ ] Buat migration untuk tabel job_applications
+   - [ ] Buat migration untuk tabel job_categories
+
+--------------------------------------------------------------------------------
+B. CONTROLLER
+--------------------------------------------------------------------------------
+   File: app/Http/Controllers/Company/DashboardController.php
+   - [ ] Ambil data statistik dari database (bukan dummy)
+   - [ ] Ambil recent applications dari database
+   - [ ] Implementasi AI talent recommendations dengan algoritma matching
+   - [ ] Ambil data chart dari database
+
+   File baru yang perlu dibuat:
+   - [x] app/Http/Controllers/Company/JobPostingController.php (SELESAI)
+   - [x] app/Http/Controllers/Company/TalentController.php (SELESAI)
+   - [x] app/Http/Controllers/Company/JobApplicationController.php (SELESAI)
+   - [ ] app/Http/Controllers/Company/ProfileController.php
+
+   File: app/Http/Controllers/Company/JobApplicationController.php
+   - [ ] Ambil data applications dari database (bukan dummy)
+   - [ ] Implementasi updateStatus() ke database
+   - [ ] Implementasi show() dengan data dari database
+   - [ ] Implementasi shortlist/reject/hire ke database
+   - [ ] Implementasi bulk actions (bulk status update, export CSV)
+
+   File: app/Http/Controllers/Company/TalentController.php
+   - [ ] Ambil data talents dari database (bukan dummy)
+   - [ ] Implementasi server-side filtering via AJAX
+   - [ ] Implementasi getDummyTalentById dari database
+   - [ ] Ambil data saved talents dari database di saved()
+   - [ ] Implementasi toggleSave() ke database (pivot table)
+   - [ ] Implementasi contact() untuk kirim pesan ke talent
+   - [ ] Implementasi export saved talents ke CSV/Excel
+
+   File: app/Http/Controllers/Company/JobPostingController.php
+   - [ ] Ambil data job postings dari database di index()
+   - [ ] Simpan job posting ke database di store()
+   - [ ] Ambil data job posting dari database di show()
+   - [ ] Ambil data job posting untuk edit di edit()
+   - [ ] Update job posting di database di update()
+   - [ ] Hapus job posting dari database di destroy()
+
+--------------------------------------------------------------------------------
+C. ROUTES (web.php)
+--------------------------------------------------------------------------------
+   - [x] Uncomment dan implementasi routes job postings management (SELESAI)
+   - [x] Uncomment dan implementasi routes talent search/browse (SELESAI)
+   - [x] Uncomment dan implementasi routes job applications review (SELESAI)
+   - [ ] Uncomment dan implementasi routes company profile
+
+--------------------------------------------------------------------------------
+D. VIEW
+--------------------------------------------------------------------------------
+   File: resources/views/company/dashboard/index.blade.php
+   - [ ] Implementasi route company.talents.show pada tombol "Lihat Profil"
+
+   File baru yang perlu dibuat:
+   - [ ] resources/views/company/jobs/index.blade.php
+   - [x] resources/views/company/jobs/create.blade.php (SELESAI)
+   - [ ] resources/views/company/jobs/show.blade.php
+   - [ ] resources/views/company/jobs/edit.blade.php
+   - [x] resources/views/company/talents/index.blade.php (SELESAI)
+   - [x] resources/views/company/talents/saved.blade.php (SELESAI)
+   - [ ] resources/views/company/talents/show.blade.php
+   - [x] resources/views/company/applications/index.blade.php (SELESAI)
+   - [ ] resources/views/company/applications/show.blade.php
+   - [ ] resources/views/company/profile/index.blade.php
+   - [ ] resources/views/company/profile/edit.blade.php
+
+   File: resources/views/company/talents/index.blade.php
+   - [ ] Implementasi route company.talents.show pada link "Lihat Profil"
+   - [ ] Implementasi server-side filtering via applyFilters()
+
+   File: resources/views/company/jobs/create.blade.php
+   - [ ] Kirim data ke server via AJAX di submitForm()
+
+--------------------------------------------------------------------------------
+E. REGISTRASI & AUTH
+--------------------------------------------------------------------------------
+   - [ ] Tambahkan form registrasi company di RegisterController
+   - [ ] Buat view resources/views/auth/register-company.blade.php
+   - [ ] Update middleware check.user.type untuk support 'company'
+   - [ ] Update navbar untuk menampilkan menu company
+
+================================================================================
+NICE TO HAVE FEATURES
+================================================================================
+
+Berikut adalah fitur-fitur tambahan yang dapat diimplementasikan untuk
+meningkatkan pengalaman pengguna pada halaman Dashboard Company:
+
+--------------------------------------------------------------------------------
+1. REAL-TIME NOTIFICATIONS
+--------------------------------------------------------------------------------
+   - Notifikasi push ketika ada lamaran baru masuk
+   - Badge counter pada menu untuk menunjukkan jumlah lamaran pending
+   - Sound notification (opsional, dapat di-toggle)
+   - Implementasi: Laravel Echo + Pusher/WebSocket
+
+--------------------------------------------------------------------------------
+2. ADVANCED FILTERING & SEARCH
+--------------------------------------------------------------------------------
+   - Filter lamaran berdasarkan status, tanggal, posisi
+   - Search kandidat berdasarkan skill, universitas, lokasi
+   - Saved search untuk kriteria yang sering digunakan
+   - Implementasi: Alpine.js + AJAX request ke API endpoint
+
+--------------------------------------------------------------------------------
+3. AI-POWERED CANDIDATE MATCHING
+--------------------------------------------------------------------------------
+   - Scoring otomatis berdasarkan kesesuaian skill dengan job requirement
+   - Rekomendasi kandidat berdasarkan histori hiring sebelumnya
+   - Sentiment analysis pada motivation letter
+   - Implementasi: Cohere Embed + Claude untuk analisis
+
+--------------------------------------------------------------------------------
+4. CALENDAR INTEGRATION
+--------------------------------------------------------------------------------
+   - Penjadwalan interview langsung dari dashboard
+   - Sync dengan Google Calendar / Outlook
+   - Reminder otomatis untuk interview yang dijadwalkan
+   - Implementasi: Google Calendar API / Microsoft Graph API
+
+--------------------------------------------------------------------------------
+5. ANALYTICS DASHBOARD
+--------------------------------------------------------------------------------
+   - Time-to-hire metrics per posisi
+   - Source of hire tracking (dari mana kandidat berasal)
+   - Conversion rate funnel visualization
+   - Implementasi: Chart.js dengan data agregasi dari database
+
+--------------------------------------------------------------------------------
+6. BULK ACTIONS
+--------------------------------------------------------------------------------
+   - Select multiple candidates untuk bulk email
+   - Bulk status update (shortlist/reject multiple)
+   - Export selected candidates ke CSV/Excel
+   - Implementasi: Alpine.js untuk multi-select + batch API
+
+--------------------------------------------------------------------------------
+7. CANDIDATE COMPARISON VIEW
+--------------------------------------------------------------------------------
+   - Side-by-side comparison untuk 2-3 kandidat
+   - Highlight perbedaan skill dan pengalaman
+   - Collaborative scoring dengan tim HR
+   - Implementasi: Modal dengan flexbox/grid layout
+
+--------------------------------------------------------------------------------
+8. QUICK ACTIONS PANEL
+--------------------------------------------------------------------------------
+   - Floating action button untuk aksi cepat
+   - Shortcut keyboard untuk navigasi
+   - Command palette (Ctrl+K) untuk akses cepat fitur
+   - Implementasi: Alpine.js dengan keyboard event listener
+
+--------------------------------------------------------------------------------
+9. MOBILE RESPONSIVE OPTIMIZATION
+--------------------------------------------------------------------------------
+    - Swipe gestures untuk navigasi antar section
+    - Pull-to-refresh untuk update data
+    - Bottom navigation bar untuk akses cepat
+    - Implementasi: Touch events + CSS @media queries
+
+--------------------------------------------------------------------------------
+10. EXPORT & REPORTING
+--------------------------------------------------------------------------------
+    - Generate PDF report hiring progress
+    - Weekly/monthly digest email
+    - Custom report builder
+    - Implementasi: Laravel DomPDF + Scheduled Jobs
+
+--------------------------------------------------------------------------------
+11. TEAM COLLABORATION
+--------------------------------------------------------------------------------
+    - Comment thread pada setiap kandidat
+    - Tagging team member untuk review
+    - Activity log per kandidat
+    - Implementasi: Polymorphic comments table + notifications
+
+------------------------------------------------------------------------------
+12. ONBOARDING CHECKLIST
+--------------------------------------------------------------------------------
+    - Post-hire onboarding task management
+    - Document collection tracker
+    - Welcome kit digital
+    - Implementasi: Checklist component dengan progress tracking
+
+================================================================================
+PRIORITAS IMPLEMENTASI (BERDASARKAN KEMUDAHAN)
+================================================================================
+
+MUDAH (1-2 hari):
+- Quick Actions Panel
+- Mobile Responsive Optimization
+- Export ke CSV
+
+SEDANG (3-5 hari):
+- Advanced Filtering & Search
+- Bulk Actions
+- Candidate Comparison View
+- Analytics Dashboard (basic)
+
+SULIT (1-2 minggu):
+- Real-time Notifications
+- Calendar Integration
+- AI-Powered Candidate Matching
+
+================================================================================
+NICE TO HAVE - HALAMAN TALENTS
+================================================================================
+
+Fitur tambahan khusus untuk halaman Company Talents:
+
+--------------------------------------------------------------------------------
+1. INFINITE SCROLL / PAGINATION
+--------------------------------------------------------------------------------
+   - Load more talents saat scroll ke bawah
+   - Skeleton loader saat loading
+   - Implementasi: Intersection Observer API + AJAX
+
+--------------------------------------------------------------------------------
+2. SAVED SEARCHES
+--------------------------------------------------------------------------------
+   - Simpan kombinasi filter yang sering digunakan
+   - Quick access ke saved searches
+   - Implementasi: LocalStorage + database untuk sync
+
+--------------------------------------------------------------------------------
+3. TALENT BOOKMARKING
+--------------------------------------------------------------------------------
+   - Bookmark talents untuk review nanti
+   - Organize bookmarks dalam folders
+   - Implementasi: Pivot table user_bookmarks
+
+--------------------------------------------------------------------------------
+4. TALENT COMPARISON
+--------------------------------------------------------------------------------
+   - Compare 2-3 talents side by side
+   - Highlight similarities dan differences
+   - Implementasi: Modal dengan grid layout
+
+--------------------------------------------------------------------------------
+5. CONTACT TALENT
+--------------------------------------------------------------------------------
+   - Direct message ke talent
+   - Request untuk interview
+   - Implementasi: Chat system atau email integration
+
+--------------------------------------------------------------------------------
+6. TALENT RECOMMENDATIONS
+--------------------------------------------------------------------------------
+   - AI-powered recommendations berdasarkan job posting
+   - Similar talents suggestions
+   - Implementasi: Cohere Embed untuk semantic search
+
+--------------------------------------------------------------------------------
+7. EXPORT TALENT LIST
+--------------------------------------------------------------------------------
+   - Export filtered results ke CSV/PDF
+   - Share list dengan tim
+   - Implementasi: Laravel Excel + DomPDF
+
+--------------------------------------------------------------------------------
+8. MAP VIEW
+--------------------------------------------------------------------------------
+   - Tampilkan talents pada peta
+   - Filter berdasarkan radius dari lokasi
+   - Implementasi: Leaflet.js atau Google Maps API
+
+================================================================================
+NICE TO HAVE - HALAMAN JOBS (CREATE JOB POSTING)
+================================================================================
+
+Fitur tambahan khusus untuk halaman Company Jobs:
+
+--------------------------------------------------------------------------------
+1. AUTO-SAVE DRAFT
+--------------------------------------------------------------------------------
+   - Simpan progress form secara otomatis
+   - Resume dari draft terakhir
+   - Implementasi: LocalStorage + database untuk sync
+
+--------------------------------------------------------------------------------
+2. JOB TEMPLATE
+--------------------------------------------------------------------------------
+   - Simpan job posting sebagai template
+   - Load template untuk job posting baru
+   - Implementasi: Database table job_templates
+
+--------------------------------------------------------------------------------
+3. AI JOB DESCRIPTION GENERATOR
+--------------------------------------------------------------------------------
+   - Generate deskripsi pekerjaan dari title dan skills
+   - Suggest responsibilities dan qualifications
+   - Implementasi: Claude API untuk text generation
+
+--------------------------------------------------------------------------------
+4. PREVIEW MODE
+--------------------------------------------------------------------------------
+   - Preview tampilan job posting sebelum publish
+   - Preview di berbagai device sizes
+   - Implementasi: Modal dengan responsive preview
+
+--------------------------------------------------------------------------------
+5. DUPLICATE JOB POSTING
+--------------------------------------------------------------------------------
+   - Clone job posting yang sudah ada
+   - Edit dan publish sebagai posting baru
+   - Implementasi: Copy endpoint di controller
+
+--------------------------------------------------------------------------------
+6. SCHEDULED POSTING
+--------------------------------------------------------------------------------
+   - Set tanggal publish untuk job posting
+   - Set tanggal expired otomatis
+   - Implementasi: Laravel Scheduler + queue
+
+--------------------------------------------------------------------------------
+7. RICH TEXT EDITOR
+--------------------------------------------------------------------------------
+   - Format text dengan bold, italic, bullet points
+   - Embed images dan links
+   - Implementasi: Tiptap atau Quill.js
+
+--------------------------------------------------------------------------------
+8. SALARY BENCHMARKING
+--------------------------------------------------------------------------------
+   - Suggest salary range berdasarkan market data
+   - Compare dengan posting serupa
+   - Implementasi: External API atau internal dataset
+
+================================================================================
+NICE TO HAVE - HALAMAN APPLICATIONS (KANBAN BOARD)
+================================================================================
+
+Fitur tambahan khusus untuk halaman Company Applications:
+
+--------------------------------------------------------------------------------
+1. DRAG AND DROP ENHANCEMENT
+--------------------------------------------------------------------------------
+   - Auto scroll saat drag ke ujung layar
+   - Multi-select drag (drag beberapa kandidat sekaligus)
+   - Implementasi: SortableJS atau native HTML5 Drag API
+
+--------------------------------------------------------------------------------
+2. INTERVIEW SCHEDULING
+--------------------------------------------------------------------------------
+   - Schedule interview langsung dari kanban
+   - Pilih slot waktu yang tersedia
+   - Implementasi: Modal dengan date/time picker
+
+--------------------------------------------------------------------------------
+3. EMAIL TEMPLATES
+--------------------------------------------------------------------------------
+   - Template email untuk setiap status change
+   - Customizable email content
+   - Implementasi: Database templates + mail queue
+
+--------------------------------------------------------------------------------
+4. NOTES & COMMENTS
+--------------------------------------------------------------------------------
+   - Tambahkan catatan internal per kandidat
+   - Tag team member untuk review
+   - Implementasi: Polymorphic comments table
+
+--------------------------------------------------------------------------------
+5. RATING SYSTEM
+--------------------------------------------------------------------------------
+   - Rating kandidat (1-5 bintang)
+   - Rating per criteria (skill, culture fit, dll)
+   - Implementasi: Rating component + database
+
+--------------------------------------------------------------------------------
+6. ACTIVITY TIMELINE
+--------------------------------------------------------------------------------
+   - Riwayat perubahan status per kandidat
+   - Log siapa yang mengubah status dan kapan
+   - Implementasi: Activity log table dengan polymorphic relation
+
+--------------------------------------------------------------------------------
+7. KEYBOARD SHORTCUTS
+--------------------------------------------------------------------------------
+   - Navigasi dengan arrow keys
+   - Quick actions (s=shortlist, r=reject, etc)
+   - Implementasi: Alpine.js keyboard event listeners
+
+--------------------------------------------------------------------------------
+8. CANDIDATE COMPARISON
+--------------------------------------------------------------------------------
+   - Compare 2-3 kandidat side by side dalam modal
+   - Highlight perbedaan skill dan pengalaman
+   - Implementasi: Modal dengan grid layout
+
+================================================================================
+NICE TO HAVE - HALAMAN SAVED TALENTS
+================================================================================
+
+Fitur tambahan khusus untuk halaman Company Saved Talents:
+
+--------------------------------------------------------------------------------
+1. FOLDER ORGANIZATION
+--------------------------------------------------------------------------------
+   - Buat folder untuk organisasi talent (misal: "Frontend", "AI/ML")
+   - Drag & drop talent antar folder
+   - Implementasi: Database table talent_folders + pivot
+
+--------------------------------------------------------------------------------
+2. NOTES PER TALENT
+--------------------------------------------------------------------------------
+   - Tambahkan catatan pribadi per talent yang disimpan
+   - Rich text editor untuk notes
+   - Implementasi: Pivot table dengan kolom notes
+
+--------------------------------------------------------------------------------
+3. TALENT COMPARISON
+--------------------------------------------------------------------------------
+   - Compare 2-3 saved talents side by side
+   - Highlight skills yang match dengan job requirements
+   - Implementasi: Modal dengan grid comparison layout
+
+--------------------------------------------------------------------------------
+4. BULK EXPORT
+--------------------------------------------------------------------------------
+   - Export selected talents ke CSV/Excel/PDF
+   - Custom fields untuk export
+   - Implementasi: Laravel Excel + DomPDF
+
+--------------------------------------------------------------------------------
+5. SHARE TALENT LIST
+--------------------------------------------------------------------------------
+   - Share saved list dengan team member
+   - Collaborative rating dan notes
+   - Implementasi: Shared list dengan permissions
+
+--------------------------------------------------------------------------------
+6. SMART RECOMMENDATIONS
+--------------------------------------------------------------------------------
+   - AI-powered talent recommendations berdasarkan saved talents
+   - "Similar talents" suggestions
+   - Implementasi: Cohere Embed untuk semantic matching
+
+--------------------------------------------------------------------------------
+7. REMINDER & FOLLOW-UP
+--------------------------------------------------------------------------------
+   - Set reminder untuk follow-up talent tertentu
+   - Notifikasi ketika reminder due
+   - Implementasi: Laravel Scheduler + notifications
+
+--------------------------------------------------------------------------------
+8. TALENT STATUS TRACKING
+--------------------------------------------------------------------------------
+   - Track status interaksi dengan talent (contacted, interviewed, etc)
+   - Activity timeline per talent
+   - Implementasi: Status enum + activity log
+
+================================================================================
+CATATAN TEKNIS
+================================================================================
+
+1. Semua fitur harus mempertimbangkan:
+   - Loading state (skeleton loader)
+   - Error handling yang user-friendly
+   - Accessibility (keyboard navigation, screen reader)
+   - Performance (lazy loading, pagination)
+
+2. Gunakan pattern yang konsisten:
+   - Alpine.js untuk interaktivitas ringan
+   - Livewire untuk fitur yang perlu server roundtrip
+   - API endpoint untuk data yang di-cache
+
+3. Testing:
+   - Unit test untuk business logic
+   - Feature test untuk flow utama
+   - Browser test untuk UI critical path
+
+================================================================================

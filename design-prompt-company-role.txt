@@ -1,0 +1,54 @@
+KARSA JOB - COMPANY ROLE DESIGN PROMPT
+
+DESIGN PHILOSOPHY
+Professional, trustworthy, data-driven interface for company users. Conveys authority and innovation while maintaining consistency with student role. Talent discovery based on verified project data, not self-written CVs.
+
+Principles: Evidence-based trust with verification badges | Professional excellence with refined typography | Impact-driven discovery prioritizing metrics | Seamless consistency with student design
+
+VISUAL SYSTEM
+
+Typography: Space Grotesk (300-700) headings, Inter (300-900) body | Colors: #000000 headings, #374151 body, #6B7280 secondary | Letter-spacing: -0.02em headings
+
+Color Palette:
+• Primary Blue: #004D99, #0066CC (trust, professionalism)
+• Success Green: #4D9900, #66CC00 (verified, impact)
+• Executive Indigo: #4F46E5, #6366F1 (CTAs, metrics)
+• Status: #3B82F6 received, #FBBF24 shortlisted, #A855F7 interview, #10B981 hired, #EF4444 rejected
+
+Backgrounds:
+• Hero: linear-gradient(135deg, rgba(0,77,153,0.40) 0%, rgba(79,70,229,0.35) 50%, rgba(107,114,128,0.30) 100%), parallax fixed, 480px min-height
+• Mesh: radial-gradient blue/indigo/green corners (0.06 opacity)
+• Glassmorphism: rgba(255,255,255,0.25), backdrop-blur 20px
+
+11 PAGES REQUIRED
+
+STATIC (7):
+1. /company/dashboard - Hero: office | Metrics: jobs, applications, shortlisted, hires | Recent applications, AI recommendations, analytics
+2. /company/talents - Hero: teamwork | Filters: skills, SDG, location, impact | 4-col cards | Views: grid/list/leaderboard | Bookmark
+3. /company/jobs/create - Hero: growth | Multi-step wizard | Rich editor | Skill tags | SDG selector | Impact criteria
+4. /company/jobs - Hero: workspace | Job cards with status | Stats: applications, views | Actions: edit, duplicate, close | Filters
+5. /company/applications - Hero: assessment | Kanban: new/reviewing/shortlisted/interview/offer/rejected | List view | Bulk actions
+6. /company/saved - Hero: talent pool | Bookmarked profiles | Folders | Quick contact | Export
+7. /company/profile - Hero: branding | Logo, culture, gallery, benefits | Verification status
+
+DYNAMIC (4):
+8. /company/talents/[id] - Full hero | Verified badge | Impact radial chart | Projects portfolio | Skills matrix | References ratings | QR certificates | KR contributions | Contact CTAs
+9. /company/jobs/[id] - Job preview | Stats dashboard | Applicant list | Inline edit | Close/reopen | Share
+10. /company/applications/[id] - Split: profile + details | Evidence gallery | Reference checks | Impact comparison | Interview scheduler | Status notes | Thread
+11. /company/talents/leaderboard - Hero: achievement | Ranking animated bars | Filter skill/SDG/location | Impact breakdown | Hover preview | Recruit button
+
+COMPONENT PATTERNS
+
+Talent Cards: 280px desktop | 96px profile circle, 3px gradient border #4F46E5-#10B981 | Name Space Grotesk 20px semibold | Impact 32px indigo star | Top 3 skills badges | SDG 24px circles | Verified badge pulse | Hover: translateY(-6px) shadow-xl scale(1.03) 300ms
+
+Job Cards: Status badge color-coded | Title 24px semibold 2-line | Applications count | Stats grid views/shortlisted/hired | Border-left 4px accent | Edit/view buttons
+
+Application Cards: 64px photo center | Name/position stack | Impact badge tier-colored (>80 green, 60-80 yellow, <60 gray) | 3-col stats | Drag handle | 3px bottom border | Glassmorphism
+
+INTERACTIONS
+
+Animations: Load fadeInUp 0.8s cubic-bezier(0.4,0,0.2,1), stagger 0.05s | Hover cards scale(1.02) translateY(-4px) 200ms, buttons translateY(-2px), images scale(1.1) 400ms | Interactive save heart scale(1.3) 300ms, status fade 400ms | Load skeleton shimmer 1.5s infinite, spinner rotate 0.8s
+
+Responsive: Mobile <640px 1-col drawer | Tablet 640-1024px 2-col sticky sidebar | Desktop ≥1024px 3-4col full sidebar parallax | Max 1280px
+
+Accessibility: WCAG AA 4.5:1 | Focus 2px #4F46E5 | Keyboard nav | ARIA labels | prefers-reduced-motion | 44px touch targets

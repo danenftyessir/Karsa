@@ -65,12 +65,22 @@ class User extends Authenticatable implements MustVerifyEmail
 
     /**
      * relasi ke institution (one to one)
-     * 
+     *
      * setiap user dengan user_type = 'institution' memiliki 1 data institution
      */
     public function institution()
     {
         return $this->hasOne(Institution::class);
+    }
+
+    /**
+     * relasi ke company (one to one)
+     *
+     * setiap user dengan user_type = 'company' memiliki 1 data company
+     */
+    public function company()
+    {
+        return $this->hasOne(Company::class);
     }
 
     /**
@@ -106,6 +116,14 @@ class User extends Authenticatable implements MustVerifyEmail
     }
 
     /**
+     * cek apakah user adalah company
+     */
+    public function isCompany(): bool
+    {
+        return $this->user_type === 'company';
+    }
+
+    /**
      * get profile data berdasarkan user type
      */
     public function getProfileAttribute()
@@ -114,8 +132,10 @@ class User extends Authenticatable implements MustVerifyEmail
             return $this->student;
         } elseif ($this->isInstitution()) {
             return $this->institution;
+        } elseif ($this->isCompany()) {
+            return $this->company;
         }
-        
+
         return null;
     }
 
