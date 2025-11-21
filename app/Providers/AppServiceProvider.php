@@ -72,10 +72,24 @@ class AppServiceProvider extends ServiceProvider
                     // test connection dengan ping
                     $connection->getPdo();
                 } catch (PDOException $e) {
-                    // jika connection error, coba reconnect
+                    // PENTING: JANGAN reconnect jika sedang dalam transaction!
+                    // Reconnecting dalam transaction akan menyebabkan transaction abort
+                    $transactionLevel = $connection->transactionLevel();
+
                     if ($this->isPreparedStatementError($e)) {
-                        Log::info('Reconnecting database due to prepared statement error');
-                        $connection->reconnect();
+                        // hanya reconnect jika TIDAK dalam transaction
+                        if ($transactionLevel === 0) {
+                            Log::info('Reconnecting database due to prepared statement error');
+                            $connection->reconnect();
+                        } else {
+                            // jika dalam transaction, log dan re-throw exception
+                            // biar transaction bisa di-rollback dengan benar
+                            Log::warning('Connection error during transaction, cannot reconnect', [
+                                'transaction_level' => $transactionLevel,
+                                'error' => $e->getMessage()
+                            ]);
+                            throw $e;
+                        }
                     }
                 }
             });

@@ -456,8 +456,15 @@ class RegisterController extends Controller
 
             // gunakan database transaction untuk memastikan atomicity
             DB::beginTransaction();
+            Log::info('Transaction started');
 
             // buat user account
+            Log::info('Attempting to create user', [
+                'name' => $request->company_name,
+                'email' => $request->email,
+                'username' => $request->username,
+            ]);
+
             $user = User::create([
                 'name' => $request->company_name,
                 'email' => $request->email,
