@@ -3,7 +3,11 @@
     "allow": [
       "Bash(php -m:*)",
       "Bash(php --ini:*)",
-      "Bash(powershell -Command \"(Get-Content ''C:\\Users\\HYPE R Series\\Downloads\\php-8.3.24-nts-Win32-vs16-x64\\php.ini'') -replace '';extension=pdo_pgsql'', ''extension=pdo_pgsql'' | Set-Content ''C:\\Users\\HYPE R Series\\Downloads\\php-8.3.24-nts-Win32-vs16-x64\\php.ini''\")"
+      "Bash(powershell -Command \"(Get-Content ''C:\\Users\\HYPE R Series\\Downloads\\php-8.3.24-nts-Win32-vs16-x64\\php.ini'') -replace '';extension=pdo_pgsql'', ''extension=pdo_pgsql'' | Set-Content ''C:\\Users\\HYPE R Series\\Downloads\\php-8.3.24-nts-Win32-vs16-x64\\php.ini''\")",
+      "Bash(cat:*)",
+      "Bash(git add:*)",
+      "Bash(git commit:*)",
+      "Bash(git push:*)"
     ],
     "deny": [],
     "ask": []
