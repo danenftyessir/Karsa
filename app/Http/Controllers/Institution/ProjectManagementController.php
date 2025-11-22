@@ -140,6 +140,14 @@ class ProjectManagementController extends Controller
             'notes' => 'nullable|string|max:500',
         ]);
 
+        // DEBUG: Log status change
+        Log::info("📊 Status Update Request", [
+            'project_id' => $project->id,
+            'old_status' => $project->status,
+            'new_status' => $validated['status'],
+            'has_certificate' => !empty($project->certificate_path)
+        ]);
+
         // jika status berubah menjadi completed, set actual_end_date
         $data = ['status' => $validated['status']];
         $isNewlyCompleted = false;
@@ -149,6 +157,11 @@ class ProjectManagementController extends Controller
             $data['completed_at'] = now();
             $data['progress_percentage'] = 100; // set progress ke 100% saat completed
             $isNewlyCompleted = true;
+            Log::info("✅ Project marked as newly completed - will generate certificate");
+        } else {
+            Log::info("⏭️ Skipping certificate generation", [
+                'reason' => $validated['status'] === 'completed' ? 'Already completed' : 'Status not completed'
+            ]);
         }
 
         $project->update($data);
@@ -166,6 +179,7 @@ class ProjectManagementController extends Controller
                 }
             } catch (\Exception $e) {
                 Log::error("❌ Certificate generation exception: " . $e->getMessage());
+                Log::error($e->getTraceAsString());
                 // Jangan failed update status meskipun sertifikat gagal dibuat
             }
         }
