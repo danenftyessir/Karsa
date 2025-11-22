@@ -92,6 +92,16 @@ class User extends Authenticatable implements MustVerifyEmail
     }
 
     /**
+     * relasi ke job applications
+     *
+     * User (student) dapat memiliki banyak job applications
+     */
+    public function jobApplications()
+    {
+        return $this->hasMany(JobApplication::class);
+    }
+
+    /**
      * cek apakah user adalah student
      */
     public function isStudent(): bool

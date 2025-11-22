@@ -37,7 +37,10 @@ class JobPostingController extends Controller
             ->orderBy('created_at', 'desc')
             ->paginate(10);
 
-        return view('company.jobs.index', compact('company', 'jobPostings'));
+        // IMPLEMENTED: Ambil data job categories dari Supabase
+        $categories = JobCategory::orderBy('name', 'asc')->get();
+
+        return view('company.jobs.index', compact('company', 'jobPostings', 'categories'));
     }
 
     public function create()

@@ -42,12 +42,12 @@ class TalentController extends Controller
 
         // IMPLEMENTED: Ambil data talents dari Supabase dengan filter
         $talentsQuery = User::where('user_type', 'student')
-            ->whereHas('profile');
+            ->whereHas('student');
 
         // Apply filters
         if (!empty($filters['skills'])) {
-            // Filter by skills - assuming skills are stored in profile
-            $talentsQuery->whereHas('profile', function ($query) use ($filters) {
+            // Filter by skills - assuming skills are stored in student profile
+            $talentsQuery->whereHas('student', function ($query) use ($filters) {
                 foreach ($filters['skills'] as $skill) {
                     $query->whereJsonContains('skills', $skill);
                 }
@@ -55,7 +55,7 @@ class TalentController extends Controller
         }
 
         if (!empty($filters['location'])) {
-            $talentsQuery->whereHas('profile', function ($query) use ($filters) {
+            $talentsQuery->whereHas('student', function ($query) use ($filters) {
                 $query->where('location', 'ILIKE', '%' . $filters['location'] . '%');
             });
         }
@@ -64,24 +64,24 @@ class TalentController extends Controller
             $talentsQuery->whereNotNull('email_verified_at');
         }
 
-        $talents = $talentsQuery->with(['profile'])
+        $talents = $talentsQuery->with(['student'])
             ->orderBy('created_at', 'desc')
             ->paginate(12);
 
         // Transform data untuk view
         $talents->getCollection()->transform(function ($talent) {
-            $profile = $talent->profile;
+            $student = $talent->student;
             return [
                 'id' => $talent->id,
                 'name' => $talent->name,
-                'title' => $profile->headline ?? 'No Title',
-                'avatar' => $talent->avatar ?? 'default-avatar.jpg',
+                'title' => $student->major ?? 'No Major',
+                'avatar' => $student->profile_photo_path ?? 'default-avatar.jpg',
                 'verified' => !is_null($talent->email_verified_at),
-                'skills' => $profile->skills ?? [],
-                'sdg_badges' => $profile->sdg_alignment ?? [],
-                'location' => $profile->location ?? 'Unknown',
-                'projects_completed' => $profile->projects_count ?? 0,
-                'success_rate' => $profile->success_rate ?? 0,
+                'skills' => [], // Skills data if available in student table
+                'sdg_badges' => [], // SDG alignment if available
+                'location' => 'Unknown', // Location if available
+                'projects_completed' => 0, // Projects count if available
+                'success_rate' => 0, // Success rate if available
                 'online' => true, // Could be implemented with last_seen_at
             ];
         });
