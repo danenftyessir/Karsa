@@ -356,6 +356,34 @@
                                             <p class="text-sm text-gray-700 italic leading-relaxed">"{{ $project->institutionReview->comment }}"</p>
                                         </div>
                                     @endif
+
+                                    {{-- 🎓 SERTIFIKAT SECTION --}}
+                                    @if($project->certificate_path)
+                                    <div class="mt-4 p-4 bg-linear-to-r from-yellow-50 to-amber-50 border-2 border-yellow-300 rounded-xl">
+                                        <div class="flex items-center justify-between">
+                                            <div class="flex items-center gap-3">
+                                                <div class="w-12 h-12 bg-yellow-400 rounded-full flex items-center justify-center">
+                                                    <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z"></path>
+                                                    </svg>
+                                                </div>
+                                                <div>
+                                                    <p class="font-bold text-gray-900">Sertifikat Tersedia</p>
+                                                    <p class="text-xs text-gray-600">No: {{ $project->certificate_number }}</p>
+                                                </div>
+                                            </div>
+                                            <a href="{{ document_url($project->certificate_path) }}"
+                                               target="_blank"
+                                               download
+                                               class="px-4 py-2 bg-yellow-500 hover:bg-yellow-600 text-white rounded-lg font-semibold text-sm transition-colors flex items-center gap-2">
+                                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                                                </svg>
+                                                Download
+                                            </a>
+                                        </div>
+                                    </div>
+                                    @endif
                                 </div>
 
                                 @if($project->institutionReview)

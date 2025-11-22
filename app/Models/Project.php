@@ -40,6 +40,10 @@ class Project extends Model
         'is_portfolio_visible',
         'is_featured',
         'role_in_team',
+        // Certificate fields
+        'certificate_path',
+        'certificate_number',
+        'certificate_generated_at',
     ];
 
     // ✅ PERBAIKAN: hapus 'completed_at' dari casts
@@ -50,6 +54,7 @@ class Project extends Model
         'actual_end_date' => 'date',
         'submitted_at' => 'datetime',
         'reviewed_at' => 'datetime',
+        'certificate_generated_at' => 'datetime',
         'impact_metrics' => 'array',
         'is_portfolio_visible' => 'boolean',
         'is_featured' => 'boolean',

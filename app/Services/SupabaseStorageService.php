@@ -479,4 +479,90 @@ class SupabaseStorageService
 
         return $this->uploadFile($file, $path);
     }
+
+    /**
+     * upload certificate dari local file path ke supabase
+     * Method ini berbeda karena menerima file path, bukan UploadedFile
+     *
+     * @param string $localFilePath path ke file lokal yang akan diupload
+     * @param int $studentId ID student pemilik sertifikat
+     * @return string|false path file yang berhasil diupload atau false jika gagal
+     */
+    public function uploadCertificate(string $localFilePath, int $studentId)
+    {
+        if (!file_exists($localFilePath)) {
+            Log::error("❌ Certificate file not found", ['path' => $localFilePath]);
+            return false;
+        }
+
+        $filename = "student-{$studentId}-certificate-" . time() . '.png';
+        $path = 'certificates/' . $filename;
+
+        // jika supabase tidak dikonfigurasi, gunakan local storage
+        if (!$this->useSupabase) {
+            try {
+                $destination = storage_path('app/public/' . $path);
+                $directory = dirname($destination);
+
+                if (!file_exists($directory)) {
+                    mkdir($directory, 0755, true);
+                }
+
+                if (copy($localFilePath, $destination)) {
+                    Log::info("✅ Certificate saved to local storage", ['path' => $path]);
+                    return $path;
+                }
+
+                return false;
+            } catch (\Exception $e) {
+                Log::error("❌ Failed to save certificate to local", ['error' => $e->getMessage()]);
+                return false;
+            }
+        }
+
+        try {
+            // baca file content
+            $fileContent = file_get_contents($localFilePath);
+            $mimeType = 'image/png';
+            $fileSize = filesize($localFilePath);
+
+            Log::info("📤 Uploading certificate to Supabase", [
+                'path' => $path,
+                'size' => number_format($fileSize) . ' bytes',
+            ]);
+
+            // encode path untuk URL
+            $encodedPath = $this->encodePath($path);
+
+            // upload ke supabase
+            $response = Http::timeout(30)
+                ->withHeaders([
+                    'Authorization' => 'Bearer ' . $this->serviceKey,
+                    'Content-Type' => $mimeType,
+                    'x-upsert' => 'true',
+                ])
+                ->withBody($fileContent, $mimeType)
+                ->post("{$this->baseUrl}/object/{$this->bucketName}/{$encodedPath}");
+
+            if ($response->successful()) {
+                Log::info("✅ Certificate upload SUCCESS", ['path' => $path]);
+                return $path;
+            }
+
+            Log::error("❌ Certificate upload FAILED", [
+                'path' => $path,
+                'status' => $response->status(),
+                'body' => $response->body(),
+            ]);
+
+            return false;
+
+        } catch (\Exception $e) {
+            Log::error("❌ Certificate upload EXCEPTION", [
+                'path' => $path,
+                'error' => $e->getMessage(),
+            ]);
+            return false;
+        }
+    }
 }

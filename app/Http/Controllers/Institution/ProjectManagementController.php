@@ -6,8 +6,10 @@ use App\Http\Controllers\Controller;
 use App\Models\Project;
 use App\Models\ProjectMilestone;
 use App\Services\ProjectService;
+use App\Services\CertificateService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 /**
  * controller untuk mengelola proyek yang sedang berjalan
@@ -16,10 +18,12 @@ use Illuminate\Support\Facades\DB;
 class ProjectManagementController extends Controller
 {
     protected $projectService;
+    protected $certificateService;
 
-    public function __construct(ProjectService $projectService)
+    public function __construct(ProjectService $projectService, CertificateService $certificateService)
     {
         $this->projectService = $projectService;
+        $this->certificateService = $certificateService;
     }
 
     /**
@@ -29,7 +33,7 @@ class ProjectManagementController extends Controller
     {
         $institution = auth()->user()->institution;
 
-        $query = Project::with(['student.user', 'student.university', 'problem'])
+        $query = Project::with(['student.user', 'student.university', 'problem', 'milestones'])
                        ->where('institution_id', $institution->id);
 
         // filter berdasarkan status
@@ -138,12 +142,32 @@ class ProjectManagementController extends Controller
 
         // jika status berubah menjadi completed, set actual_end_date
         $data = ['status' => $validated['status']];
+        $isNewlyCompleted = false;
+
         if ($validated['status'] === 'completed' && $project->status !== 'completed') {
             $data['actual_end_date'] = now();
             $data['progress_percentage'] = 100; // set progress ke 100% saat completed
+            $isNewlyCompleted = true;
         }
 
         $project->update($data);
+
+        // 🎓 AUTO-GENERATE SERTIFIKAT saat proyek selesai
+        if ($isNewlyCompleted) {
+            try {
+                Log::info("🎓 Generating certificate for project {$project->id}");
+                $result = $this->certificateService->generateCertificate($project);
+
+                if ($result['success']) {
+                    Log::info("✅ Certificate generated successfully: {$result['number']}");
+                } else {
+                    Log::warning("⚠️ Certificate generation failed: {$result['message']}");
+                }
+            } catch (\Exception $e) {
+                Log::error("❌ Certificate generation exception: " . $e->getMessage());
+                // Jangan failed update status meskipun sertifikat gagal dibuat
+            }
+        }
 
         return response()->json([
             'success' => true,
