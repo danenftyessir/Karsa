@@ -185,9 +185,9 @@ class DashboardController extends Controller
 
         // ambil problems dengan group by category
         $problems = Problem::where('institution_id', $institutionId)
-                        ->selectRaw('category, COUNT(*) as count')
-                        ->whereNotNull('category')
-                        ->groupBy('category')
+                        ->selectRaw('sdg_categories as category, COUNT(*) as count')
+                        ->whereNotNull('sdg_categories')
+                        ->groupBy('sdg_categories')
                         ->orderByDesc('count')
                         ->limit(5)
                         ->get();
