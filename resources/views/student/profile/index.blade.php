@@ -214,9 +214,30 @@
                         <div class="group border-l-4 border-blue-500 bg-gray-50 hover:bg-white rounded-r-2xl p-8 transition-all hover:shadow-xl">
                             <div class="flex items-start justify-between gap-6">
                                 <div class="flex-1">
-                                    <h3 class="text-2xl font-bold text-gray-900 mb-3 group-hover:text-blue-600 transition-colors">
-                                        {{ $project->problem->title }}
-                                    </h3>
+                                    <div class="flex items-start justify-between mb-3">
+                                        <h3 class="text-2xl font-bold text-gray-900 group-hover:text-blue-600 transition-colors flex-1">
+                                            {{ $project->problem->title }}
+                                        </h3>
+                                        <div class="flex items-center gap-3 ml-4">
+                                            {{-- Visibility Badge --}}
+                                            <span class="visibility-badge-{{ $project->id }} px-3 py-1.5 text-xs font-semibold rounded-lg {{ $project->is_portfolio_visible ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-600' }}">
+                                                {{ $project->is_portfolio_visible ? 'Terlihat di Public' : 'Tersembunyi' }}
+                                            </span>
+                                            {{-- Toggle Visibility Button --}}
+                                            <button onclick="toggleProjectVisibility({{ $project->id }})"
+                                                    class="visibility-toggle-{{ $project->id }} p-2 rounded-lg transition-all {{ $project->is_portfolio_visible ? 'bg-green-100 text-green-700 hover:bg-green-200' : 'bg-gray-100 text-gray-600 hover:bg-gray-200' }}"
+                                                    title="{{ $project->is_portfolio_visible ? 'Sembunyikan dari portfolio public' : 'Tampilkan di portfolio public' }}">
+                                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    @if($project->is_portfolio_visible)
+                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
+                                                    @else
+                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.543 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21"/>
+                                                    @endif
+                                                </svg>
+                                            </button>
+                                        </div>
+                                    </div>
                                     <p class="text-gray-600 text-base mb-4 leading-relaxed">
                                         {{ $project->problem->description }}
                                     </p>
@@ -296,6 +317,56 @@
 
 @push('scripts')
 <script>
+// Toggle project visibility untuk portfolio public
+function toggleProjectVisibility(projectId) {
+    fetch(`/student/profile/toggle-project-visibility/${projectId}`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+        }
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            // Update badge
+            const badge = document.querySelector(`.visibility-badge-${projectId}`);
+            const toggleBtn = document.querySelector(`.visibility-toggle-${projectId}`);
+
+            if (data.is_visible) {
+                badge.className = `visibility-badge-${projectId} px-3 py-1.5 text-xs font-semibold rounded-lg bg-green-100 text-green-700`;
+                badge.textContent = 'Terlihat di Public';
+                toggleBtn.className = `visibility-toggle-${projectId} p-2 rounded-lg transition-all bg-green-100 text-green-700 hover:bg-green-200`;
+                toggleBtn.title = 'Sembunyikan dari portfolio public';
+                toggleBtn.innerHTML = `
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
+                    </svg>
+                `;
+            } else {
+                badge.className = `visibility-badge-${projectId} px-3 py-1.5 text-xs font-semibold rounded-lg bg-gray-100 text-gray-600`;
+                badge.textContent = 'Tersembunyi';
+                toggleBtn.className = `visibility-toggle-${projectId} p-2 rounded-lg transition-all bg-gray-100 text-gray-600 hover:bg-gray-200`;
+                toggleBtn.title = 'Tampilkan di portfolio public';
+                toggleBtn.innerHTML = `
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.543 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21"/>
+                    </svg>
+                `;
+            }
+
+            showToast(data.message, 'success');
+        } else {
+            showToast(data.message, 'error');
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        showToast('Terjadi kesalahan saat mengubah visibility', 'error');
+    });
+}
+
 // fungsi show share options modal
 function copyPortfolioLink() {
     showShareModal();

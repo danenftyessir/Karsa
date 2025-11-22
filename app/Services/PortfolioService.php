@@ -20,8 +20,9 @@ class PortfolioService
     public function getPortfolioData($studentId)
     {
         $student = Student::with(['user', 'university'])->findOrFail($studentId);
-        
-        // ambil completed projects yang visible di portfolio
+
+        // ambil SEMUA completed projects (untuk private view, tampilkan semua)
+        // user bisa toggle visibility untuk menampilkan/menyembunyikan di public profile
         $completedProjects = Project::with([
             'problem.institution',
             'problem.province',
@@ -30,7 +31,7 @@ class PortfolioService
         ])
         ->where('student_id', $studentId)
         ->where('status', 'completed')
-        ->portfolioVisible()
+        // REMOVED: ->portfolioVisible() untuk private view
         ->orderBy('actual_end_date', 'desc')
         ->get();
 

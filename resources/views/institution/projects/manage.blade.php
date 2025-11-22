@@ -121,7 +121,7 @@
                                 <span class="px-3 py-1 bg-blue-100 text-blue-700 text-sm font-semibold rounded-full">Menunggu Review</span>
                             </div>
 
-                            <p class="text-sm text-gray-700 mb-3">{{ Str::limit($report->content, 200) }}</p>
+                            <p class="text-sm text-gray-700 mb-3">{{ Str::limit($report->summary ?? $report->activities ?? '', 200) }}</p>
 
                             @if($report->document_path)
                             <a href="{{ Storage::url($report->document_path) }}" 

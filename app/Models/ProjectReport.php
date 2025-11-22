@@ -25,7 +25,7 @@ class ProjectReport extends Model
         'type',
         'title',
         'summary',
-        'content',
+        // 'content', // REMOVED: kolom ini tidak ada di migration
         'activities',
         'challenges',
         'next_plans',

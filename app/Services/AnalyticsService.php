@@ -153,15 +153,15 @@ class AnalyticsService
         // rata-rata completion time
         $completedProjects = Project::where('institution_id', $institutionId)
                                    ->where('status', 'completed')
-                                   ->whereNotNull('completed_at')
+                                   ->whereNotNull('actual_end_date')
                                    ->get();
-        
+
         $avgCompletionDays = 0;
         if ($completedProjects->count() > 0) {
             $totalDays = 0;
             foreach ($completedProjects as $project) {
-                if ($project->start_date && $project->completed_at) {
-                    $totalDays += $project->start_date->diffInDays($project->completed_at);
+                if ($project->start_date && $project->actual_end_date) {
+                    $totalDays += $project->start_date->diffInDays($project->actual_end_date);
                 }
             }
             $avgCompletionDays = $completedProjects->count() > 0 ? $totalDays / $completedProjects->count() : 0;

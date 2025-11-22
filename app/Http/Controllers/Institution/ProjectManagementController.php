@@ -136,10 +136,11 @@ class ProjectManagementController extends Controller
             'notes' => 'nullable|string|max:500',
         ]);
 
-        // jika status berubah menjadi completed, set completed_at
+        // jika status berubah menjadi completed, set actual_end_date
         $data = ['status' => $validated['status']];
         if ($validated['status'] === 'completed' && $project->status !== 'completed') {
-            $data['completed_at'] = now();
+            $data['actual_end_date'] = now();
+            $data['progress_percentage'] = 100; // set progress ke 100% saat completed
         }
 
         $project->update($data);
