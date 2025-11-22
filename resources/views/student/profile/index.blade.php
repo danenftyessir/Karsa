@@ -319,14 +319,20 @@
 <script>
 // Toggle project visibility untuk portfolio public
 function toggleProjectVisibility(projectId) {
-    fetch(`/student/profile/toggle-project-visibility/${projectId}`, {
+    fetch(`/student/profile/project/${projectId}/toggle-visibility`, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
             'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
         }
     })
-    .then(response => response.json())
+    .then(response => {
+        // Check if response is ok
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        return response.json();
+    })
     .then(data => {
         if (data.success) {
             // Update badge
@@ -358,12 +364,12 @@ function toggleProjectVisibility(projectId) {
 
             showToast(data.message, 'success');
         } else {
-            showToast(data.message, 'error');
+            showToast(data.message || 'Gagal mengubah visibility', 'error');
         }
     })
     .catch(error => {
-        console.error('Error:', error);
-        showToast('Terjadi kesalahan saat mengubah visibility', 'error');
+        console.error('Error details:', error);
+        showToast(`Terjadi kesalahan: ${error.message}`, 'error');
     });
 }
 
