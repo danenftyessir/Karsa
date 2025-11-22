@@ -146,6 +146,7 @@ class ProjectManagementController extends Controller
 
         if ($validated['status'] === 'completed' && $project->status !== 'completed') {
             $data['actual_end_date'] = now();
+            $data['completed_at'] = now();
             $data['progress_percentage'] = 100; // set progress ke 100% saat completed
             $isNewlyCompleted = true;
         }

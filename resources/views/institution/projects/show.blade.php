@@ -169,7 +169,9 @@
                         @endif
                         
                         @if($report->document_path)
-                        <a href="{{ route('student.projects.download-report', $report->id) }}" 
+                        <a href="{{ document_url($report->document_path) }}"
+                           target="_blank"
+                           download
                            class="text-blue-600 hover:text-blue-700 text-sm font-medium">
                             Download Dokumen →
                         </a>

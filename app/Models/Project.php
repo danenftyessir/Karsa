@@ -16,7 +16,6 @@ class Project extends Model
 {
     use HasFactory, SoftDeletes;
 
-    // ✅ PERBAIKAN: hapus 'completed_at' dari fillable karena column tidak ada di migration
     protected $fillable = [
         'application_id',
         'student_id',
@@ -29,6 +28,7 @@ class Project extends Model
         'end_date',
         'actual_start_date',
         'actual_end_date',
+        'completed_at',
         'progress_percentage',
         'final_report_path',
         'final_report_summary',
@@ -46,12 +46,12 @@ class Project extends Model
         'certificate_generated_at',
     ];
 
-    // ✅ PERBAIKAN: hapus 'completed_at' dari casts
     protected $casts = [
         'start_date' => 'date',
         'end_date' => 'date',
         'actual_start_date' => 'date',
         'actual_end_date' => 'date',
+        'completed_at' => 'datetime',
         'submitted_at' => 'datetime',
         'reviewed_at' => 'datetime',
         'certificate_generated_at' => 'datetime',

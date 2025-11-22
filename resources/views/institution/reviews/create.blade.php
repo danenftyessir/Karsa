@@ -20,9 +20,15 @@
         {{-- header --}}
         <div class="bg-white rounded-xl shadow-sm p-6 mb-6 border border-gray-100">
             <div class="flex items-start gap-4">
-                <img src="{{ $project->student->user->profile_picture ? asset('storage/' . $project->student->user->profile_picture) : 'https://ui-avatars.com/api/?name=' . urlencode($project->student->user->name) }}" 
-                     alt="{{ $project->student->user->name }}"
-                     class="w-20 h-20 rounded-full object-cover border-2 border-gray-200">
+                @if($project->student->profile_photo_path)
+                    <img src="{{ supabase_url($project->student->profile_photo_path) }}"
+                         alt="{{ $project->student->user->name }}"
+                         class="w-20 h-20 rounded-full object-cover border-2 border-gray-200">
+                @else
+                    <div class="w-20 h-20 rounded-full bg-gradient-to-br from-blue-500 to-green-500 flex items-center justify-center border-2 border-gray-200">
+                        <span class="text-white text-2xl font-bold">{{ get_initials($project->student->user->name) }}</span>
+                    </div>
+                @endif
                 
                 <div class="flex-1">
                     <h1 class="text-2xl font-bold text-gray-900 mb-2">Buat Review untuk {{ $project->student->user->name }}</h1>
