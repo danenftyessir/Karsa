@@ -131,63 +131,80 @@ class ProjectManagementController extends Controller
      */
     public function updateStatus(Request $request, $id)
     {
-        $institution = auth()->user()->institution;
+        try {
+            $institution = auth()->user()->institution;
 
-        $project = Project::where('institution_id', $institution->id)->findOrFail($id);
+            $project = Project::where('institution_id', $institution->id)->findOrFail($id);
 
-        $validated = $request->validate([
-            'status' => 'required|in:active,on_hold,completed,cancelled',
-            'notes' => 'nullable|string|max:500',
-        ]);
-
-        // DEBUG: Log status change
-        Log::info("📊 Status Update Request", [
-            'project_id' => $project->id,
-            'old_status' => $project->status,
-            'new_status' => $validated['status'],
-            'has_certificate' => !empty($project->certificate_path)
-        ]);
-
-        // jika status berubah menjadi completed, set actual_end_date
-        $data = ['status' => $validated['status']];
-        $isNewlyCompleted = false;
-
-        if ($validated['status'] === 'completed' && $project->status !== 'completed') {
-            $data['actual_end_date'] = now();
-            $data['completed_at'] = now();
-            $data['progress_percentage'] = 100; // set progress ke 100% saat completed
-            $isNewlyCompleted = true;
-            Log::info("✅ Project marked as newly completed - will generate certificate");
-        } else {
-            Log::info("⏭️ Skipping certificate generation", [
-                'reason' => $validated['status'] === 'completed' ? 'Already completed' : 'Status not completed'
+            $validated = $request->validate([
+                'status' => 'required|in:active,on_hold,completed,cancelled',
+                'notes' => 'nullable|string|max:500',
             ]);
-        }
 
-        $project->update($data);
+            // DEBUG: Log status change
+            Log::info("📊 Status Update Request", [
+                'project_id' => $project->id,
+                'old_status' => $project->status,
+                'new_status' => $validated['status'],
+                'has_certificate' => !empty($project->certificate_path)
+            ]);
 
-        // 🎓 AUTO-GENERATE SERTIFIKAT saat proyek selesai
-        if ($isNewlyCompleted) {
-            try {
-                Log::info("🎓 Generating certificate for project {$project->id}");
-                $result = $this->certificateService->generateCertificate($project);
+            // jika status berubah menjadi completed, set actual_end_date
+            $data = ['status' => $validated['status']];
+            $isNewlyCompleted = false;
 
-                if ($result['success']) {
-                    Log::info("✅ Certificate generated successfully: {$result['number']}");
-                } else {
-                    Log::warning("⚠️ Certificate generation failed: {$result['message']}");
-                }
-            } catch (\Exception $e) {
-                Log::error("❌ Certificate generation exception: " . $e->getMessage());
-                Log::error($e->getTraceAsString());
-                // Jangan failed update status meskipun sertifikat gagal dibuat
+            if ($validated['status'] === 'completed' && $project->status !== 'completed') {
+                $data['actual_end_date'] = now();
+                $data['completed_at'] = now();
+                $data['progress_percentage'] = 100; // set progress ke 100% saat completed
+                $isNewlyCompleted = true;
+                Log::info("✅ Project marked as newly completed - will generate certificate");
+            } else {
+                Log::info("⏭️ Skipping certificate generation", [
+                    'reason' => $validated['status'] === 'completed' ? 'Already completed' : 'Status not completed'
+                ]);
             }
-        }
 
-        return response()->json([
-            'success' => true,
-            'message' => 'status proyek berhasil diubah',
-        ]);
+            $project->update($data);
+
+            // 🎓 AUTO-GENERATE SERTIFIKAT saat proyek selesai
+            if ($isNewlyCompleted) {
+                try {
+                    Log::info("🎓 Generating certificate for project {$project->id}");
+                    $result = $this->certificateService->generateCertificate($project);
+
+                    if ($result['success']) {
+                        Log::info("✅ Certificate generated successfully: {$result['number']}");
+                    } else {
+                        Log::warning("⚠️ Certificate generation failed: {$result['message']}");
+                    }
+                } catch (\Exception $e) {
+                    Log::error("❌ Certificate generation exception: " . $e->getMessage());
+                    Log::error($e->getTraceAsString());
+                    // Jangan failed update status meskipun sertifikat gagal dibuat
+                }
+            }
+
+            return response()->json([
+                'success' => true,
+                'message' => 'status proyek berhasil diubah',
+            ]);
+
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Validasi gagal',
+                'errors' => $e->errors()
+            ], 422);
+        } catch (\Exception $e) {
+            Log::error("Error updating project status: " . $e->getMessage());
+            Log::error($e->getTraceAsString());
+
+            return response()->json([
+                'success' => false,
+                'message' => 'Terjadi kesalahan: ' . $e->getMessage()
+            ], 500);
+        }
     }
 
     /**
