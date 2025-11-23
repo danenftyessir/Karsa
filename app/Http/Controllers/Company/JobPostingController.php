@@ -64,15 +64,37 @@ class JobPostingController extends Controller
             'Full-time', 'Part-time', 'Contract', 'Internship', 'Freelance'
         ];
 
-        // daftar skills untuk multi-select
+        // daftar skills untuk multi-select (KKN-focused)
         $availableSkills = [
-            'React', 'Node.js', 'AWS', 'TypeScript', 'Python', 'TensorFlow',
-            'NLP', 'Data Science', 'Figma', 'UX Research', 'Prototyping',
-            'UI/UX', 'Kubernetes', 'Docker', 'Jenkins', 'Ansible',
-            'SQL', 'Power BI', 'Excel', 'Statistical Analysis', 'SEO',
-            'Content Marketing', 'Social Media', 'Analytics', 'Agile',
-            'Scrum', 'Risk Management', 'Stakeholder Management',
-            'Java', 'Go', 'Rust', 'PHP', 'Laravel', 'Vue.js', 'Angular'
+            // Pendidikan & Pengajaran
+            'Mengajar', 'Literasi', 'Bimbingan Belajar', 'Pendidikan Anak',
+
+            // Kesehatan & Sanitasi
+            'Penyuluhan Kesehatan', 'Sanitasi Lingkungan', 'Gizi & Nutrisi', 'Kesehatan Ibu & Anak',
+
+            // Pertanian & Peternakan
+            'Pertanian Organik', 'Budidaya Tanaman', 'Peternakan', 'Hidroponik', 'Kompos',
+
+            // Bisnis & Kewirausahaan
+            'UMKM', 'Pemasaran Produk Lokal', 'Manajemen Usaha', 'Koperasi', 'E-commerce',
+
+            // Infrastruktur & Konstruksi
+            'Renovasi Fasilitas', 'Pembangunan', 'Pengecatan', 'Pertukangan',
+
+            // Lingkungan
+            'Pengelolaan Sampah', 'Daur Ulang', 'Reboisasi', 'Konservasi Air', 'Bank Sampah',
+
+            // Sosial & Kemasyarakatan
+            'Pemberdayaan Masyarakat', 'Posyandu', 'PKK', 'Karang Taruna', 'Gotong Royong',
+
+            // Teknologi & Digital
+            'Komputer Dasar', 'Media Sosial', 'Desain Grafis', 'Fotografi', 'Videografi',
+
+            // Seni & Budaya
+            'Kesenian Daerah', 'Kerajinan Tangan', 'Musik', 'Tari', 'Bahasa Daerah',
+
+            // Administrasi & Dokumentasi
+            'Administrasi Desa', 'Dokumentasi', 'Laporan', 'Data Entry', 'Survei'
         ];
 
         // daftar SDG untuk alignment
@@ -234,13 +256,35 @@ class JobPostingController extends Controller
         ];
 
         $availableSkills = [
-            'React', 'Node.js', 'AWS', 'TypeScript', 'Python', 'TensorFlow',
-            'NLP', 'Data Science', 'Figma', 'UX Research', 'Prototyping',
-            'UI/UX', 'Kubernetes', 'Docker', 'Jenkins', 'Ansible',
-            'SQL', 'Power BI', 'Excel', 'Statistical Analysis', 'SEO',
-            'Content Marketing', 'Social Media', 'Analytics', 'Agile',
-            'Scrum', 'Risk Management', 'Stakeholder Management',
-            'Java', 'Go', 'Rust', 'PHP', 'Laravel', 'Vue.js', 'Angular'
+            // Pendidikan & Pengajaran
+            'Mengajar', 'Literasi', 'Bimbingan Belajar', 'Pendidikan Anak',
+
+            // Kesehatan & Sanitasi
+            'Penyuluhan Kesehatan', 'Sanitasi Lingkungan', 'Gizi & Nutrisi', 'Kesehatan Ibu & Anak',
+
+            // Pertanian & Peternakan
+            'Pertanian Organik', 'Budidaya Tanaman', 'Peternakan', 'Hidroponik', 'Kompos',
+
+            // Bisnis & Kewirausahaan
+            'UMKM', 'Pemasaran Produk Lokal', 'Manajemen Usaha', 'Koperasi', 'E-commerce',
+
+            // Infrastruktur & Konstruksi
+            'Renovasi Fasilitas', 'Pembangunan', 'Pengecatan', 'Pertukangan',
+
+            // Lingkungan
+            'Pengelolaan Sampah', 'Daur Ulang', 'Reboisasi', 'Konservasi Air', 'Bank Sampah',
+
+            // Sosial & Kemasyarakatan
+            'Pemberdayaan Masyarakat', 'Posyandu', 'PKK', 'Karang Taruna', 'Gotong Royong',
+
+            // Teknologi & Digital
+            'Komputer Dasar', 'Media Sosial', 'Desain Grafis', 'Fotografi', 'Videografi',
+
+            // Seni & Budaya
+            'Kesenian Daerah', 'Kerajinan Tangan', 'Musik', 'Tari', 'Bahasa Daerah',
+
+            // Administrasi & Dokumentasi
+            'Administrasi Desa', 'Dokumentasi', 'Laporan', 'Data Entry', 'Survei'
         ];
 
         $sdgOptions = [

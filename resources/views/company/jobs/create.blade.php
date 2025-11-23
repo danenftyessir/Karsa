@@ -219,7 +219,7 @@
                             </button>
                         </div>
                         <textarea x-model="formData.qualifications" rows="4"
-                                  placeholder="- Minimal 3 tahun pengalaman&#10;- Menguasai JavaScript/TypeScript&#10;- Familiar dengan cloud services"
+                                  placeholder="- Mahasiswa aktif minimal semester 5&#10;- Berpengalaman dalam kegiatan lapangan/kemasyarakatan&#10;- Komunikatif dan dapat bekerja dengan masyarakat desa"
                                   class="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-violet-500 focus:border-transparent transition-all resize-none"></textarea>
                     </div>
                 </div>

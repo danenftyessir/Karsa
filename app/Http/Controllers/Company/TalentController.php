@@ -137,15 +137,37 @@ class TalentController extends Controller
             ];
         });
 
-        // daftar skills untuk filter
+        // daftar skills untuk filter (KKN-focused)
         $availableSkills = [
-            'React', 'Node.js', 'AWS', 'TypeScript', 'Python', 'TensorFlow',
-            'NLP', 'Data Science', 'Figma', 'UX Research', 'Prototyping',
-            'UI/UX', 'Kubernetes', 'Docker', 'Jenkins', 'Ansible',
-            'Threat Intel', 'Pen Testing', 'SIEM', 'Incident Response',
-            'SQL', 'Power BI', 'Excel', 'Statistical Analysis', 'SEO',
-            'Content Marketing', 'Social Media', 'Analytics', 'Agile',
-            'Scrum', 'Risk Management', 'Stakeholder Mgmt'
+            // Pendidikan & Pengajaran
+            'Mengajar', 'Literasi', 'Bimbingan Belajar', 'Pendidikan Anak',
+
+            // Kesehatan & Sanitasi
+            'Penyuluhan Kesehatan', 'Sanitasi Lingkungan', 'Gizi & Nutrisi', 'Kesehatan Ibu & Anak',
+
+            // Pertanian & Peternakan
+            'Pertanian Organik', 'Budidaya Tanaman', 'Peternakan', 'Hidroponik', 'Kompos',
+
+            // Bisnis & Kewirausahaan
+            'UMKM', 'Pemasaran Produk Lokal', 'Manajemen Usaha', 'Koperasi', 'E-commerce',
+
+            // Infrastruktur & Konstruksi
+            'Renovasi Fasilitas', 'Pembangunan', 'Pengecatan', 'Pertukangan',
+
+            // Lingkungan
+            'Pengelolaan Sampah', 'Daur Ulang', 'Reboisasi', 'Konservasi Air', 'Bank Sampah',
+
+            // Sosial & Kemasyarakatan
+            'Pemberdayaan Masyarakat', 'Posyandu', 'PKK', 'Karang Taruna', 'Gotong Royong',
+
+            // Teknologi & Digital
+            'Komputer Dasar', 'Media Sosial', 'Desain Grafis', 'Fotografi', 'Videografi',
+
+            // Seni & Budaya
+            'Kesenian Daerah', 'Kerajinan Tangan', 'Musik', 'Tari', 'Bahasa Daerah',
+
+            // Administrasi & Dokumentasi
+            'Administrasi Desa', 'Dokumentasi', 'Laporan', 'Data Entry', 'Survei'
         ];
 
         // daftar SDG untuk filter (1-17 lengkap)
