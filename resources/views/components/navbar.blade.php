@@ -34,9 +34,9 @@
                            class="text-gray-700 hover:text-black px-3 py-2 text-sm font-semibold transition-all duration-300 rounded-lg hover:bg-gray-100 {{ request()->routeIs('student.repository.*') ? 'text-black bg-gray-100' : '' }}">
                             Repositori
                         </a>
-                        <a href="{{ route('student.friends.index') }}"
-                           class="text-gray-700 hover:text-black px-3 py-2 text-sm font-semibold transition-all duration-300 rounded-lg hover:bg-gray-100 {{ request()->routeIs('student.friends.*') ? 'text-black bg-gray-100' : '' }}">
-                            Network
+                        <a href="{{ route('student.jobs.index') }}"
+                           class="text-gray-700 hover:text-black px-3 py-2 text-sm font-semibold transition-all duration-300 rounded-lg hover:bg-gray-100 {{ request()->routeIs('student.jobs.*') ? 'text-black bg-gray-100' : '' }}">
+                            Jobs
                         </a>
                     @elseif(Auth::user()->isInstitution())
                         <a href="{{ route('institution.dashboard') }}"
@@ -260,9 +260,9 @@
                        class="block px-4 py-3 rounded-md text-base font-medium text-gray-700 hover:text-blue-600 hover:bg-blue-50 transition-colors {{ request()->routeIs('student.repository.*') ? 'text-blue-600 bg-blue-50' : '' }}">
                         Repositori
                     </a>
-                    <a href="{{ route('student.friends.index') }}"
-                       class="block px-4 py-3 rounded-md text-base font-medium text-gray-700 hover:text-blue-600 hover:bg-blue-50 transition-colors {{ request()->routeIs('student.friends.*') ? 'text-blue-600 bg-blue-50' : '' }}">
-                        Network
+                    <a href="{{ route('student.jobs.index') }}"
+                       class="block px-4 py-3 rounded-md text-base font-medium text-gray-700 hover:text-blue-600 hover:bg-blue-50 transition-colors {{ request()->routeIs('student.jobs.*') ? 'text-blue-600 bg-blue-50' : '' }}">
+                        Jobs
                     </a>
                     <a href="{{ route('student.profile.index') }}"
                        class="block px-4 py-3 rounded-md text-base font-medium text-gray-700 hover:text-blue-600 hover:bg-blue-50 transition-colors">
