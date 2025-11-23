@@ -121,7 +121,9 @@ class ProfileController extends Controller
             'logo' => 'nullable|image|mimes:jpeg,png,jpg,webp|max:5120', // 5MB max
         ]);
 
-        // IMPLEMENTED: Handle logo upload to Supabase Storage
+        // ✅ COPAS dari Student ProfileController - Handle logo upload to Supabase Storage
+        $logoUrl = $company->logo; // initialize dengan logo yang sudah ada
+
         if ($request->hasFile('logo')) {
             $logoFile = $request->file('logo');
             $logoFileName = 'company_' . $company->id . '_' . time() . '.' . $logoFile->getClientOriginalExtension();
@@ -133,9 +135,21 @@ class ProfileController extends Controller
             }
 
             // IMPLEMENTED: Upload to Supabase Storage
-            $logoUrl = $this->supabase->uploadFile('company_logos', $logoFileName, $logoFile);
-            $validated['logo'] = $logoUrl;
+            $uploadedUrl = $this->supabase->uploadFile('company_logos', $logoFileName, $logoFile);
+
+            // jika upload berhasil, gunakan URL baru. Jika gagal, tetap gunakan logo lama
+            if ($uploadedUrl) {
+                $logoUrl = $uploadedUrl;
+                \Log::info("Logo berhasil diupload untuk company ID {$company->id}");
+            } else {
+                // tetap gunakan logo lama jika upload gagal
+                $logoUrl = $company->logo;
+                \Log::warning("Gagal upload logo untuk company ID {$company->id}, menggunakan logo lama");
+            }
         }
+
+        // Set logo ke validated data
+        $validated['logo'] = $logoUrl;
 
         // IMPLEMENTED: Update di Supabase PostgreSQL
         $company->update($validated);
@@ -147,6 +161,7 @@ class ProfileController extends Controller
     /**
      * Upload or update company logo
      * IMPLEMENTED: Upload langsung ke Supabase Storage
+     * ✅ COPAS dari Student ProfileController - dengan error handling
      */
     public function uploadLogo(Request $request)
     {
@@ -167,16 +182,28 @@ class ProfileController extends Controller
         }
 
         // IMPLEMENTED: Upload to Supabase Storage
-        $logoUrl = $this->supabase->uploadFile('company_logos', $logoFileName, $logoFile);
+        $uploadedUrl = $this->supabase->uploadFile('company_logos', $logoFileName, $logoFile);
 
-        // IMPLEMENTED: Update logo URL di Supabase PostgreSQL
-        $company->update(['logo' => $logoUrl]);
+        // jika upload berhasil, update logo. Jika gagal, kembalikan error
+        if ($uploadedUrl) {
+            // IMPLEMENTED: Update logo URL di Supabase PostgreSQL
+            $company->update(['logo' => $uploadedUrl]);
 
-        return response()->json([
-            'success' => true,
-            'message' => 'Logo uploaded successfully',
-            'logo_url' => $logoUrl,
-        ]);
+            \Log::info("Logo berhasil diupload untuk company ID {$company->id}");
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Logo uploaded successfully',
+                'logo_url' => $uploadedUrl,
+            ]);
+        } else {
+            \Log::error("Gagal upload logo untuk company ID {$company->id}");
+
+            return response()->json([
+                'success' => false,
+                'message' => 'Failed to upload logo. Please try again.',
+            ], 500);
+        }
     }
 
     /**

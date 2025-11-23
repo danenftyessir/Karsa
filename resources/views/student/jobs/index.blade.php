@@ -239,61 +239,10 @@
                     <h3 class="text-lg font-bold text-gray-900 mb-4">Filter</h3>
 
                     <form method="GET" action="{{ route('student.jobs.index') }}" id="filterForm">
-                        {{-- search --}}
-                        <div class="filter-section">
-                            <label class="block text-sm font-medium text-gray-700 mb-2">Kata Kunci</label>
-                            <input type="text"
-                                   name="search"
-                                   value="{{ request('search') }}"
-                                   placeholder="Cari posisi atau perusahaan..."
-                                   class="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm">
-                        </div>
-
-                        {{-- job type --}}
-                        <div class="filter-section">
-                            <label class="block text-sm font-medium text-gray-700 mb-3">Tipe Pekerjaan</label>
-                            <div class="space-y-2">
-                                @foreach($jobTypes as $value => $label)
-                                <label class="flex items-center gap-2 cursor-pointer">
-                                    <input type="checkbox"
-                                           name="job_type[]"
-                                           value="{{ $value }}"
-                                           {{ in_array($value, (array) request('job_type', [])) ? 'checked' : '' }}
-                                           class="filter-checkbox">
-                                    <span class="text-sm text-gray-600">{{ $label }}</span>
-                                </label>
-                                @endforeach
-                            </div>
-                        </div>
-
-                        {{-- category --}}
-                        <div class="filter-section">
-                            <label class="block text-sm font-medium text-gray-700 mb-2">Kategori</label>
-                            <select name="category"
-                                    class="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm">
-                                <option value="">Semua Kategori</option>
-                                @foreach($categories as $category)
-                                <option value="{{ $category->id }}" {{ request('category') == $category->id ? 'selected' : '' }}>
-                                    {{ $category->name }}
-                                </option>
-                                @endforeach
-                            </select>
-                        </div>
-
-                        {{-- location --}}
-                        <div class="filter-section">
-                            <label class="block text-sm font-medium text-gray-700 mb-2">Lokasi</label>
-                            <input type="text"
-                                   name="location"
-                                   value="{{ request('location') }}"
-                                   placeholder="Kota atau wilayah..."
-                                   class="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm">
-                        </div>
-
                         {{-- sdg alignment --}}
                         <div class="filter-section">
                             <label class="block text-sm font-medium text-gray-700 mb-3">SDG Alignment</label>
-                            <div class="space-y-2 max-h-40 overflow-y-auto">
+                            <div class="space-y-2 max-h-60 overflow-y-auto">
                                 @foreach($sdgOptions as $sdg)
                                 <label class="flex items-center gap-2 cursor-pointer">
                                     <input type="checkbox"
@@ -313,7 +262,7 @@
                                     class="flex-1 px-4 py-2.5 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors text-sm font-medium">
                                 Terapkan Filter
                             </button>
-                            @if(request()->hasAny(['search', 'job_type', 'category', 'location', 'sdg']))
+                            @if(request()->has('sdg'))
                             <a href="{{ route('student.jobs.index') }}"
                                class="px-4 py-2.5 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors text-sm font-medium">
                                 Reset
