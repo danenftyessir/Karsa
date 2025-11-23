@@ -224,7 +224,7 @@
                                          alt="{{ $applicant['name'] }}"
                                          class="w-10 h-10 rounded-full border-2 border-white object-cover {{ $index > 0 ? '-ml-3' : '' }}"
                                          style="z-index: {{ count($recentApplicants) - $index }}"
-                                         onerror="this.src='{{ asset('images/default-avatar.png') }}'">
+                                         onerror="this.src='{{ asset('images/default-avatar.svg') }}'">
                                 @endforeach
                             </div>
                             <div class="flex items-center gap-2">
@@ -358,7 +358,7 @@
                                 <img src="{{ asset('storage/profiles/' . $jobPosting['owner']['avatar']) }}"
                                      alt="{{ $jobPosting['owner']['name'] }}"
                                      class="w-10 h-10 rounded-full object-cover"
-                                     onerror="this.src='{{ asset('images/default-avatar.png') }}'">
+                                     onerror="this.src='{{ asset('images/default-avatar.svg') }}'">
                                 <div>
                                     <p class="font-medium text-gray-900">{{ $jobPosting['owner']['name'] }}</p>
                                     <p class="text-sm text-gray-500">{{ $jobPosting['owner']['role'] }}</p>

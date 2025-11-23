@@ -342,10 +342,10 @@
                                        class="mt-1 rounded border-gray-300 text-primary-600 focus:ring-primary-500"
                                        @click.stop>
 
-                                <img :src="talent.avatar_url || '/images/default-avatar.png'"
+                                <img :src="talent.avatar_url || '/images/default-avatar.svg'"
                                      :alt="talent.name"
                                      class="w-12 h-12 rounded-full object-cover flex-shrink-0"
-                                     onerror="this.src='/images/default-avatar.png'">
+                                     onerror="this.src='/images/default-avatar.svg'">
 
                                 <div class="min-w-0 flex-1">
                                     <h4 class="font-semibold text-gray-900 truncate" x-text="talent.name"></h4>
@@ -455,7 +455,7 @@
                     <div>
                         <!-- talent info -->
                         <div class="flex items-center gap-3 mb-6 p-4 bg-gray-50 rounded-lg">
-                            <img :src="selectedTalent.avatar_url || '/images/default-avatar.png'"
+                            <img :src="selectedTalent.avatar_url || '/images/default-avatar.svg'"
                                  class="w-14 h-14 rounded-full object-cover">
                             <div>
                                 <p class="font-medium text-gray-900" x-text="selectedTalent.name"></p>
@@ -654,7 +654,7 @@
                     <template x-for="talent in comparisonTalents" :key="talent.id">
                         <div class="border border-gray-200 rounded-lg p-4">
                             <div class="text-center mb-4 pb-4 border-b border-gray-100">
-                                <img :src="talent.avatar_url || '/images/default-avatar.png'"
+                                <img :src="talent.avatar_url || '/images/default-avatar.svg'"
                                      class="w-20 h-20 rounded-full mx-auto mb-3 object-cover">
                                 <h4 class="font-semibold text-gray-900" x-text="talent.name"></h4>
                                 <p class="text-sm text-gray-500" x-text="talent.title"></p>

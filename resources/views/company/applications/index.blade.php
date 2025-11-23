@@ -420,10 +420,10 @@
                                         <div class="flex-1 min-w-0">
                                             <!-- avatar dan nama -->
                                             <div class="flex items-center gap-3 mb-2">
-                                                <img :src="application.avatar_url || '/images/default-avatar.png'"
+                                                <img :src="application.avatar_url || '/images/default-avatar.svg'"
                                                      :alt="application.name"
                                                      class="w-10 h-10 rounded-full object-cover"
-                                                     onerror="this.src='/images/default-avatar.png'">
+                                                     onerror="this.src='/images/default-avatar.svg'">
                                                 <div class="min-w-0">
                                                     <h4 class="font-medium text-gray-900 truncate" x-text="application.name"></h4>
                                                     <p class="text-sm text-gray-500 truncate" x-text="application.position"></p>
@@ -521,10 +521,10 @@
                             </td>
                             <td class="px-6 py-4">
                                 <div class="flex items-center gap-3">
-                                    <img :src="application.avatar_url || '/images/default-avatar.png'"
+                                    <img :src="application.avatar_url || '/images/default-avatar.svg'"
                                          :alt="application.name"
                                          class="w-10 h-10 rounded-full object-cover"
-                                         onerror="this.src='/images/default-avatar.png'">
+                                         onerror="this.src='/images/default-avatar.svg'">
                                     <span class="font-medium text-gray-900" x-text="application.name"></span>
                                 </div>
                             </td>
@@ -587,9 +587,9 @@
                     <div>
                         <!-- kandidat info -->
                         <div class="flex items-center gap-3 mb-6 p-4 bg-gray-50 rounded-lg">
-                            <img :src="selectedApplication.avatar_url || '/images/default-avatar.png'"
+                            <img :src="selectedApplication.avatar_url || '/images/default-avatar.svg'"
                                  class="w-14 h-14 rounded-full object-cover"
-                                 onerror="this.src='/images/default-avatar.png'">
+                                 onerror="this.src='/images/default-avatar.svg'">
                             <div>
                                 <p class="font-medium text-gray-900" x-text="selectedApplication.name"></p>
                                 <p class="text-sm text-gray-500" x-text="selectedApplication.position"></p>
@@ -767,7 +767,7 @@
                 <template x-if="selectedApplication">
                     <div>
                         <div class="flex items-center gap-3 mb-6 p-3 bg-gray-50 rounded-lg">
-                            <img :src="selectedApplication.avatar_url || '/images/default-avatar.png'"
+                            <img :src="selectedApplication.avatar_url || '/images/default-avatar.svg'"
                                  class="w-10 h-10 rounded-full object-cover">
                             <div>
                                 <p class="font-medium text-gray-900" x-text="selectedApplication.name"></p>
@@ -824,9 +824,9 @@
                         <div class="border border-gray-200 rounded-lg p-4">
                             <!-- header -->
                             <div class="text-center mb-4 pb-4 border-b border-gray-100">
-                                <img :src="candidate.avatar_url || '/images/default-avatar.png'"
+                                <img :src="candidate.avatar_url || '/images/default-avatar.svg'"
                                      class="w-20 h-20 rounded-full mx-auto mb-3 object-cover"
-                                     onerror="this.src='/images/default-avatar.png'">
+                                     onerror="this.src='/images/default-avatar.svg'">
                                 <h4 class="font-semibold text-gray-900" x-text="candidate.name"></h4>
                                 <p class="text-sm text-gray-500" x-text="candidate.position"></p>
                             </div>
