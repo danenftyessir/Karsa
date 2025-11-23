@@ -112,6 +112,7 @@ class DashboardController extends Controller
                 return [
                     'id' => $user->id,
                     'name' => $user->name,
+                    'username' => $user->username,
                     'expertise' => $user->student->major ?? 'No major specified',
                     'avatar' => $user->student->profile_photo_path ?? 'default-avatar.jpg',
                     'online' => true, // Could be implemented with last_seen_at

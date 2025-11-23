@@ -120,7 +120,7 @@
                             @foreach($talents as $talent)
                             <td class="px-6 py-4 text-center border-l border-gray-100">
                                 <div class="flex flex-col gap-2">
-                                    <a href="{{ route('company.talents.show', $talent->id) }}"
+                                    <a href="{{ route('profile.public', $talent->username) }}"
                                        class="px-4 py-2 bg-violet-600 text-white text-sm font-semibold rounded-lg hover:bg-violet-700 transition-colors">
                                         Lihat Profil
                                     </a>

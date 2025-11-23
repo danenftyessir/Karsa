@@ -202,7 +202,7 @@
                 </div>
                 <div class="space-y-4">
                     @forelse($talentRecommendations as $talent)
-                    <a href="{{ route('company.talents.show', $talent['id']) }}" class="flex items-center justify-between py-3 border-b border-gray-100 last:border-0 hover-lift cursor-pointer">
+                    <a href="{{ route('profile.public', $talent['username']) }}" class="flex items-center justify-between py-3 border-b border-gray-100 last:border-0 hover-lift cursor-pointer">
                         <div class="flex items-center gap-3">
                             <div class="relative">
                                 @if($talent['avatar'] && $talent['avatar'] !== 'default-avatar.jpg')
