@@ -493,11 +493,11 @@
                 @forelse($jobApplications as $jobApp)
                 <div class="application-item bg-white rounded-xl shadow-sm border border-gray-100 p-6">
                     <div class="flex items-start gap-4">
-                        <div class="w-16 h-16 rounded-xl bg-gradient-to-br from-purple-500 to-indigo-600 flex items-center justify-center flex-shrink-0 overflow-hidden">
+                        <div class="w-16 h-16 rounded-xl flex items-center justify-center flex-shrink-0 overflow-hidden">
                             @if($jobApp->jobPosting && $jobApp->jobPosting->company && $jobApp->jobPosting->company->logo_url)
-                            <img src="{{ $jobApp->jobPosting->company->logo_url }}" alt="{{ $jobApp->jobPosting->company->name }}" crossorigin="anonymous" class="w-full h-full object-cover">
+                                <img src="{{ $jobApp->jobPosting->company->logo_url }}" alt="{{ $jobApp->jobPosting->company->name }}" class="w-full h-full object-cover">
                             @else
-                            <span class="text-white text-xl font-bold">{{ substr($jobApp->jobPosting->company->name ?? 'C', 0, 1) }}</span>
+                                <img src="{{ $jobApp->jobPosting->company->avatar_svg ?? '' }}" alt="{{ $jobApp->jobPosting->company->name ?? 'Company' }}" class="w-full h-full object-cover">
                             @endif
                         </div>
 
