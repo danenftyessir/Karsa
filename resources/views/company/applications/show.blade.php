@@ -233,69 +233,88 @@
                 <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 fade-in-up gpu-accelerate" style="animation-delay: 0.2s;">
                     <h3 class="text-lg font-bold text-gray-900 mb-4">Timeline</h3>
                     <div class="space-y-4">
-                        <div class="flex items-start gap-3">
-                            <div class="w-2 h-2 bg-blue-500 rounded-full mt-2"></div>
-                            <div class="flex-1">
-                                <p class="text-sm text-gray-500">Dilamar</p>
-                                <p class="text-sm font-medium text-gray-900">{{ $application->created_at->format('d M Y, H:i') }}</p>
-                            </div>
-                        </div>
+                        @php
+                        // Build timeline events array and sort chronologically
+                        $timelineEvents = [];
 
-                        @if($application->reviewed_at)
+                        // Always include application submission
+                        $timelineEvents[] = [
+                            'label' => 'Dilamar',
+                            'timestamp' => $application->created_at,
+                            'color' => 'bg-blue-500',
+                            'extra' => null
+                        ];
+
+                        // Add reviewed event
+                        if ($application->reviewed_at) {
+                            $reviewerInfo = $application->reviewer ? 'oleh ' . $application->reviewer->name : null;
+                            $timelineEvents[] = [
+                                'label' => 'Direview',
+                                'timestamp' => $application->reviewed_at,
+                                'color' => 'bg-purple-500',
+                                'extra' => $reviewerInfo
+                            ];
+                        }
+
+                        // Add interview event
+                        if ($application->interview_scheduled_at) {
+                            $timelineEvents[] = [
+                                'label' => 'Interview Dijadwalkan',
+                                'timestamp' => $application->interview_scheduled_at,
+                                'color' => 'bg-indigo-500',
+                                'extra' => null
+                            ];
+                        }
+
+                        // Add offer event
+                        if ($application->offer_extended_at) {
+                            $timelineEvents[] = [
+                                'label' => 'Penawaran Diberikan',
+                                'timestamp' => $application->offer_extended_at,
+                                'color' => 'bg-green-500',
+                                'extra' => null
+                            ];
+                        }
+
+                        // Add hired event
+                        if ($application->hired_at) {
+                            $timelineEvents[] = [
+                                'label' => 'Diterima',
+                                'timestamp' => $application->hired_at,
+                                'color' => 'bg-emerald-500',
+                                'extra' => null
+                            ];
+                        }
+
+                        // Add rejected event
+                        if ($application->rejected_at) {
+                            $rejectionInfo = $application->rejection_reason;
+                            $timelineEvents[] = [
+                                'label' => 'Ditolak',
+                                'timestamp' => $application->rejected_at,
+                                'color' => 'bg-red-500',
+                                'extra' => $rejectionInfo
+                            ];
+                        }
+
+                        // Sort events by timestamp (chronological order)
+                        usort($timelineEvents, function($a, $b) {
+                            return $a['timestamp']->timestamp - $b['timestamp']->timestamp;
+                        });
+                        @endphp
+
+                        @foreach($timelineEvents as $event)
                         <div class="flex items-start gap-3">
-                            <div class="w-2 h-2 bg-purple-500 rounded-full mt-2"></div>
+                            <div class="w-2 h-2 {{ $event['color'] }} rounded-full mt-2"></div>
                             <div class="flex-1">
-                                <p class="text-sm text-gray-500">Direview</p>
-                                <p class="text-sm font-medium text-gray-900">{{ $application->reviewed_at->format('d M Y, H:i') }}</p>
-                                @if($application->reviewer)
-                                    <p class="text-xs text-gray-400">oleh {{ $application->reviewer->name }}</p>
+                                <p class="text-sm text-gray-500">{{ $event['label'] }}</p>
+                                <p class="text-sm font-medium text-gray-900">{{ $event['timestamp']->format('d M Y, H:i') }}</p>
+                                @if($event['extra'])
+                                    <p class="text-xs text-gray-400 mt-1">{{ $event['extra'] }}</p>
                                 @endif
                             </div>
                         </div>
-                        @endif
-
-                        @if($application->interview_scheduled_at)
-                        <div class="flex items-start gap-3">
-                            <div class="w-2 h-2 bg-indigo-500 rounded-full mt-2"></div>
-                            <div class="flex-1">
-                                <p class="text-sm text-gray-500">Interview Dijadwalkan</p>
-                                <p class="text-sm font-medium text-gray-900">{{ $application->interview_scheduled_at->format('d M Y, H:i') }}</p>
-                            </div>
-                        </div>
-                        @endif
-
-                        @if($application->offer_extended_at)
-                        <div class="flex items-start gap-3">
-                            <div class="w-2 h-2 bg-green-500 rounded-full mt-2"></div>
-                            <div class="flex-1">
-                                <p class="text-sm text-gray-500">Penawaran Diberikan</p>
-                                <p class="text-sm font-medium text-gray-900">{{ $application->offer_extended_at->format('d M Y, H:i') }}</p>
-                            </div>
-                        </div>
-                        @endif
-
-                        @if($application->hired_at)
-                        <div class="flex items-start gap-3">
-                            <div class="w-2 h-2 bg-emerald-500 rounded-full mt-2"></div>
-                            <div class="flex-1">
-                                <p class="text-sm text-gray-500">Diterima</p>
-                                <p class="text-sm font-medium text-gray-900">{{ $application->hired_at->format('d M Y, H:i') }}</p>
-                            </div>
-                        </div>
-                        @endif
-
-                        @if($application->rejected_at)
-                        <div class="flex items-start gap-3">
-                            <div class="w-2 h-2 bg-red-500 rounded-full mt-2"></div>
-                            <div class="flex-1">
-                                <p class="text-sm text-gray-500">Ditolak</p>
-                                <p class="text-sm font-medium text-gray-900">{{ $application->rejected_at->format('d M Y, H:i') }}</p>
-                                @if($application->rejection_reason)
-                                    <p class="text-xs text-gray-600 mt-1">{{ $application->rejection_reason }}</p>
-                                @endif
-                            </div>
-                        </div>
-                        @endif
+                        @endforeach
                     </div>
                 </div>
             </div>
