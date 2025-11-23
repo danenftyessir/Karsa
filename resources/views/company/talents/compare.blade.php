@@ -44,12 +44,12 @@
                         </tr>
                     </thead>
                     <tbody class="divide-y divide-gray-100">
-                        {{-- Location --}}
+                        {{-- University --}}
                         <tr>
-                            <td class="px-6 py-4 font-medium text-gray-700">Lokasi</td>
+                            <td class="px-6 py-4 font-medium text-gray-700">Universitas</td>
                             @foreach($talents as $talent)
                             <td class="px-6 py-4 text-center border-l border-gray-100">
-                                <span class="text-sm text-gray-600">{{ $talent->profile->university->city ?? 'N/A' }}</span>
+                                <span class="text-sm text-gray-600">{{ $talent->profile->university->name ?? 'N/A' }}</span>
                             </td>
                             @endforeach
                         </tr>
@@ -73,23 +73,12 @@
                             @endforeach
                         </tr>
 
-                        {{-- Skills --}}
+                        {{-- Major --}}
                         <tr>
-                            <td class="px-6 py-4 font-medium text-gray-700">Keahlian</td>
+                            <td class="px-6 py-4 font-medium text-gray-700">Jurusan</td>
                             @foreach($talents as $talent)
-                            <td class="px-6 py-4 border-l border-gray-100">
-                                <div class="flex flex-wrap gap-1.5 justify-center">
-                                    @if(is_array($talent->profile->skills ?? null))
-                                        @foreach(array_slice($talent->profile->skills, 0, 5) as $skill)
-                                        <span class="px-2 py-1 bg-violet-50 text-violet-700 text-xs rounded-full">{{ $skill }}</span>
-                                        @endforeach
-                                        @if(count($talent->profile->skills) > 5)
-                                        <span class="px-2 py-1 bg-gray-100 text-gray-600 text-xs rounded-full">+{{ count($talent->profile->skills) - 5 }}</span>
-                                        @endif
-                                    @else
-                                        <span class="text-sm text-gray-400">N/A</span>
-                                    @endif
-                                </div>
+                            <td class="px-6 py-4 text-center border-l border-gray-100">
+                                <span class="text-sm text-gray-600">{{ $talent->profile->major ?? 'N/A' }}</span>
                             </td>
                             @endforeach
                         </tr>
