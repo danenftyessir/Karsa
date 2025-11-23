@@ -4,6 +4,7 @@
 @section('title', 'Lowongan Kerja')
 
 @push('styles')
+{{-- Import Google Font - Space Grotesk for Hero --}}
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@600;700&display=swap" rel="stylesheet">
@@ -15,41 +16,43 @@
         -moz-osx-font-smoothing: grayscale;
     }
 
-    /* hero section */
-    .jobs-hero {
+    /* Hero section style mirip dashboard dan browse-problems */
+    .marketplace-hero-jobs {
         position: relative;
-        background-image: linear-gradient(135deg, rgba(59, 130, 246, 0.85) 0%, rgba(147, 51, 234, 0.8) 100%),
-                          url('{{ asset('magang-preview.jpg') }}');
+        background-image:
+            linear-gradient(135deg, rgba(99, 102, 241, 0.35) 0%, rgba(129, 140, 248, 0.30) 50%, rgba(156, 163, 175, 0.25) 100%),
+            url('{{ asset('magang-preview.jpg') }}');
         background-size: cover;
         background-position: center;
-        background-repeat: no-repeat;
-        min-height: 320px;
-        transform: translate3d(0, 0, 0);
-        will-change: transform;
-        backface-visibility: hidden;
+        background-attachment: fixed;
+        min-height: 480px;
     }
 
-    /* overlay untuk memastikan text terbaca */
-    .jobs-hero::before {
-        content: '';
-        position: absolute;
-        top: 0;
-        left: 0;
-        right: 0;
-        bottom: 0;
-        background: rgba(0, 0, 0, 0.15);
-        z-index: 0;
-    }
-
-    .jobs-hero > * {
-        position: relative;
-        z-index: 1;
-    }
-
-    .hero-title {
+    .hero-title-jobs {
         font-family: 'Space Grotesk', sans-serif;
         font-weight: 700;
         letter-spacing: -0.02em;
+    }
+
+    .text-shadow-strong {
+        text-shadow:
+            0 2px 4px rgba(0, 0, 0, 0.4),
+            0 4px 8px rgba(0, 0, 0, 0.3);
+    }
+
+    .jobs-fade-in {
+        animation: fadeInUp 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    @keyframes fadeInUp {
+        from {
+            opacity: 0;
+            transform: translateY(30px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
     }
 
     /* gradient background */
@@ -179,42 +182,51 @@
 @section('content')
 <div class="min-h-screen gradient-mesh-bg" x-data="jobsPage()">
 
-    {{-- hero section --}}
-    <section class="jobs-hero text-white flex items-center justify-center">
-        <div class="max-w-7xl mx-auto px-6 sm:px-8 lg:px-12 py-12 w-full">
-            <div class="max-w-4xl mx-auto text-center fade-in">
-                <h1 class="hero-title text-4xl md:text-5xl font-bold mb-4 text-white">
-                    Lowongan Kerja & Magang
-                </h1>
-                <p class="text-lg md:text-xl text-white/90 mb-6">
-                    Temukan peluang karir yang sesuai dengan minat dan keahlian Anda
-                </p>
+    {{-- marketplace-style hero section mirip dashboard dan browse-problems --}}
+    <section class="marketplace-hero-jobs text-white relative flex items-center justify-center">
+        <div class="max-w-7xl mx-auto px-6 sm:px-8 lg:px-12 relative z-10 w-full">
+            <div class="max-w-4xl mx-auto text-center">
+                <div class="jobs-fade-in">
+                    {{-- Judul dan deskripsi --}}
+                    <h1 class="hero-title-jobs text-4xl md:text-6xl font-bold mb-6 text-white leading-tight" style="color: white !important;">
+                        Lowongan Kerja & Magang
+                    </h1>
 
-                {{-- stats --}}
-                <div class="flex justify-center gap-8 mt-6">
-                    <div class="text-center">
-                        <div class="text-3xl font-bold">{{ $totalJobs }}</div>
-                        <div class="text-sm text-white/80">Lowongan Aktif</div>
-                    </div>
-                    <div class="text-center">
-                        <div class="text-3xl font-bold">{{ $totalCompanies }}</div>
-                        <div class="text-sm text-white/80">Perusahaan</div>
-                    </div>
-                </div>
+                    <p class="text-lg md:text-xl leading-relaxed max-w-2xl mx-auto font-medium mb-8" style="color: #ffffff !important; text-shadow: 0 2px 8px rgba(0, 0, 0, 0.5), 0 4px 12px rgba(0, 0, 0, 0.4);">
+                        Temukan peluang karir yang sesuai dengan minat dan keahlian Anda
+                    </p>
 
-                {{-- quick links --}}
-                <div class="flex justify-center gap-4 mt-6">
-                    <a href="{{ route('student.jobs.saved') }}" class="px-4 py-2 bg-white/20 hover:bg-white/30 text-white rounded-lg text-sm font-medium transition-colors flex items-center gap-2">
-                        <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M17 3H7c-1.1 0-2 .9-2 2v16l7-3 7 3V5c0-1.1-.9-2-2-2z"/></svg>
-                        Tersimpan
-                    </a>
-                    <a href="{{ route('student.jobs.alerts') }}" class="px-4 py-2 bg-white/20 hover:bg-white/30 text-white rounded-lg text-sm font-medium transition-colors flex items-center gap-2">
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/></svg>
-                        Job Alert
-                    </a>
+                    {{-- stats --}}
+                    <div class="flex justify-center gap-8 mb-6">
+                        <div class="text-center">
+                            <div class="text-3xl md:text-4xl font-bold" style="color: white !important;">{{ $totalJobs }}</div>
+                            <div class="text-sm md:text-base font-medium" style="color: rgba(255, 255, 255, 0.9) !important;">Lowongan Aktif</div>
+                        </div>
+                        <div class="text-center">
+                            <div class="text-3xl md:text-4xl font-bold" style="color: white !important;">{{ $totalCompanies }}</div>
+                            <div class="text-sm md:text-base font-medium" style="color: rgba(255, 255, 255, 0.9) !important;">Perusahaan</div>
+                        </div>
+                    </div>
+
+                    {{-- primary CTAs --}}
+                    <div class="flex flex-col sm:flex-row gap-4 justify-center">
+                        <a href="{{ route('student.jobs.saved') }}"
+                           class="inline-flex items-center justify-center px-8 py-3 bg-indigo-600 text-white font-bold rounded-full hover:bg-indigo-700 transition-all duration-300 shadow-xl hover:shadow-2xl hover:scale-105">
+                            <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 24 24"><path d="M17 3H7c-1.1 0-2 .9-2 2v16l7-3 7 3V5c0-1.1-.9-2-2-2z"/></svg>
+                            <span>Lowongan Tersimpan</span>
+                        </a>
+                        <a href="{{ route('student.jobs.alerts') }}"
+                           class="inline-flex items-center justify-center px-8 py-3 bg-white/20 backdrop-blur-sm text-white font-bold rounded-full hover:bg-white/30 transition-all duration-300 border-2 border-white hover:scale-105">
+                            <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/></svg>
+                            <span>Job Alert</span>
+                        </a>
+                    </div>
                 </div>
             </div>
         </div>
+
+        {{-- straight divider --}}
+        <div class="absolute bottom-0 left-0 right-0 bg-white" style="height: 4px; margin: 0;"></div>
     </section>
 
     {{-- main content --}}

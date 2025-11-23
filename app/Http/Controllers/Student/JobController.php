@@ -259,6 +259,11 @@ class JobController extends Controller
         $query = SavedJob::with(['jobPosting.company'])
             ->byUser($user->id);
 
+        // Filter by folder if specified
+        if ($request->has('folder') && $request->folder) {
+            $query->where('folder', $request->folder);
+        }
+
         $savedJobs = $query->orderBy('created_at', 'desc')->paginate(12);
 
         // statistik
@@ -270,10 +275,20 @@ class JobController extends Controller
             })
             ->count();
 
+        // Get unique folders
+        $folders = SavedJob::byUser($user->id)
+            ->whereNotNull('folder')
+            ->distinct()
+            ->pluck('folder')
+            ->filter()
+            ->sort()
+            ->values();
+
         return view('student.jobs.saved', compact(
             'savedJobs',
             'totalSaved',
-            'expiringCount'
+            'expiringCount',
+            'folders'
         ));
     }
 

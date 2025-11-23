@@ -11,6 +11,13 @@
         overflow: hidden;
     }
 
+    /* Ensure text is white and on top */
+    .network-hero h1,
+    .network-hero p,
+    .network-hero * {
+        color: white !important;
+    }
+
     /* Search bar styling */
     .hero-search {
         background: white;
