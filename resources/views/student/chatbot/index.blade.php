@@ -13,7 +13,7 @@
         position: relative;
         background-image:
             linear-gradient(135deg, rgba(99, 102, 241, 0.35) 0%, rgba(129, 140, 248, 0.30) 50%, rgba(156, 163, 175, 0.25) 100%),
-            url('/deal-work-together.jpg');
+            url('/KARA-background.png');
         background-size: cover;
         background-position: center;
         background-attachment: fixed;

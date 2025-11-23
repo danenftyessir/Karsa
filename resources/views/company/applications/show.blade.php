@@ -475,7 +475,9 @@ document.addEventListener('alpine:init', () => {
                     this.showStatusModal = false;
                     window.location.reload();
                 } else {
-                    alert('Gagal mengubah status');
+                    // Display specific error message from server
+                    const errorMessage = data.message || 'Gagal mengubah status';
+                    alert(errorMessage);
                 }
             } catch (error) {
                 console.error('Error:', error);

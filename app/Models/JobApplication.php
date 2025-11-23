@@ -282,6 +282,17 @@ class JobApplication extends Model
      */
     public function updateStatus($status, $reviewerId = null, $notes = null)
     {
+        // Validation: Prevent changing from hired/offer to rejected
+        // Once a candidate is hired or offered, they cannot be rejected
+        // This protects final decisions from being reversed inappropriately
+        if (in_array($this->status, [self::STATUS_HIRED, self::STATUS_OFFER])
+            && $status === self::STATUS_REJECTED) {
+            throw new \Exception('Tidak dapat menolak kandidat yang sudah diterima atau ditawari pekerjaan. Keputusan yang sudah dipublikasikan tidak dapat diubah.');
+        }
+
+        // Allow changing from rejected to other statuses
+        // This enables reconsidering rejected candidates when slots are available
+
         $data = [
             'status' => $status,
             'reviewed_at' => now(),

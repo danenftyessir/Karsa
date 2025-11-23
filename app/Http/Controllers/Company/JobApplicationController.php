@@ -148,17 +148,24 @@ class JobApplicationController extends Controller
             ->where('id', $id)
             ->firstOrFail();
 
-        $application->updateStatus($validated['status'], $user->id, $validated['notes'] ?? null);
+        try {
+            $application->updateStatus($validated['status'], $user->id, $validated['notes'] ?? null);
 
-        if ($validated['status'] === JobApplication::STATUS_REJECTED && isset($validated['rejection_reason'])) {
-            $application->update(['rejection_reason' => $validated['rejection_reason']]);
+            if ($validated['status'] === JobApplication::STATUS_REJECTED && isset($validated['rejection_reason'])) {
+                $application->update(['rejection_reason' => $validated['rejection_reason']]);
+            }
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Application status updated successfully',
+                'application' => $application->fresh(['user', 'jobPosting']),
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => $e->getMessage(),
+            ], 422);
         }
-
-        return response()->json([
-            'success' => true,
-            'message' => 'Application status updated successfully',
-            'application' => $application->fresh(['user', 'jobPosting']),
-        ]);
     }
 
     /**
@@ -203,12 +210,19 @@ class JobApplicationController extends Controller
             ->where('id', $id)
             ->firstOrFail();
 
-        $application->reject($user->id, $validated['reason'] ?? null);
+        try {
+            $application->reject($user->id, $validated['reason'] ?? null);
 
-        return response()->json([
-            'success' => true,
-            'message' => 'Application rejected successfully',
-        ]);
+            return response()->json([
+                'success' => true,
+                'message' => 'Application rejected successfully',
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => $e->getMessage(),
+            ], 422);
+        }
     }
 
     /**
@@ -257,13 +271,29 @@ class JobApplicationController extends Controller
             ->whereIn('id', $validated['application_ids'])
             ->get();
 
+        $successCount = 0;
+        $errors = [];
+
         foreach ($applications as $application) {
-            $application->updateStatus($validated['status'], $user->id, $validated['notes'] ?? null);
+            try {
+                $application->updateStatus($validated['status'], $user->id, $validated['notes'] ?? null);
+                $successCount++;
+            } catch (\Exception $e) {
+                $errors[] = "Application ID {$application->id}: " . $e->getMessage();
+            }
+        }
+
+        if (count($errors) > 0) {
+            return response()->json([
+                'success' => false,
+                'message' => "$successCount applications updated, " . count($errors) . " failed",
+                'errors' => $errors,
+            ], 422);
         }
 
         return response()->json([
             'success' => true,
-            'message' => count($applications) . ' applications updated successfully',
+            'message' => $successCount . ' applications updated successfully',
         ]);
     }
 

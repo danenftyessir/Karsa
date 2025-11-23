@@ -914,6 +914,8 @@ function applicationsKanban() {
                     })
                 });
 
+                const data = await response.json();
+
                 if (response.ok) {
                     // update local state
                     const app = this.applications.find(a => a.id === this.selectedApplication.id);
@@ -924,7 +926,9 @@ function applicationsKanban() {
                     this.quickActionsOpen = false;
                     this.showToast('Status berhasil diperbarui');
                 } else {
-                    this.showToast('Gagal memperbarui status', 'error');
+                    // Display specific error message from server
+                    const errorMessage = data.message || 'Gagal memperbarui status';
+                    this.showToast(errorMessage, 'error');
                 }
             } catch (error) {
                 console.error('Error updating status:', error);
@@ -1041,6 +1045,8 @@ function applicationsKanban() {
                     })
                 });
 
+                const data = await response.json();
+
                 if (response.ok) {
                     const app = this.applications.find(a => a.id === this.selectedApplication.id);
                     if (app) {
@@ -1050,7 +1056,9 @@ function applicationsKanban() {
                     this.quickActionsOpen = false;
                     this.showToast('Interview berhasil dijadwalkan');
                 } else {
-                    this.showToast('Gagal menjadwalkan interview', 'error');
+                    // Display specific error message from server
+                    const errorMessage = data.message || 'Gagal menjadwalkan interview';
+                    this.showToast(errorMessage, 'error');
                 }
             } catch (error) {
                 console.error('Error scheduling interview:', error);
@@ -1096,6 +1104,8 @@ function applicationsKanban() {
                     })
                 });
 
+                const data = await response.json();
+
                 if (response.ok) {
                     // update local state
                     this.selectedApplications.forEach(id => {
@@ -1105,10 +1115,18 @@ function applicationsKanban() {
                         }
                     });
 
+                    const count = this.selectedApplications.length;
                     this.selectedApplications = [];
-                    this.showToast(`${this.selectedApplications.length} lamaran berhasil diperbarui`);
+                    this.showToast(`${count} lamaran berhasil diperbarui`);
                 } else {
-                    this.showToast('Gagal memperbarui status', 'error');
+                    // Display specific error message from server
+                    const errorMessage = data.message || 'Gagal memperbarui status';
+                    if (data.errors && data.errors.length > 0) {
+                        // Show first error if multiple errors exist
+                        this.showToast(data.errors[0], 'error');
+                    } else {
+                        this.showToast(errorMessage, 'error');
+                    }
                 }
             } catch (error) {
                 console.error('Error bulk updating:', error);
