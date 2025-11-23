@@ -108,8 +108,8 @@
     </div>
 
     {{-- create modal --}}
-    <div x-show="showCreateModal" x-cloak class="fixed inset-0 z-50 overflow-y-auto" x-transition>
-        <div class="flex items-center justify-center min-h-screen px-4 py-8">
+    <div x-show="showCreateModal" x-cloak class="fixed inset-0 z-60 overflow-y-auto" x-transition>
+        <div class="flex items-start justify-center min-h-screen px-4 py-20">
             <div class="fixed inset-0 bg-black/50" @click="showCreateModal = false"></div>
             <div class="relative bg-white rounded-2xl max-w-lg w-full p-6">
                 <h3 class="text-xl font-bold text-gray-900 mb-6">Buat Job Alert Baru</h3>
@@ -158,21 +158,6 @@
                             </div>
                         </div>
 
-                        <div class="grid grid-cols-2 gap-4">
-                            <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-1">Gaji Min (Rp)</label>
-                                <input type="number" x-model="newAlert.salary_min"
-                                       placeholder="5000000"
-                                       class="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
-                            </div>
-                            <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-1">Gaji Max (Rp)</label>
-                                <input type="number" x-model="newAlert.salary_max"
-                                       placeholder="15000000"
-                                       class="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
-                            </div>
-                        </div>
-
                         <div>
                             <label class="block text-sm font-medium text-gray-700 mb-1">Frekuensi Notifikasi *</label>
                             <select x-model="newAlert.frequency" required
@@ -218,8 +203,6 @@ function alertsPage() {
             keywords: '',
             job_types: [],
             locations: [],
-            salary_min: null,
-            salary_max: null,
             frequency: 'daily'
         },
 

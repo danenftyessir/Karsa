@@ -85,14 +85,14 @@
             </p>
 
             <div class="flex flex-col sm:flex-row gap-4 justify-center items-center" data-aos="fade-up" data-aos-delay="200">
-                <a href="{{ route('register.student') }}" class="inline-flex items-center px-8 py-4 bg-yellow-400 text-gray-900 font-semibold rounded-full hover:bg-yellow-300 transition-all duration-300 shadow-lg hover:shadow-xl hover:scale-105">
-                    <span>Mulai Sebagai Mahasiswa</span>
+                <a href="{{ route('login') }}" class="inline-flex items-center px-8 py-4 bg-yellow-400 text-gray-900 font-semibold rounded-full hover:bg-yellow-300 transition-all duration-300 shadow-lg hover:shadow-xl hover:scale-105">
+                    <span>Login Sekarang</span>
                     <svg class="w-5 h-5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"></path>
                     </svg>
                 </a>
-                <a href="{{ route('register.institution') }}" class="inline-flex items-center px-8 py-4 bg-white bg-opacity-20 backdrop-blur-sm text-black font-semibold rounded-full hover:bg-opacity-30 transition-all duration-300 border-2 border-white hover:scale-105">
-                    <span>Daftar Sebagai Instansi</span>
+                <a href="{{ route('register') }}" class="inline-flex items-center px-8 py-4 bg-white bg-opacity-20 backdrop-blur-sm text-black font-semibold rounded-full hover:bg-opacity-30 transition-all duration-300 border-2 border-white hover:scale-105">
+                    <span>Daftar Sekarang</span>
                 </a>
             </div>
         </div>

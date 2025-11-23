@@ -205,6 +205,12 @@
             <div class="px-6 py-4 border-b border-gray-200 bg-white">
                 <div class="flex items-center justify-between">
                     <div class="flex items-center space-x-3">
+                        <!-- Back Button -->
+                        <a href="{{ route('student.chatbot.index') }}" class="p-2 hover:bg-gray-100 rounded-lg transition-colors" title="Kembali">
+                            <svg class="w-6 h-6 text-gray-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
+                            </svg>
+                        </a>
                         <!-- Hamburger Menu Button -->
                         <button onclick="toggleSidebar()" class="p-2 hover:bg-gray-100 rounded-lg transition-colors">
                             <svg class="w-6 h-6 text-gray-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">

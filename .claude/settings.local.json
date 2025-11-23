@@ -1,9 +1,0 @@
-{
-  "permissions": {
-    "allow": [
-      "Bash(php artisan make:migration:*)"
-    ],
-    "deny": [],
-    "ask": []
-  }
-}
