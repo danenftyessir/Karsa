@@ -369,30 +369,34 @@
 
                         <div class="pt-4 border-t border-gray-100">
                             <p class="text-sm text-gray-500 mb-2">Owner</p>
-                            <div class="flex items-center gap-3">
-                                @if(!empty($jobPosting['owner']['avatar']))
-                                    <img src="{{ asset('storage/profiles/' . $jobPosting['owner']['avatar']) }}"
-                                         alt="{{ $jobPosting['owner']['name'] }}"
-                                         class="w-10 h-10 rounded-full object-cover">
-                                @else
-                                    <div class="w-10 h-10 rounded-full bg-gradient-to-br from-purple-500 to-indigo-600 flex items-center justify-center">
-                                        @php
-                                            $nameParts = explode(' ', $jobPosting['owner']['name']);
-                                            $initials = strtoupper(substr($nameParts[0], 0, 1) . (count($nameParts) > 1 ? substr($nameParts[count($nameParts)-1], 0, 1) : ''));
-                                        @endphp
-                                        <span class="text-white text-sm font-bold">{{ $initials }}</span>
+                            @if(!empty($jobPosting['owner']) && !empty($jobPosting['owner']['name']))
+                                <div class="flex items-center gap-3">
+                                    @if(!empty($jobPosting['owner']['avatar']))
+                                        <img src="{{ asset('storage/profiles/' . $jobPosting['owner']['avatar']) }}"
+                                             alt="{{ $jobPosting['owner']['name'] }}"
+                                             class="w-10 h-10 rounded-full object-cover">
+                                    @else
+                                        <div class="w-10 h-10 rounded-full bg-gradient-to-br from-purple-500 to-indigo-600 flex items-center justify-center">
+                                            @php
+                                                $nameParts = explode(' ', $jobPosting['owner']['name']);
+                                                $initials = strtoupper(substr($nameParts[0], 0, 1) . (count($nameParts) > 1 ? substr($nameParts[count($nameParts)-1], 0, 1) : ''));
+                                            @endphp
+                                            <span class="text-white text-sm font-bold">{{ $initials }}</span>
+                                        </div>
+                                    @endif
+                                    <div>
+                                        <p class="font-medium text-gray-900">{{ $jobPosting['owner']['name'] }}</p>
+                                        <p class="text-sm text-gray-500">{{ $jobPosting['owner']['role'] ?? 'N/A' }}</p>
                                     </div>
-                                @endif
-                                <div>
-                                    <p class="font-medium text-gray-900">{{ $jobPosting['owner']['name'] }}</p>
-                                    <p class="text-sm text-gray-500">{{ $jobPosting['owner']['role'] }}</p>
+                                    <button class="ml-auto text-gray-400 hover:text-gray-600">
+                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"/>
+                                        </svg>
+                                    </button>
                                 </div>
-                                <button class="ml-auto text-gray-400 hover:text-gray-600">
-                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"/>
-                                    </svg>
-                                </button>
-                            </div>
+                            @else
+                                <p class="text-sm text-gray-500 italic">Owner information not available</p>
+                            @endif
                         </div>
 
                         <div class="pt-4 border-t border-gray-100">
