@@ -132,10 +132,13 @@ class JobPosting extends Model
     }
 
     /**
-     * Scope: Filter by job type
+     * Scope: Filter by job type (support single value or array)
      */
     public function scopeByType($query, $type)
     {
+        if (is_array($type)) {
+            return $query->whereIn('job_type', $type);
+        }
         return $query->where('job_type', $type);
     }
 

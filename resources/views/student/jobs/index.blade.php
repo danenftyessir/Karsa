@@ -86,7 +86,34 @@
         }
     }
 
-    /* filter sidebar */
+    /* filter sidebar - sticky positioning */
+    .filter-sidebar {
+        position: sticky;
+        top: 2rem;
+        max-height: calc(100vh - 4rem);
+        overflow-y: auto;
+    }
+
+    /* filter sidebar scrollbar styling */
+    .filter-sidebar::-webkit-scrollbar {
+        width: 6px;
+    }
+
+    .filter-sidebar::-webkit-scrollbar-track {
+        background: #f1f1f1;
+        border-radius: 10px;
+    }
+
+    .filter-sidebar::-webkit-scrollbar-thumb {
+        background: #cbd5e1;
+        border-radius: 10px;
+    }
+
+    .filter-sidebar::-webkit-scrollbar-thumb:hover {
+        background: #94a3b8;
+    }
+
+    /* filter section */
     .filter-section {
         border-bottom: 1px solid #e5e7eb;
         padding-bottom: 1rem;
@@ -175,7 +202,7 @@
 
             {{-- filter sidebar --}}
             <aside class="w-full lg:w-72 flex-shrink-0">
-                <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 sticky top-24">
+                <div class="filter-sidebar bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
                     <h3 class="text-lg font-bold text-gray-900 mb-4">Filter</h3>
 
                     <form method="GET" action="{{ route('student.jobs.index') }}" id="filterForm">
@@ -293,7 +320,7 @@
                             {{-- company logo --}}
                             <div class="w-14 h-14 rounded-xl bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center flex-shrink-0 overflow-hidden">
                                 @if($job->company && $job->company->logo_url)
-                                <img src="{{ $job->company->logo_url }}" alt="{{ $job->company->name }}" class="w-full h-full object-cover">
+                                <img src="{{ $job->company->logo_url }}" alt="{{ $job->company->name }}" crossorigin="anonymous" class="w-full h-full object-cover">
                                 @else
                                 <span class="text-white text-xl font-bold">{{ substr($job->company->name ?? 'C', 0, 1) }}</span>
                                 @endif

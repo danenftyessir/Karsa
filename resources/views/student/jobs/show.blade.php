@@ -90,7 +90,7 @@
                         {{-- company logo --}}
                         <div class="w-16 h-16 rounded-xl bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center flex-shrink-0 overflow-hidden">
                             @if($job->company && $job->company->logo_url)
-                            <img src="{{ $job->company->logo_url }}" alt="{{ $job->company->name }}" class="w-full h-full object-cover">
+                            <img src="{{ $job->company->logo_url }}" alt="{{ $job->company->name }}" crossorigin="anonymous" class="w-full h-full object-cover">
                             @else
                             <span class="text-white text-2xl font-bold">{{ substr($job->company->name ?? 'C', 0, 1) }}</span>
                             @endif
@@ -309,7 +309,7 @@
                     <div class="flex items-center gap-3 mb-4">
                         <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center overflow-hidden">
                             @if($job->company->logo_url)
-                            <img src="{{ $job->company->logo_url }}" alt="{{ $job->company->name }}" class="w-full h-full object-cover">
+                            <img src="{{ $job->company->logo_url }}" alt="{{ $job->company->name }}" crossorigin="anonymous" class="w-full h-full object-cover">
                             @else
                             <span class="text-white text-lg font-bold">{{ substr($job->company->name, 0, 1) }}</span>
                             @endif

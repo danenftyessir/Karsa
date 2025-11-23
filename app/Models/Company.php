@@ -72,4 +72,25 @@ class Company extends Model
         )->withPivot('category', 'notes', 'saved_at')
             ->withTimestamps();
     }
+
+    /**
+     * Get the company logo URL
+     * Returns Supabase URL if logo exists, otherwise returns UI Avatars fallback
+     */
+    public function getLogoUrlAttribute(): string
+    {
+        if ($this->logo) {
+            // Check if it's already a full URL
+            if (str_starts_with($this->logo, 'http')) {
+                return $this->logo;
+            }
+
+            // Try to get from Supabase Storage
+            $storageService = app(\App\Services\SupabaseStorageService::class);
+            return $storageService->getPublicUrl($this->logo);
+        }
+
+        // Fallback to UI Avatars with company name initial
+        return 'https://ui-avatars.com/api/?name=' . urlencode(substr($this->name ?? 'C', 0, 2)) . '&size=200&background=F59E0B&color=ffffff';
+    }
 }

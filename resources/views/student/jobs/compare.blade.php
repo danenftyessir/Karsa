@@ -55,7 +55,7 @@
                                 <div class="flex items-start gap-3">
                                     <div class="w-12 h-12 rounded-lg bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center flex-shrink-0">
                                         @if($job->company && $job->company->logo_url)
-                                        <img src="{{ $job->company->logo_url }}" alt="" class="w-full h-full object-cover rounded-lg">
+                                        <img src="{{ $job->company->logo_url }}" alt="" crossorigin="anonymous" class="w-full h-full object-cover rounded-lg">
                                         @else
                                         <span class="text-white font-bold">{{ substr($job->company->name ?? 'C', 0, 1) }}</span>
                                         @endif

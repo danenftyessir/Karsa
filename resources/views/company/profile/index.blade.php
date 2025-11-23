@@ -42,6 +42,7 @@
                             @if($company->logo)
                                 <img src="{{ $company->logo }}"
                                      alt="{{ $company->name }}"
+                                     crossorigin="anonymous"
                                      class="w-24 h-24 rounded-2xl object-cover border-2 border-gray-200">
                             @else
                                 <div class="w-24 h-24 rounded-2xl bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center">

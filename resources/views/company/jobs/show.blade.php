@@ -339,9 +339,13 @@
                         <div>
                             <p class="text-sm text-gray-500 mb-2">Tags</p>
                             <div class="flex flex-wrap gap-2">
-                                @foreach($jobPosting['tags'] as $tag)
-                                    <span class="px-3 py-1 bg-gray-100 text-gray-700 rounded-full text-sm">{{ $tag }}</span>
-                                @endforeach
+                                @if(!empty($jobPosting['tags']) && is_array($jobPosting['tags']))
+                                    @foreach($jobPosting['tags'] as $tag)
+                                        <span class="px-3 py-1 bg-gray-100 text-gray-700 rounded-full text-sm">{{ $tag }}</span>
+                                    @endforeach
+                                @else
+                                    <span class="text-sm text-gray-400 italic">No tags</span>
+                                @endif
                             </div>
                         </div>
 

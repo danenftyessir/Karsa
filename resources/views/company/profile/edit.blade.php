@@ -222,6 +222,7 @@
                                 <div x-show="!logoPreview" class="relative">
                                     <img src="{{ $company->logo }}"
                                          alt="{{ $company->name }}"
+                                         crossorigin="anonymous"
                                          class="w-32 h-32 rounded-2xl object-cover border-2 border-gray-200">
                                     <button type="button"
                                             @click="deleteLogo()"
