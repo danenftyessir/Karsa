@@ -246,8 +246,8 @@
             <div x-show="showFilters" x-collapse x-cloak class="mt-4 pt-4 border-t border-gray-200">
                 <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
                     <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-1">Posisi</label>
-                        <select x-model="filters.position" class="w-full rounded-lg border-gray-300 text-sm focus:ring-primary-500 focus:border-primary-500">
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Posisi</label>
+                        <select x-model="filters.position" class="w-full px-4 py-2.5 bg-white border border-gray-300 rounded-lg text-sm shadow-sm focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-colors">
                             <option value="">Semua Posisi</option>
                             @foreach($jobPostings as $job)
                                 <option value="{{ $job->id }}">{{ $job->title }}</option>
@@ -255,8 +255,8 @@
                         </select>
                     </div>
                     <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-1">Tanggal Melamar</label>
-                        <select x-model="filters.dateRange" class="w-full rounded-lg border-gray-300 text-sm focus:ring-primary-500 focus:border-primary-500">
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Tanggal Melamar</label>
+                        <select x-model="filters.dateRange" class="w-full px-4 py-2.5 bg-white border border-gray-300 rounded-lg text-sm shadow-sm focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-colors">
                             <option value="">Semua Waktu</option>
                             <option value="today">Hari Ini</option>
                             <option value="week">Minggu Ini</option>
@@ -264,12 +264,12 @@
                         </select>
                     </div>
                     <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-1">Cari Nama</label>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Cari Nama</label>
                         <input type="text" x-model="filters.search" placeholder="Ketik nama kandidat..."
-                               class="w-full rounded-lg border-gray-300 text-sm focus:ring-primary-500 focus:border-primary-500">
+                               class="w-full px-4 py-2.5 bg-white border border-gray-300 rounded-lg text-sm shadow-sm focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-colors">
                     </div>
                     <div class="flex items-end">
-                        <button @click="resetFilters()" class="px-4 py-2 text-sm text-gray-600 hover:text-gray-900">
+                        <button @click="resetFilters()" class="px-5 py-2.5 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors shadow-sm">
                             Reset Filter
                         </button>
                     </div>
@@ -357,12 +357,12 @@
 
     <!-- quick actions modal -->
     <div x-show="quickActionsOpen" x-cloak
-         class="fixed inset-0 z-50 overflow-y-auto"
+         class="fixed inset-0 z-[60] overflow-y-auto"
          @keydown.escape.window="quickActionsOpen = false">
         <div class="flex items-center justify-center min-h-screen px-4">
-            <div class="fixed inset-0 bg-black/50 modal-backdrop" @click="quickActionsOpen = false"></div>
+            <div class="fixed inset-0 bg-black/50 modal-backdrop z-[59]" @click="quickActionsOpen = false"></div>
 
-            <div class="relative bg-white rounded-xl shadow-xl max-w-lg w-full p-6 modal-content"
+            <div class="relative z-[61] bg-white rounded-xl shadow-xl max-w-lg w-full p-6 modal-content"
                  x-transition:enter="transition ease-out duration-300"
                  x-transition:enter-start="opacity-0 transform scale-95"
                  x-transition:enter-end="opacity-100 transform scale-100">

@@ -97,7 +97,7 @@
         <div class="container mx-auto px-6 relative z-10">
             <div class="flex justify-between items-center fade-in-up">
                 <div>
-                    <h1 class="text-4xl font-extrabold text-white mb-2" style="font-family: 'Space Grotesk', sans-serif;">
+                    <h1 class="text-4xl font-extrabold text-white mb-2" style="font-family: 'Space Grotesk', sans-serif; color: white !important;">
                         Temukan Talenta Terbaik
                     </h1>
                     <p class="text-white text-lg font-medium">
@@ -292,7 +292,7 @@
                         <div x-show="open" x-collapse class="mt-3">
                             <input type="text"
                                    x-model="filters.location"
-                                   placeholder="cth: Berlin, Germany"
+                                   placeholder="cth: Jawa Barat, Indonesia"
                                    class="w-full px-3 py-2 text-sm border border-gray-200 rounded-lg focus:ring-2 focus:ring-violet-500 focus:border-transparent">
                         </div>
                     </div>
@@ -563,51 +563,37 @@
                 </div>
 
                 {{-- list view with improved styling --}}
-                <div x-show="viewMode === 'list' && paginatedTalents.length > 0" class="space-y-4">
+                <div x-show="viewMode === 'list' && paginatedTalents.length > 0" class="space-y-3">
                     <template x-for="(talent, index) in paginatedTalents" :key="talent.id">
                         <div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden hover-lift gpu-accelerate transition-all hover:shadow-md"
                              :style="'animation-delay: ' + (0.25 + index * 0.03) + 's'">
-                            <div class="p-5">
-                                <div class="flex items-start gap-5">
+                            <div class="p-6">
+                                <div class="flex items-start gap-6">
                                     {{-- Avatar Section --}}
                                     <div class="relative flex-shrink-0">
                                         <img :src="'/'+talent.avatar"
                                              :alt="talent.name"
-                                             class="w-20 h-20 rounded-xl object-cover ring-2 ring-gray-100"
+                                             class="w-24 h-24 rounded-xl object-cover ring-2 ring-violet-100"
                                              onerror="this.src='https://ui-avatars.com/api/?name='+encodeURIComponent(this.alt)+'&background=6366F1&color=fff'">
                                         <span x-show="talent.online"
                                               class="absolute -bottom-1 -right-1 w-5 h-5 bg-green-500 border-3 border-white rounded-full"></span>
                                     </div>
 
-                                    {{-- Info Section --}}
+                                    {{-- Main Content Section --}}
                                     <div class="flex-1 min-w-0">
-                                        <div class="flex items-start justify-between mb-2">
+                                        {{-- Header with Name and Verification --}}
+                                        <div class="flex items-start justify-between mb-3">
                                             <div class="flex-1">
-                                                <div class="flex items-center gap-2 mb-1">
-                                                    <h3 class="text-lg font-bold text-gray-900" x-text="talent.name"></h3>
-                                                    <span x-show="talent.verified" class="flex items-center gap-1 px-2 py-0.5 bg-green-50 text-green-700 text-xs font-medium rounded-full">
+                                                <div class="flex items-center gap-2 mb-1.5">
+                                                    <h3 class="text-xl font-bold text-gray-900" x-text="talent.name"></h3>
+                                                    <span x-show="talent.verified" class="flex items-center gap-1 px-2.5 py-1 bg-green-50 text-green-700 text-xs font-medium rounded-full">
                                                         <svg class="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 20 20">
                                                             <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
                                                         </svg>
                                                         Terverifikasi
                                                     </span>
                                                 </div>
-                                                <p class="text-sm font-medium text-violet-600 mb-1" x-text="talent.title"></p>
-                                                <div class="flex items-center gap-4 text-sm text-gray-500">
-                                                    <span class="flex items-center gap-1">
-                                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/>
-                                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/>
-                                                        </svg>
-                                                        <span x-text="talent.location"></span>
-                                                    </span>
-                                                    <span class="flex items-center gap-1" x-show="talent.university">
-                                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/>
-                                                        </svg>
-                                                        <span x-text="talent.university"></span>
-                                                    </span>
-                                                </div>
+                                                <p class="text-sm font-semibold text-violet-600 mb-2" x-text="talent.title"></p>
                                             </div>
 
                                             {{-- Comparison Checkbox --}}
@@ -620,32 +606,81 @@
                                             </div>
                                         </div>
 
+                                        {{-- Location Info --}}
+                                        <div class="flex items-center gap-1.5 text-sm text-gray-600 mb-3">
+                                            <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/>
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/>
+                                            </svg>
+                                            <span x-text="talent.location"></span>
+                                        </div>
+
+                                        {{-- SDG Badges --}}
+                                        <div x-show="talent.sdg_badges && talent.sdg_badges.length > 0" class="mb-3">
+                                            <div class="flex flex-wrap gap-1.5">
+                                                <template x-for="sdg in talent.sdg_badges.slice(0, 6)" :key="sdg.id">
+                                                    <div class="px-2.5 py-1 text-xs font-semibold rounded-md"
+                                                         :class="{
+                                                             'bg-red-100 text-red-700': sdg.color === 'red',
+                                                             'bg-amber-100 text-amber-700': sdg.color === 'amber',
+                                                             'bg-green-100 text-green-700': sdg.color === 'green',
+                                                             'bg-blue-100 text-blue-700': sdg.color === 'blue',
+                                                             'bg-orange-100 text-orange-700': sdg.color === 'orange',
+                                                             'bg-pink-100 text-pink-700': sdg.color === 'pink',
+                                                             'bg-yellow-100 text-yellow-700': sdg.color === 'yellow',
+                                                             'bg-cyan-100 text-cyan-700': sdg.color === 'cyan',
+                                                         }"
+                                                         x-text="sdg.name">
+                                                    </div>
+                                                </template>
+                                                <span x-show="talent.sdg_badges.length > 6"
+                                                      class="px-2.5 py-1 bg-gray-100 text-gray-600 text-xs font-semibold rounded-md">
+                                                    +<span x-text="talent.sdg_badges.length - 6"></span>
+                                                </span>
+                                            </div>
+                                        </div>
+
                                         {{-- Skills --}}
-                                        <div class="flex flex-wrap gap-2 mb-3" x-show="talent.skills && talent.skills.length > 0">
-                                            <template x-for="skill in talent.skills.slice(0, 5)" :key="skill">
-                                                <span class="px-3 py-1 bg-violet-50 text-violet-700 text-xs font-medium rounded-full border border-violet-100" x-text="skill"></span>
+                                        <div class="flex flex-wrap gap-2 mb-4" x-show="talent.skills && talent.skills.length > 0">
+                                            <template x-for="skill in talent.skills.slice(0, 6)" :key="skill">
+                                                <span class="px-3 py-1.5 bg-violet-50 text-violet-700 text-xs font-medium rounded-lg border border-violet-100" x-text="skill"></span>
                                             </template>
-                                            <span x-show="talent.skills.length > 5" class="px-3 py-1 bg-gray-100 text-gray-600 text-xs font-medium rounded-full">
-                                                +<span x-text="talent.skills.length - 5"></span> lainnya
+                                            <span x-show="talent.skills.length > 6" class="px-3 py-1.5 bg-gray-100 text-gray-600 text-xs font-medium rounded-lg">
+                                                +<span x-text="talent.skills.length - 6"></span> lainnya
                                             </span>
                                         </div>
 
+                                        {{-- Stats Row --}}
+                                        <div class="grid grid-cols-4 gap-4 mb-4 p-3 bg-gray-50 rounded-lg">
+                                            <div x-show="talent.projects_completed" class="text-center">
+                                                <p class="text-xs text-gray-500 mb-1">Proyek</p>
+                                                <p class="text-lg font-bold text-gray-900" x-text="talent.projects_completed"></p>
+                                            </div>
+                                            <div x-show="talent.success_rate" class="text-center">
+                                                <p class="text-xs text-gray-500 mb-1">Sukses</p>
+                                                <p class="text-lg font-bold text-gray-900" x-text="talent.success_rate + '%'"></p>
+                                            </div>
+                                            <div x-show="talent.algorithms_deployed" class="text-center">
+                                                <p class="text-xs text-gray-500 mb-1">Algoritma</p>
+                                                <p class="text-lg font-bold text-gray-900" x-text="talent.algorithms_deployed"></p>
+                                            </div>
+                                            <div x-show="talent.impact_score" class="text-center">
+                                                <p class="text-xs text-gray-500 mb-1">Impact</p>
+                                                <p class="text-lg font-bold text-gray-900" x-text="talent.impact_score"></p>
+                                            </div>
+                                        </div>
+
                                         {{-- Actions --}}
-                                        <div class="flex items-center gap-2 pt-3 border-t border-gray-100">
+                                        <div class="flex items-center gap-3">
                                             <a :href="'/profile/' + talent.username"
-                                               class="px-4 py-2 bg-violet-600 text-white text-sm font-semibold rounded-lg hover:bg-violet-700 transition-colors">
+                                               class="px-5 py-2.5 bg-violet-600 text-white text-sm font-semibold rounded-lg hover:bg-violet-700 transition-colors">
                                                 Lihat Profil
                                             </a>
                                             <button @click="toggleSave(talent.id)"
                                                     :class="savedTalents.includes(talent.id) ? 'bg-amber-50 text-amber-600 border-amber-200' : 'bg-white text-gray-600 border-gray-200'"
-                                                    class="px-4 py-2 border text-sm font-semibold rounded-lg hover:bg-gray-50 transition-colors">
+                                                    class="px-5 py-2.5 border text-sm font-semibold rounded-lg hover:bg-gray-50 transition-colors">
                                                 <span x-show="!savedTalents.includes(talent.id)">Simpan</span>
                                                 <span x-show="savedTalents.includes(talent.id)">Tersimpan</span>
-                                            </button>
-                                            <button class="ml-auto p-2 text-gray-400 hover:text-gray-600 transition-colors">
-                                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 5v.01M12 12v.01M12 19v.01M12 6a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z"/>
-                                                </svg>
                                             </button>
                                         </div>
                                     </div>
