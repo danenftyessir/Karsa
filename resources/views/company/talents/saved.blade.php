@@ -163,14 +163,16 @@
     </div>
 
     <!-- header section -->
-    <div class="bg-white border-b border-gray-200">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+    <div class="relative bg-cover bg-center text-white py-12 overflow-hidden" style="background-image: url('{{ asset('company6.jpg') }}');">
+        <div class="absolute inset-0 bg-black/50"></div>
+
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
             <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
                 <div>
-                    <h1 class="text-2xl font-bold text-gray-900">Talent Tersimpan</h1>
-                    <p class="mt-1 text-sm text-gray-500">
-                        Total <span class="font-medium text-gray-900" x-text="totalTalents"></span> talent tersimpan
-                        <span x-show="selectedTalents.length > 0" class="ml-2 text-primary-600">
+                    <h1 class="text-3xl font-bold text-white mb-2" style="font-family: 'Space Grotesk', sans-serif;">Talent Tersimpan</h1>
+                    <p class="mt-1 text-base text-blue-100">
+                        Total <span class="font-semibold text-white" x-text="totalTalents"></span> talent tersimpan
+                        <span x-show="selectedTalents.length > 0" class="ml-2 text-yellow-300">
                             (<span x-text="selectedTalents.length"></span> dipilih)
                         </span>
                     </p>

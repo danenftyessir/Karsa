@@ -67,19 +67,20 @@
 <div class="min-h-screen bg-gray-50" x-data="jobShowPage()">
 
     <!-- header section -->
-    <div class="bg-white border-b border-gray-200">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+    <div class="relative bg-cover bg-center text-white py-12 overflow-hidden" style="background-image: url('{{ asset('company4.jpg') }}');">
+        <div class="absolute inset-0 bg-black/50"></div>
 
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
             <!-- breadcrumb dan title -->
             <div class="flex flex-col lg:flex-row lg:items-start lg:justify-between gap-4">
                 <div>
-                    <div class="flex items-center gap-2 text-sm text-gray-500 mb-2">
-                        <a href="{{ route('company.jobs.index') }}" class="hover:text-primary-600">Jobs</a>
+                    <div class="flex items-center gap-2 text-sm text-blue-100 mb-2">
+                        <a href="{{ route('company.jobs.index') }}" class="hover:text-white">Jobs</a>
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
                         </svg>
                     </div>
-                    <h1 class="text-2xl font-bold text-gray-900">{{ $jobPosting['title'] }}</h1>
+                    <h1 class="text-3xl font-bold text-white" style="font-family: 'Space Grotesk', sans-serif;">{{ $jobPosting['title'] }}</h1>
                 </div>
 
                 <!-- action buttons -->
@@ -105,7 +106,7 @@
                         </svg>
                         Boost Job
                     </button>
-                    <div class="flex items-center gap-2 px-3 py-2 bg-green-50 text-green-700 rounded-lg text-sm font-medium">
+                    <div class="flex items-center gap-2 px-3 py-2 bg-green-500 text-white rounded-lg text-sm font-medium">
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
                         </svg>
@@ -115,35 +116,35 @@
             </div>
 
             <!-- tabs navigation -->
-            <div class="mt-6 border-b border-gray-200">
+            <div class="mt-6 border-b border-white/20">
                 <nav class="flex gap-8 -mb-px">
                     <button @click="activeTab = 'overview'"
-                            :class="activeTab === 'overview' ? 'border-primary-500 text-primary-600' : 'border-transparent text-gray-500 hover:text-gray-700'"
+                            :class="activeTab === 'overview' ? 'border-white text-white' : 'border-transparent text-blue-100 hover:text-white'"
                             class="tab-item pb-4 px-1 border-b-2 font-medium text-sm">
                         Overview
                     </button>
                     <button @click="activeTab = 'applicants'"
-                            :class="activeTab === 'applicants' ? 'border-primary-500 text-primary-600' : 'border-transparent text-gray-500 hover:text-gray-700'"
+                            :class="activeTab === 'applicants' ? 'border-white text-white' : 'border-transparent text-blue-100 hover:text-white'"
                             class="tab-item pb-4 px-1 border-b-2 font-medium text-sm">
                         Applicants
                     </button>
                     <button @click="activeTab = 'shortlisted'"
-                            :class="activeTab === 'shortlisted' ? 'border-primary-500 text-primary-600' : 'border-transparent text-gray-500 hover:text-gray-700'"
+                            :class="activeTab === 'shortlisted' ? 'border-white text-white' : 'border-transparent text-blue-100 hover:text-white'"
                             class="tab-item pb-4 px-1 border-b-2 font-medium text-sm">
                         Shortlisted
                     </button>
                     <button @click="activeTab = 'messaged'"
-                            :class="activeTab === 'messaged' ? 'border-primary-500 text-primary-600' : 'border-transparent text-gray-500 hover:text-gray-700'"
+                            :class="activeTab === 'messaged' ? 'border-white text-white' : 'border-transparent text-blue-100 hover:text-white'"
                             class="tab-item pb-4 px-1 border-b-2 font-medium text-sm">
                         Messaged
                     </button>
                     <button @click="activeTab = 'hires'"
-                            :class="activeTab === 'hires' ? 'border-primary-500 text-primary-600' : 'border-transparent text-gray-500 hover:text-gray-700'"
+                            :class="activeTab === 'hires' ? 'border-white text-white' : 'border-transparent text-blue-100 hover:text-white'"
                             class="tab-item pb-4 px-1 border-b-2 font-medium text-sm">
                         Hires
                     </button>
                     <button @click="activeTab = 'not_a_fit'"
-                            :class="activeTab === 'not_a_fit' ? 'border-primary-500 text-primary-600' : 'border-transparent text-gray-500 hover:text-gray-700'"
+                            :class="activeTab === 'not_a_fit' ? 'border-white text-white' : 'border-transparent text-blue-100 hover:text-white'"
                             class="tab-item pb-4 px-1 border-b-2 font-medium text-sm">
                         Not A Fit
                     </button>
