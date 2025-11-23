@@ -97,10 +97,10 @@
         <div class="container mx-auto px-6 relative z-10">
             <div class="flex justify-between items-center fade-in-up">
                 <div>
-                    <h1 class="text-4xl font-bold mb-2" style="font-family: 'Space Grotesk', sans-serif;">
+                    <h1 class="text-4xl font-extrabold text-white mb-2" style="font-family: 'Space Grotesk', sans-serif;">
                         Temukan Talenta Terbaik
                     </h1>
-                    <p class="text-blue-100 text-lg">
+                    <p class="text-white text-lg font-medium">
                         Jelajahi Dan Kelola Talenta Untuk Tim Anda
                     </p>
                 </div>
@@ -456,6 +456,8 @@
                                              'bg-blue-100 text-blue-700': sdg.color === 'blue',
                                              'bg-red-100 text-red-700': sdg.color === 'red',
                                              'bg-pink-100 text-pink-700': sdg.color === 'pink',
+                                             'bg-green-100 text-green-700': sdg.color === 'green',
+                                             'bg-cyan-100 text-cyan-700': sdg.color === 'cyan',
                                          }"
                                          x-text="sdg.name">
                                     </div>

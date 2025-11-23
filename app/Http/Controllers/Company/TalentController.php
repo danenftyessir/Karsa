@@ -41,8 +41,10 @@ class TalentController extends Controller
         ];
 
         // IMPLEMENTED: Ambil data talents dari Supabase dengan filter
+        // Hanya tampilkan mahasiswa yang punya minimal 1 proyek
         $talentsQuery = User::where('user_type', 'student')
-            ->whereHas('student');
+            ->whereHas('student')
+            ->whereHas('student.projects');
 
         // Apply filters
         if (!empty($filters['skills'])) {
@@ -79,7 +81,8 @@ class TalentController extends Controller
                 $colorMap = [
                     1 => 'red', 2 => 'amber', 3 => 'green', 4 => 'blue', 5 => 'orange',
                     6 => 'cyan', 7 => 'yellow', 8 => 'red', 9 => 'orange', 10 => 'pink',
-                    11 => 'amber', 12 => 'yellow', 13 => 'green', 16 => 'blue'
+                    11 => 'amber', 12 => 'yellow', 13 => 'green', 14 => 'blue', 15 => 'green',
+                    16 => 'blue', 17 => 'blue'
                 ];
 
                 $completedProjects = $student->projects->where('status', 'completed');
@@ -145,16 +148,25 @@ class TalentController extends Controller
             'Scrum', 'Risk Management', 'Stakeholder Mgmt'
         ];
 
-        // daftar SDG untuk filter
+        // daftar SDG untuk filter (1-17 lengkap)
         $sdgOptions = [
+            ['id' => 1, 'name' => 'SDG 1: No Poverty'],
+            ['id' => 2, 'name' => 'SDG 2: Zero Hunger'],
+            ['id' => 3, 'name' => 'SDG 3: Good Health And Well-Being'],
+            ['id' => 4, 'name' => 'SDG 4: Quality Education'],
+            ['id' => 5, 'name' => 'SDG 5: Gender Equality'],
+            ['id' => 6, 'name' => 'SDG 6: Clean Water And Sanitation'],
+            ['id' => 7, 'name' => 'SDG 7: Affordable And Clean Energy'],
+            ['id' => 8, 'name' => 'SDG 8: Decent Work And Economic Growth'],
             ['id' => 9, 'name' => 'SDG 9: Industry, Innovation, And Infrastructure'],
+            ['id' => 10, 'name' => 'SDG 10: Reduced Inequalities'],
             ['id' => 11, 'name' => 'SDG 11: Sustainable Cities And Communities'],
             ['id' => 12, 'name' => 'SDG 12: Responsible Consumption And Production'],
-            ['id' => 7, 'name' => 'SDG 7: Affordable And Clean Energy'],
+            ['id' => 13, 'name' => 'SDG 13: Climate Action'],
+            ['id' => 14, 'name' => 'SDG 14: Life Below Water'],
+            ['id' => 15, 'name' => 'SDG 15: Life On Land'],
             ['id' => 16, 'name' => 'SDG 16: Peace, Justice, And Strong Institutions'],
-            ['id' => 8, 'name' => 'SDG 8: Decent Work And Economic Growth'],
-            ['id' => 10, 'name' => 'SDG 10: Reduced Inequalities'],
-            ['id' => 4, 'name' => 'SDG 4: Quality Education'],
+            ['id' => 17, 'name' => 'SDG 17: Partnerships For The Goals'],
         ];
 
         $totalTalents = $talents->total();
