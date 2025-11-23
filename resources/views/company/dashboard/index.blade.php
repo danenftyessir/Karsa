@@ -9,7 +9,7 @@
     <div class="relative h-64 bg-cover bg-center" style="background-image: url('{{ asset('deal-work-together.jpg') }}');">
         <div class="absolute inset-0 bg-black/50"></div>
         <div class="relative z-10 flex flex-col items-center justify-center h-full text-center text-white px-4">
-            <h1 class="text-3xl md:text-4xl font-bold mb-3 fade-in-up" style="font-family: 'Space Grotesk', sans-serif;">
+            <h1 class="text-3xl md:text-4xl font-bold mb-3 fade-in-up" style="font-family: 'Space Grotesk', sans-serif; color: white !important;">
                 Selamat Datang Di Dashboard Perusahaan Anda
             </h1>
             <p class="text-base md:text-lg text-gray-200 max-w-2xl fade-in-up" style="animation-delay: 0.1s;">

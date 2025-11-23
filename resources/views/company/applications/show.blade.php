@@ -3,7 +3,7 @@
 @section('title', 'Detail Lamaran - ' . $application->user->name)
 
 @section('content')
-<div class="min-h-screen bg-gradient-to-br from-gray-50 via-blue-50 to-purple-50" x-data="applicationDetail()">
+<div class="min-h-screen bg-gradient-to-br from-gray-50 via-blue-50 to-purple-50" x-data="applicationDetail">
     <!-- Header Section -->
     <div class="relative bg-cover bg-center text-white py-12 overflow-hidden" style="background-image: url('{{ asset('company1.jpg') }}');">
         <div class="absolute inset-0 bg-black/50"></div>
@@ -305,9 +305,12 @@
     <!-- Status Update Modal -->
     <div x-show="showStatusModal"
          x-cloak
-         @click.self="showStatusModal = false"
-         class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 px-4">
+         x-transition.opacity.duration.300ms
+         @click="showStatusModal = false"
+         @keydown.escape.window="showStatusModal = false"
+         class="fixed inset-0 backdrop-blur-sm bg-white/30 flex items-center justify-center z-50 px-4">
         <div class="bg-white rounded-2xl shadow-xl max-w-md w-full p-6 gpu-accelerate"
+             x-transition.scale.origin.top
              @click.stop>
             <h3 class="text-xl font-bold text-gray-900 mb-4">Ubah Status Lamaran</h3>
             <form @submit.prevent="updateStatus()">
@@ -343,9 +346,12 @@
     <!-- Reject Modal -->
     <div x-show="showRejectModal"
          x-cloak
-         @click.self="showRejectModal = false"
-         class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 px-4">
+         x-transition.opacity.duration.300ms
+         @click="showRejectModal = false"
+         @keydown.escape.window="showRejectModal = false"
+         class="fixed inset-0 backdrop-blur-sm bg-white/30 flex items-center justify-center z-50 px-4">
         <div class="bg-white rounded-2xl shadow-xl max-w-md w-full p-6 gpu-accelerate"
+             x-transition.scale.origin.top
              @click.stop>
             <h3 class="text-xl font-bold text-gray-900 mb-4">Tolak Lamaran</h3>
             <form @submit.prevent="rejectApplication()">
@@ -375,9 +381,12 @@
     <!-- Shortlist Modal -->
     <div x-show="showShortlistModal"
          x-cloak
-         @click.self="showShortlistModal = false"
-         class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 px-4">
+         x-transition.opacity.duration.300ms
+         @click="showShortlistModal = false"
+         @keydown.escape.window="showShortlistModal = false"
+         class="fixed inset-0 backdrop-blur-sm bg-white/30 flex items-center justify-center z-50 px-4">
         <div class="bg-white rounded-2xl shadow-xl max-w-md w-full p-6 gpu-accelerate"
+             x-transition.scale.origin.top
              @click.stop>
             <h3 class="text-xl font-bold text-gray-900 mb-4">Shortlist Lamaran</h3>
             <p class="text-gray-600 mb-6">
@@ -401,9 +410,12 @@
     <!-- Hire Modal -->
     <div x-show="showHireModal"
          x-cloak
-         @click.self="showHireModal = false"
-         class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 px-4">
+         x-transition.opacity.duration.300ms
+         @click="showHireModal = false"
+         @keydown.escape.window="showHireModal = false"
+         class="fixed inset-0 backdrop-blur-sm bg-white/30 flex items-center justify-center z-50 px-4">
         <div class="bg-white rounded-2xl shadow-xl max-w-md w-full p-6 gpu-accelerate"
+             x-transition.scale.origin.top
              @click.stop>
             <h3 class="text-xl font-bold text-gray-900 mb-4">Terima Pelamar</h3>
             <p class="text-gray-600 mb-6">
@@ -426,8 +438,8 @@
 </div>
 
 <script>
-function applicationDetail() {
-    return {
+document.addEventListener('alpine:init', () => {
+    Alpine.data('applicationDetail', () => ({
         showStatusModal: false,
         showRejectModal: false,
         showShortlistModal: false,
@@ -437,6 +449,10 @@ function applicationDetail() {
             rating: {{ $application->rating ?? 0 }},
             notes: '',
             rejection_reason: ''
+        },
+
+        init() {
+            console.log('Application Detail Component Initialized');
         },
 
         async updateStatus() {
@@ -527,6 +543,7 @@ function applicationDetail() {
         },
 
         async shortlistApplication() {
+            console.log('Shortlist application called');
             try {
                 const response = await fetch('{{ route("company.applications.shortlist", $application->id) }}', {
                     method: 'POST',
@@ -537,6 +554,7 @@ function applicationDetail() {
                 });
 
                 const data = await response.json();
+                console.log('Shortlist response:', data);
 
                 if (data.success) {
                     this.showShortlistModal = false;
@@ -579,6 +597,7 @@ function applicationDetail() {
         },
 
         async hireApplicant() {
+            console.log('Hire applicant called');
             try {
                 const response = await fetch('{{ route("company.applications.hire", $application->id) }}', {
                     method: 'POST',
@@ -589,6 +608,7 @@ function applicationDetail() {
                 });
 
                 const data = await response.json();
+                console.log('Hire response:', data);
 
                 if (data.success) {
                     this.showHireModal = false;
@@ -601,8 +621,8 @@ function applicationDetail() {
                 alert('Terjadi kesalahan');
             }
         }
-    }
-}
+    }));
+});
 </script>
 
 <style>
