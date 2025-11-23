@@ -13,11 +13,31 @@
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.13.3/dist/cdn.min.js"></script>
 
     <style>
-        /* background styling */
+        /* background image dengan opacity */
         .register-container.company-register {
             position: relative;
             min-height: 100vh;
-            background: linear-gradient(135deg, #EBF4FF 0%, #E0F2FE 100%);
+        }
+
+        .register-container.company-register::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-image: url('{{ asset('reg-com-background.jpg') }}');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            opacity: 0.35;
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        .register-container.company-register > * {
+            position: relative;
+            z-index: 1;
         }
 
         /* Form Styling */
