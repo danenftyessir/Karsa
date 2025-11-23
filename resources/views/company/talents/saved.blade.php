@@ -349,7 +349,7 @@
                                 </template>
                                 <template x-if="!talent.avatar_url">
                                     <div class="w-12 h-12 rounded-full bg-gradient-to-br from-purple-500 to-indigo-600 flex items-center justify-center flex-shrink-0">
-                                        <span class="text-white text-lg font-bold" x-text="talent.name ? talent.name.charAt(0).toUpperCase() : '?'"></span>
+                                        <span class="text-white text-lg font-bold" x-text="talent.name ? (talent.name.split(' ')[0]?.[0] + (talent.name.split(' ').slice(-1)[0]?.[0] || '')).toUpperCase() : '?'"></span>
                                     </div>
                                 </template>
 
@@ -467,7 +467,7 @@
                             </template>
                             <template x-if="!selectedTalent.avatar_url">
                                 <div class="w-14 h-14 rounded-full bg-gradient-to-br from-purple-500 to-indigo-600 flex items-center justify-center">
-                                    <span class="text-white text-xl font-bold" x-text="selectedTalent.name ? selectedTalent.name.charAt(0).toUpperCase() : '?'"></span>
+                                    <span class="text-white text-xl font-bold" x-text="selectedTalent.name ? (selectedTalent.name.split(' ')[0]?.[0] + (selectedTalent.name.split(' ').slice(-1)[0]?.[0] || '')).toUpperCase() : '?'"></span>
                                 </div>
                             </template>
                             <div>
@@ -673,7 +673,7 @@
                                 </template>
                                 <template x-if="!talent.avatar_url">
                                     <div class="w-20 h-20 rounded-full bg-gradient-to-br from-purple-500 to-indigo-600 flex items-center justify-center mx-auto mb-3">
-                                        <span class="text-white text-2xl font-bold" x-text="talent.name ? talent.name.charAt(0).toUpperCase() : '?'"></span>
+                                        <span class="text-white text-2xl font-bold" x-text="talent.name ? (talent.name.split(' ')[0]?.[0] + (talent.name.split(' ').slice(-1)[0]?.[0] || '')).toUpperCase() : '?'"></span>
                                     </div>
                                 </template>
                                 <h4 class="font-semibold text-gray-900" x-text="talent.name"></h4>

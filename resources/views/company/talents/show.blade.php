@@ -31,7 +31,11 @@
                              class="w-24 h-24 rounded-2xl object-cover border-4 border-white shadow-lg">
                     @else
                         <div class="w-24 h-24 rounded-2xl bg-gradient-to-br from-purple-500 to-indigo-600 flex items-center justify-center border-4 border-white shadow-lg">
-                            <span class="text-white text-3xl font-bold">{{ strtoupper(substr($talent->name, 0, 1)) }}</span>
+                            @php
+                                $nameParts = explode(' ', $talent->name);
+                                $initials = strtoupper(substr($nameParts[0], 0, 1) . (count($nameParts) > 1 ? substr($nameParts[count($nameParts)-1], 0, 1) : ''));
+                            @endphp
+                            <span class="text-white text-3xl font-bold">{{ $initials }}</span>
                         </div>
                     @endif
                     @if($talent->is_verified)

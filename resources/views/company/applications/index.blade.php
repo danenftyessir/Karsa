@@ -429,7 +429,7 @@
                                                 </template>
                                                 <template x-if="!application.avatar_url">
                                                     <div class="w-10 h-10 rounded-full bg-gradient-to-br from-purple-500 to-indigo-600 flex items-center justify-center">
-                                                        <span class="text-white text-sm font-bold" x-text="application.name ? application.name.charAt(0).toUpperCase() : '?'"></span>
+                                                        <span class="text-white text-sm font-bold" x-text="application.name ? (application.name.split(' ')[0]?.[0] + (application.name.split(' ').slice(-1)[0]?.[0] || '')).toUpperCase() : '?'"></span>
                                                     </div>
                                                 </template>
                                                 <div class="min-w-0">
@@ -536,7 +536,7 @@
                                     </template>
                                     <template x-if="!application.avatar_url">
                                         <div class="w-10 h-10 rounded-full bg-gradient-to-br from-purple-500 to-indigo-600 flex items-center justify-center">
-                                            <span class="text-white text-sm font-bold" x-text="application.name ? application.name.charAt(0).toUpperCase() : '?'"></span>
+                                            <span class="text-white text-sm font-bold" x-text="application.name ? (application.name.split(' ')[0]?.[0] + (application.name.split(' ').slice(-1)[0]?.[0] || '')).toUpperCase() : '?'"></span>
                                         </div>
                                     </template>
                                     <div class="flex-1 min-w-0">
@@ -609,7 +609,7 @@
                             </template>
                             <template x-if="!selectedApplication.avatar_url">
                                 <div class="w-14 h-14 rounded-full bg-gradient-to-br from-purple-500 to-indigo-600 flex items-center justify-center">
-                                    <span class="text-white text-xl font-bold" x-text="selectedApplication.name ? selectedApplication.name.charAt(0).toUpperCase() : '?'"></span>
+                                    <span class="text-white text-xl font-bold" x-text="selectedApplication.name ? (selectedApplication.name.split(' ')[0]?.[0] + (selectedApplication.name.split(' ').slice(-1)[0]?.[0] || '')).toUpperCase() : '?'"></span>
                                 </div>
                             </template>
                             <div>
@@ -795,7 +795,7 @@
                             </template>
                             <template x-if="!selectedApplication.avatar_url">
                                 <div class="w-10 h-10 rounded-full bg-gradient-to-br from-purple-500 to-indigo-600 flex items-center justify-center">
-                                    <span class="text-white text-sm font-bold" x-text="selectedApplication.name ? selectedApplication.name.charAt(0).toUpperCase() : '?'"></span>
+                                    <span class="text-white text-sm font-bold" x-text="selectedApplication.name ? (selectedApplication.name.split(' ')[0]?.[0] + (selectedApplication.name.split(' ').slice(-1)[0]?.[0] || '')).toUpperCase() : '?'"></span>
                                 </div>
                             </template>
                             <div>
@@ -859,7 +859,7 @@
                                 </template>
                                 <template x-if="!candidate.avatar_url">
                                     <div class="w-20 h-20 rounded-full bg-gradient-to-br from-purple-500 to-indigo-600 flex items-center justify-center mx-auto mb-3">
-                                        <span class="text-white text-2xl font-bold" x-text="candidate.name ? candidate.name.charAt(0).toUpperCase() : '?'"></span>
+                                        <span class="text-white text-2xl font-bold" x-text="candidate.name ? (candidate.name.split(' ')[0]?.[0] + (candidate.name.split(' ').slice(-1)[0]?.[0] || '')).toUpperCase() : '?'"></span>
                                     </div>
                                 </template>
                                 <h4 class="font-semibold text-gray-900" x-text="candidate.name"></h4>

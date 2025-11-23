@@ -228,7 +228,11 @@
                                     @else
                                         <div class="w-10 h-10 rounded-full border-2 border-white bg-gradient-to-br from-purple-500 to-indigo-600 flex items-center justify-center {{ $index > 0 ? '-ml-3' : '' }}"
                                              style="z-index: {{ count($recentApplicants) - $index }}">
-                                            <span class="text-white text-sm font-bold">{{ strtoupper(substr($applicant['name'], 0, 1)) }}</span>
+                                            @php
+                                                $nameParts = explode(' ', $applicant['name']);
+                                                $initials = strtoupper(substr($nameParts[0], 0, 1) . (count($nameParts) > 1 ? substr($nameParts[count($nameParts)-1], 0, 1) : ''));
+                                            @endphp
+                                            <span class="text-white text-sm font-bold">{{ $initials }}</span>
                                         </div>
                                     @endif
                                 @endforeach
@@ -367,7 +371,11 @@
                                          class="w-10 h-10 rounded-full object-cover">
                                 @else
                                     <div class="w-10 h-10 rounded-full bg-gradient-to-br from-purple-500 to-indigo-600 flex items-center justify-center">
-                                        <span class="text-white text-sm font-bold">{{ strtoupper(substr($jobPosting['owner']['name'], 0, 1)) }}</span>
+                                        @php
+                                            $nameParts = explode(' ', $jobPosting['owner']['name']);
+                                            $initials = strtoupper(substr($nameParts[0], 0, 1) . (count($nameParts) > 1 ? substr($nameParts[count($nameParts)-1], 0, 1) : ''));
+                                        @endphp
+                                        <span class="text-white text-sm font-bold">{{ $initials }}</span>
                                     </div>
                                 @endif
                                 <div>
