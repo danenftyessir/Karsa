@@ -21,8 +21,14 @@ class NotificationManager {
     }
 
     createContainer() {
-        if (document.getElementById('notification-container')) return;
+        // Cek apakah container sudah ada
+        const existingContainer = document.getElementById('notification-container');
+        if (existingContainer) {
+            this.container = existingContainer;
+            return;
+        }
 
+        // Buat container baru
         this.container = document.createElement('div');
         this.container.id = 'notification-container';
         this.container.className = 'fixed top-20 right-4 z-[9998] space-y-2 max-w-sm';
@@ -30,6 +36,11 @@ class NotificationManager {
     }
 
     show(message, type = 'info', duration = 5000) {
+        // Pastikan container ada
+        if (!this.container) {
+            this.createContainer();
+        }
+
         const notification = document.createElement('div');
         const colors = {
             success: 'bg-green-50 border-green-200 text-green-800',
