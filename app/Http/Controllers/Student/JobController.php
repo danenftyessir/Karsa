@@ -193,21 +193,14 @@ class JobController extends Controller
 
         $validated = $request->validate([
             'cover_letter' => 'nullable|string|max:2000',
-            'resume_url' => 'nullable|url',
-            'portfolio_url' => 'nullable|url',
-            'expected_salary' => 'nullable|numeric',
         ]);
 
         // buat application
         JobApplication::create([
             'job_posting_id' => $id,
             'user_id' => $user->id,
-            'status' => 'new',
+            'status' => 'pending', // default status sesuai migration
             'cover_letter' => $validated['cover_letter'] ?? null,
-            'resume_url' => $validated['resume_url'] ?? null,
-            'portfolio_url' => $validated['portfolio_url'] ?? null,
-            'expected_salary' => $validated['expected_salary'] ?? null,
-            'applied_at' => now(),
         ]);
 
         // increment applications count
@@ -251,19 +244,7 @@ class JobController extends Controller
         $query = SavedJob::with(['jobPosting.company'])
             ->byUser($user->id);
 
-        // filter by folder
-        if ($request->filled('folder')) {
-            $query->inFolder($request->folder);
-        }
-
-        $savedJobs = $query->orderBy('saved_at', 'desc')->paginate(12);
-
-        // ambil folders untuk filter
-        $folders = SavedJob::byUser($user->id)
-            ->whereNotNull('folder')
-            ->distinct()
-            ->pluck('folder')
-            ->toArray();
+        $savedJobs = $query->orderBy('created_at', 'desc')->paginate(12);
 
         // statistik
         $totalSaved = SavedJob::byUser($user->id)->count();
@@ -276,7 +257,6 @@ class JobController extends Controller
 
         return view('student.jobs.saved', compact(
             'savedJobs',
-            'folders',
             'totalSaved',
             'expiringCount'
         ));
@@ -410,14 +390,15 @@ class JobController extends Controller
 
     /**
      * halaman job alerts
+     * NOTE: Job alerts feature belum diimplementasi - table job_alerts tidak ada
      */
     public function alerts()
     {
         $user = Auth::user();
 
-        $alerts = JobAlert::byUser($user->id)
-            ->orderBy('created_at', 'desc')
-            ->get();
+        // TODO: Implement job alerts feature
+        // Sementara return empty collection
+        $alerts = collect([]);
 
         return view('student.jobs.alerts', compact('alerts'));
     }
