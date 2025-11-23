@@ -1,269 +1,123 @@
-# Karsa - KKN Matching Platform
+<div align="center">
+  <img src="public/karsa-logo.png" alt="Karsa Logo" width="300"/>
+</div>
 
-Platform untuk menghubungkan mahasiswa dengan perusahaan untuk program Kuliah Kerja Nyata (KKN).
+# Karsa - Platform Magang dan Rekrutmen Mahasiswa
 
-## 📋 Table of Contents
+Karsa adalah platform digital yang menghubungkan mahasiswa dengan perusahaan untuk program magang dan perekrutan, dengan dukungan penuh dari institusi pendidikan dan pemerintah.
 
-- [Features](#features)
-- [Tech Stack](#tech-stack)
-- [Installation](#installation)
-- [Database Setup](#database-setup)
-- [Development](#development)
-- [Project Structure](#project-structure)
+## Latar Belakang
 
-## ✨ Features
+Banyak mahasiswa kesulitan menemukan kesempatan magang yang sesuai dengan jurusan dan minat mereka. Di sisi lain, perusahaan membutuhkan talenta muda berkualitas namun menghadapi kendala dalam proses rekrutmen. Institusi pendidikan juga memerlukan sistem yang efektif untuk memantau dan memvalidasi kegiatan magang mahasiswa.
 
-### For Students
-- Browse and search KKN job opportunities
-- Apply to job postings with cover letter
-- Track application status
-- Complete student profile with portfolio
+Karsa hadir sebagai solusi untuk menjembatani ketiga pihak ini dalam ekosistem yang terintegrasi dan efisien.
 
-### For Companies
-- Post KKN job opportunities (4-6 per company)
-- Review and manage applications (pending, reviewed, shortlisted, rejected, accepted)
-- Save and categorize talented students (Baru, Dihubungi, Interview, Ditawari, Ditolak)
-- View analytics and diagrams of recruitment process
+## Manfaat Platform
 
-### For Institutions
-- Manage student data
-- Monitor KKN placements
-- Track student progress
+### Untuk Mahasiswa
+- Akses mudah ke berbagai peluang magang dari perusahaan terpercaya
+- Proses aplikasi yang sederhana dan transparan
+- Pengembangan karir melalui pengalaman kerja nyata
+- Sertifikasi resmi yang meningkatkan nilai CV
 
-## 🛠️ Tech Stack
+### Untuk Perusahaan
+- Akses ke talent pool mahasiswa terverifikasi
+- Proses rekrutmen yang lebih efisien dan terstruktur
+- Kesempatan untuk merekrut karyawan tetap dari magang terbaik
+- Meningkatkan brand awareness di kalangan akademisi
 
-- **Framework:** Laravel 11
-- **Database:** PostgreSQL (Supabase)
-- **Frontend:** Blade Templates
-- **Authentication:** Laravel Breeze
-- **Styling:** Tailwind CSS
+### Untuk Institusi
+- Monitoring real-time aktivitas magang mahasiswa
+- Data dan laporan komprehensif untuk evaluasi kurikulum
+- Kolaborasi lebih erat dengan industri
+- Meningkatkan kualitas dan relevansi program pendidikan
 
-## 📦 Installation
+## Alur Relasi Sistem
 
-### Prerequisites
+### 1. Institusi (Universitas/Pemerintah)
+- Mendaftarkan dan memverifikasi mahasiswa
+- Memantau progress magang mahasiswa
+- Menyetujui program magang yang sesuai kurikulum
+- Mengakses laporan dan statistik kegiatan mahasiswa
+- Berkolaborasi dengan perusahaan untuk program bersertifikat
 
-- PHP >= 8.2
-- Composer
-- Node.js & NPM
-- PostgreSQL (Supabase account)
+### 2. Mahasiswa
+- Membuat profil dan CV digital
+- Mencari lowongan magang sesuai minat dan jurusan
+- Melamar posisi magang di berbagai perusahaan
+- Melaporkan progress magang kepada institusi
+- Mendapatkan sertifikat setelah menyelesaikan program
 
-### Steps
+### 3. Perusahaan
+- Membuat profil perusahaan
+- Posting lowongan magang dengan persyaratan spesifik
+- Review dan seleksi kandidat mahasiswa
+- Mengelola program magang
+- Memberikan feedback dan evaluasi kepada mahasiswa
+- Rekrutmen karyawan tetap dari mahasiswa magang terbaik
 
-1. **Clone the repository**
-   ```bash
-   git clone <repository-url>
-   cd Karsa
-   ```
-
-2. **Install dependencies**
-   ```bash
-   composer install
-   npm install
-   ```
-
-3. **Environment setup**
-   ```bash
-   cp .env.example .env
-   php artisan key:generate
-   ```
-
-4. **Configure database**
-
-   Edit `.env` file:
-   ```env
-   DB_CONNECTION=pgsql
-   DB_HOST=your-supabase-host.supabase.co
-   DB_PORT=5432
-   DB_DATABASE=postgres
-   DB_USERNAME=postgres
-   DB_PASSWORD=your-password
-   ```
-
-5. **Run migrations and seeders**
-
-   ⚠️ **IMPORTANT:** Untuk setup database yang benar, **WAJIB baca panduan lengkap di:**
-
-   📖 **[DATABASE_SETUP.md](DATABASE_SETUP.md)**
-
-   Quick start (untuk fresh database):
-   ```bash
-   php artisan migrate
-   php artisan db:seed --class=ProvincesRegenciesSeeder
-   php artisan db:seed --class=DummyDataSeeder
-   php artisan db:seed --class=JobCategorySeeder
-   php artisan db:seed --class=UserSeeder
-   php artisan db:seed --class=CompanySeeder
-   php artisan db:seed --class=JobPostingKKNSeeder
-   php artisan db:seed --class=JobApplicationsCompanySeeder
-   php artisan db:seed --class=SavedTalentsSeeder
-   ```
-
-6. **Build assets**
-   ```bash
-   npm run dev
-   ```
-
-7. **Start the server**
-   ```bash
-   php artisan serve
-   ```
-
-   Visit: `http://localhost:8000`
-
-## 💾 Database Setup
-
-**WAJIB BACA:** [DATABASE_SETUP.md](DATABASE_SETUP.md)
-
-Panduan lengkap untuk:
-- ✅ Migration dan seeding yang benar
-- ⚠️ Troubleshooting common errors
-- 🔄 Reset database
-- 📊 Verifikasi data
-- 🐛 Debug mode
-
-### Seeded Data Summary
-
-Setelah seeding berhasil, database akan berisi:
-
-| Data Type | Count | Notes |
-|-----------|-------|-------|
-| **Companies** | 128 | Company users dengan role 'company' |
-| **Job Postings** | 632 | 4-6 postings per company, >3 categories |
-| **Job Categories** | 33 | Software, Marketing, Finance, dll |
-| **Students** | ~495 | Dummy student data untuk testing |
-| **Job Applications** | ~2,332 | 12-24 per company, ALL 5 statuses |
-| **Saved Talents** | ~1,038 | 6-10 per company, ALL 5 categories |
-
-### Default Credentials
-
-**Company Users:**
-- Email: `hr@{companyname}.co.id`
-- Password: `password123`
-
-**Example:**
-- Email: `hr@telkomindonesia.co.id`
-- Password: `password123`
-
-⚠️ **WAJIB GANTI PASSWORD DI PRODUCTION!**
-
-## 🚀 Development
-
-### Running Development Server
-
-```bash
-# Terminal 1 - Laravel server
-php artisan serve
-
-# Terminal 2 - Vite dev server
-npm run dev
-```
-
-### Code Style
-
-```bash
-# Format code
-composer format
-
-# Run linter
-composer lint
-```
-
-### Database
-
-```bash
-# Create new migration
-php artisan make:migration create_table_name
-
-# Create new seeder
-php artisan make:seeder TableNameSeeder
-
-# Reset database
-php artisan migrate:fresh --seed
-```
-
-## 📁 Project Structure
+## Flow Proses
 
 ```
-Karsa/
-├── app/
-│   ├── Http/Controllers/      # Controllers
-│   ├── Models/                # Eloquent models
-│   └── Services/              # Business logic (SupabaseService, etc)
-├── database/
-│   ├── migrations/            # Database migrations
-│   └── seeders/               # Database seeders
-│       ├── UserSeeder.php              # 128 company users
-│       ├── CompanySeeder.php           # 128 companies
-│       ├── JobCategorySeeder.php       # 33 categories
-│       ├── JobPostingKKNSeeder.php     # 632 job postings
-│       ├── JobApplicationsCompanySeeder.php  # 2,332 applications
-│       └── SavedTalentsSeeder.php      # 1,038 saved talents
-├── resources/
-│   ├── views/                 # Blade templates
-│   └── js/                    # JavaScript files
-├── routes/
-│   └── web.php               # Web routes
-├── DATABASE_SETUP.md         # 📖 Database setup guide (WAJIB BACA!)
-└── README.md                 # This file
+1. Institusi -> Verifikasi Mahasiswa -> Mahasiswa Terdaftar
+                                              |
+2. Perusahaan -> Post Lowongan <--- Browse <- Mahasiswa
+                                              |
+3. Perusahaan -> Seleksi Aplikasi <- Apply <- Mahasiswa
+                                              |
+4. Perusahaan -> Terima Mahasiswa -> Magang Dimulai
+                                              |
+5. Mahasiswa -> Laporan Progress -> Institusi Monitor
+                                              |
+6. Magang Selesai -> Evaluasi -> Sertifikat -> Peluang Rekrutmen
 ```
 
-## 🔑 Key Features Implementation
+## Fitur Utama
 
-### Job Applications System
-- 5 status types: **pending** → **reviewed** → **shortlisted** → **rejected/accepted**
-- Timeline tracking dengan `viewed_at`, `responded_at`
-- Cover letter dan resume attachment
-- Admin notes untuk internal tracking
+- **Dashboard Terpadu**: Interface khusus untuk institusi, mahasiswa, dan perusahaan
+- **Sistem Matching**: Algoritma pencocokan otomatis berdasarkan skills dan kebutuhan
+- **Real-time Tracking**: Monitoring progress magang secara langsung
+- **Sertifikasi Digital**: Penerbitan sertifikat otomatis setelah program selesai
+- **Analytics & Reporting**: Laporan komprehensif untuk semua stakeholder
 
-### Saved Talents System
-- 5 categories: **Baru** → **Dihubungi** → **Interview** → **Ditawari** → **Ditolak**
-- Company-specific talent pools
-- Notes dan follow-up tracking
-- Time-distributed data untuk analytics
+## Tim Pengembang
 
-### Analytics & Diagrams
-- Application trends over time (90 days distribution)
-- Talent pipeline visualization (60 days distribution)
-- Status distribution charts
-- Category breakdown statistics
+### Kenzie Raffa Ardhana
+**Project Manager**
 
-## ⚠️ Common Issues
+Mengkoordinasi keseluruhan proyek dan memastikan semua berjalan sesuai rencana.
 
-Untuk troubleshooting lengkap, lihat [DATABASE_SETUP.md](DATABASE_SETUP.md#-troubleshooting-common-errors)
+### Danendra Shafi Athallah
+**Full Stack Developer**
 
-**Quick fixes:**
+Mengembangkan frontend dan backend untuk memastikan sistem berjalan optimal.
 
-1. **Migration error:** `php artisan migrate:fresh`
-2. **Seeder error:** Baca error message, biasanya missing dependency seeder
-3. **Connection error:** Cek `.env` database credentials
-4. **Cache issues:** `php artisan config:clear && php artisan cache:clear`
+### M. Abizzar Gamadrian
+**Backend Developer & Technical Support**
 
-## 📝 Development Notes
+Mengembangkan sistem backend dan memberikan dukungan teknis untuk pengguna.
 
-1. Semua seeders menggunakan **DB facade** (bukan SupabaseService) untuk reliability
-2. Auto-reconnect setiap 10-20 iterations untuk avoid PostgreSQL prepared statement limit
-3. Seeders bersifat **idempotent** - dapat dijalankan berkali-kali tanpa duplicate data
-4. Time distribution menggunakan Carbon - relatif terhadap waktu seeding
+## Teknologi
 
-## 🤝 Contributing
+- **Backend**: Laravel (PHP)
+- **Frontend**: Blade Templates, Tailwind CSS
+- **Database**: PostgreSQL, Supabase (SaaS)
+- **Authentication**: Laravel Sanctum
 
-1. Fork the repository
-2. Create feature branch (`git checkout -b feature/AmazingFeature`)
-3. Commit changes (`git commit -m 'Add some AmazingFeature'`)
-4. Push to branch (`git push origin feature/AmazingFeature`)
-5. Open Pull Request
+## Target Pengguna
 
-## 📄 License
+Platform Karsa dirancang untuk tiga kelompok utama:
+- **Mahasiswa** dari berbagai universitas di Indonesia yang mencari pengalaman magang berkualitas
+- **Perusahaan** yang membutuhkan talenta muda untuk program magang dan rekrutmen
+- **Institusi Pendidikan** yang ingin memantau dan memfasilitasi program magang mahasiswa
 
-This project is licensed under the MIT License.
+## Kontribusi
 
-## 📞 Support
-
-Untuk pertanyaan atau issues:
-1. Baca [DATABASE_SETUP.md](DATABASE_SETUP.md) terlebih dahulu
-2. Cek existing issues
-3. Create new issue dengan detail error message dan steps to reproduce
+Project ini dikembangkan sebagai solusi untuk memfasilitasi ekosistem magang dan rekrutmen mahasiswa di Indonesia. Untuk informasi lebih lanjut atau kerja sama, silakan hubungi tim pengembang.
 
 ---
 
-**Built with ❤️ for KKN matching**
+<div align="center">
+  <p>Dibuat dengan dedikasi untuk memajukan program Kuliah Kerja Nyata Indonesia</p>
+  <p>&copy; 2024 Karsa Platform</p>
+</div>
