@@ -15,105 +15,6 @@
         scroll-behavior: smooth;
     }
 
-    /* kanban container dengan grid responsive */
-    .kanban-container {
-        scroll-behavior: smooth;
-    }
-
-    .kanban-grid {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-        gap: 1rem;
-    }
-
-    @media (max-width: 768px) {
-        .kanban-grid {
-            grid-template-columns: 1fr;
-        }
-    }
-
-    @media (min-width: 769px) and (max-width: 1200px) {
-        .kanban-grid {
-            grid-template-columns: repeat(2, 1fr);
-        }
-    }
-
-    @media (min-width: 1201px) and (max-width: 1600px) {
-        .kanban-grid {
-            grid-template-columns: repeat(3, 1fr);
-        }
-    }
-
-    @media (min-width: 1601px) {
-        .kanban-grid {
-            grid-template-columns: repeat(4, 1fr);
-        }
-    }
-
-    /* kolom kanban dengan transisi yang dioptimasi */
-    .kanban-column {
-        min-height: 500px;
-        transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1),
-                    background-color 0.2s ease-out;
-        transform: translateZ(0);
-        will-change: transform;
-        backface-visibility: hidden;
-        width: 100%;
-    }
-
-    /* item aplikasi dengan GPU acceleration */
-    .application-item {
-        transition: transform 0.2s cubic-bezier(0.4, 0, 0.2, 1),
-                    box-shadow 0.2s cubic-bezier(0.4, 0, 0.2, 1),
-                    opacity 0.15s ease-out;
-        transform: translate3d(0, 0, 0);
-        backface-visibility: hidden;
-        perspective: 1000px;
-    }
-
-    .application-item:hover {
-        transform: translate3d(0, -2px, 0);
-        box-shadow: 0 8px 25px -5px rgba(0, 0, 0, 0.1);
-    }
-
-    /* drag state styling */
-    .application-item.dragging {
-        opacity: 0.6;
-        transform: rotate(2deg) scale(1.02);
-        box-shadow: 0 15px 35px -10px rgba(0, 0, 0, 0.2);
-        z-index: 1000;
-    }
-
-    /* multi-select drag styling */
-    .application-item.multi-selected {
-        border-color: #3b82f6;
-        background: linear-gradient(135deg, #eff6ff 0%, #ffffff 100%);
-    }
-
-    .kanban-column.drag-over {
-        background-color: rgba(59, 130, 246, 0.08);
-        border: 2px dashed #3b82f6;
-        transform: scale(1.01);
-    }
-
-    /* auto-scroll zones */
-    .scroll-zone-left,
-    .scroll-zone-right {
-        position: fixed;
-        top: 0;
-        bottom: 0;
-        width: 80px;
-        pointer-events: none;
-        z-index: 100;
-    }
-
-    .scroll-zone-left { left: 0; }
-    .scroll-zone-right { right: 0; }
-
-    .scroll-zone-active {
-        background: linear-gradient(90deg, rgba(59, 130, 246, 0.1), transparent);
-    }
-
     /* status badge colors */
     .status-new { background-color: #3b82f6; }
     .status-reviewing { background-color: #eab308; }
@@ -122,15 +23,6 @@
     .status-offer { background-color: #22c55e; }
     .status-hired { background-color: #10b981; }
     .status-rejected { background-color: #ef4444; }
-
-    /* column header colors */
-    .column-header-new { border-left: 4px solid #3b82f6; }
-    .column-header-reviewing { border-left: 4px solid #eab308; }
-    .column-header-shortlisted { border-left: 4px solid #f97316; }
-    .column-header-interview { border-left: 4px solid #a855f7; }
-    .column-header-offer { border-left: 4px solid #22c55e; }
-    .column-header-hired { border-left: 4px solid #10b981; }
-    .column-header-rejected { border-left: 4px solid #ef4444; }
 
     /* rating stars */
     .star-rating {
@@ -303,26 +195,6 @@
                         Bandingkan Kandidat
                     </button>
 
-                    <!-- view toggle -->
-                    <div class="inline-flex rounded-lg border border-gray-200 bg-white p-1">
-                        <button @click="viewMode = 'kanban'"
-                                :class="viewMode === 'kanban' ? 'bg-primary-600 text-white' : 'text-gray-600 hover:bg-gray-100'"
-                                class="px-4 py-2 text-sm font-medium rounded-md transition-colors duration-200">
-                            <svg class="w-4 h-4 inline-block mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17V7m0 10a2 2 0 01-2 2H5a2 2 0 01-2-2V7a2 2 0 012-2h2a2 2 0 012 2m0 10a2 2 0 002 2h2a2 2 0 002-2M9 7a2 2 0 012-2h2a2 2 0 012 2m0 10V7m0 10a2 2 0 002 2h2a2 2 0 002-2V7a2 2 0 00-2-2h-2a2 2 0 00-2 2"/>
-                            </svg>
-                            Kanban
-                        </button>
-                        <button @click="viewMode = 'list'"
-                                :class="viewMode === 'list' ? 'bg-primary-600 text-white' : 'text-gray-600 hover:bg-gray-100'"
-                                class="px-4 py-2 text-sm font-medium rounded-md transition-colors duration-200">
-                            <svg class="w-4 h-4 inline-block mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 10h16M4 14h16M4 18h16"/>
-                            </svg>
-                            Daftar
-                        </button>
-                    </div>
-
                     <!-- bulk actions -->
                     <div x-show="selectedApplications.length > 0" x-cloak class="relative" x-data="{ open: false }">
                         <button @click="open = !open"
@@ -406,132 +278,8 @@
         </div>
     </div>
 
-    <!-- kanban board view -->
-    <div x-show="viewMode === 'kanban'" class="kanban-container" id="kanbanContainer">
-        <div class="max-w-full mx-auto px-4 sm:px-6 lg:px-8 py-6">
-            <div class="kanban-grid">
-
-                <!-- columns -->
-                <template x-for="(column, status) in columns" :key="status">
-                    <div class="kanban-column bg-gray-100 rounded-xl p-4"
-                         :class="'column-' + status"
-                         :data-status="status"
-                         @dragover.prevent="dragOver($event, status)"
-                         @dragleave="dragLeave($event)"
-                         @drop="drop($event, status)">
-
-                        <!-- column header -->
-                        <div class="flex items-center justify-between mb-4 p-3 bg-white rounded-lg"
-                             :class="'column-header-' + status">
-                            <div class="flex items-center gap-2">
-                                <h3 class="font-semibold text-gray-900" x-text="column.title"></h3>
-                                <span class="bg-gray-200 text-gray-600 text-xs font-medium px-2 py-0.5 rounded-full"
-                                      x-text="getColumnCount(status)"></span>
-                            </div>
-                        </div>
-
-                        <!-- applications list -->
-                        <div class="space-y-3 min-h-[100px]">
-                            <template x-for="application in getFilteredApplications(status)" :key="application.id">
-                                <div class="application-item bg-white rounded-lg p-4 shadow-sm border border-gray-200 cursor-move"
-                                     :class="{'multi-selected': selectedApplications.includes(application.id)}"
-                                     draggable="true"
-                                     :data-id="application.id"
-                                     @dragstart="dragStart($event, application)"
-                                     @dragend="dragEnd($event)">
-
-                                    <!-- checkbox untuk bulk select -->
-                                    <div class="flex items-start gap-3">
-                                        <input type="checkbox"
-                                               :value="application.id"
-                                               x-model="selectedApplications"
-                                               class="mt-1 rounded border-gray-300 text-primary-600 focus:ring-primary-500"
-                                               @click.stop>
-
-                                        <div class="flex-1 min-w-0">
-                                            <!-- avatar dan nama -->
-                                            <div class="flex items-center gap-3 mb-2">
-                                                <template x-if="application.avatar_url">
-                                                    <img :src="application.avatar_url"
-                                                         :alt="application.name"
-                                                         class="w-10 h-10 rounded-full object-cover">
-                                                </template>
-                                                <template x-if="!application.avatar_url">
-                                                    <div class="w-10 h-10 rounded-full bg-gradient-to-br from-purple-500 to-indigo-600 flex items-center justify-center">
-                                                        <span class="text-white text-sm font-bold" x-text="application.name ? (application.name.split(' ')[0]?.[0] + (application.name.split(' ').slice(-1)[0]?.[0] || '')).toUpperCase() : '?'"></span>
-                                                    </div>
-                                                </template>
-                                                <div class="min-w-0">
-                                                    <h4 class="font-medium text-gray-900 truncate" x-text="application.name"></h4>
-                                                    <p class="text-sm text-gray-500 truncate" x-text="application.position"></p>
-                                                </div>
-                                            </div>
-
-                                            <!-- rating display -->
-                                            <div x-show="application.rating" class="flex items-center gap-1 mb-2">
-                                                <template x-for="i in 5" :key="i">
-                                                    <svg class="w-4 h-4" :class="i <= application.rating ? 'text-yellow-400' : 'text-gray-300'" fill="currentColor" viewBox="0 0 20 20">
-                                                        <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/>
-                                                    </svg>
-                                                </template>
-                                            </div>
-
-                                            <!-- applied date -->
-                                            <div class="flex items-center gap-1 text-xs text-gray-400 mb-3">
-                                                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
-                                                </svg>
-                                                <span x-text="formatDate(application.applied_date)"></span>
-                                            </div>
-
-                                            <!-- notes indicator -->
-                                            <div x-show="application.notes" class="mb-3">
-                                                <span class="inline-flex items-center px-2 py-0.5 rounded text-xs bg-gray-100 text-gray-600">
-                                                    <svg class="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 8h10M7 12h4m1 8l-4-4H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-3l-4 4z"/>
-                                                    </svg>
-                                                    Ada Catatan
-                                                </span>
-                                            </div>
-
-                                            <!-- action links -->
-                                            <div class="flex items-center gap-3 pt-2 border-t border-gray-100">
-                                                <a :href="'/company/applications/' + application.id"
-                                                   class="text-sm font-medium text-primary-600 hover:text-primary-700"
-                                                   @click.stop>
-                                                    Profil
-                                                </a>
-                                                <button @click.stop="openQuickActions(application)"
-                                                        class="text-sm font-medium text-gray-600 hover:text-gray-900">
-                                                    Aksi
-                                                </button>
-                                                <button @click.stop="openTimelineModal(application)"
-                                                        class="text-sm font-medium text-gray-600 hover:text-gray-900">
-                                                    Riwayat
-                                                </button>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </template>
-
-                            <!-- empty state -->
-                            <div x-show="getColumnCount(status) === 0"
-                                 class="text-center py-8 text-gray-400">
-                                <svg class="w-12 h-12 mx-auto mb-2 opacity-50" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4"/>
-                                </svg>
-                                <p class="text-sm">Tidak Ada Lamaran</p>
-                            </div>
-                        </div>
-                    </div>
-                </template>
-            </div>
-        </div>
-    </div>
-
     <!-- list view -->
-    <div x-show="viewMode === 'list'" x-cloak class="max-w-full mx-auto px-4 sm:px-6 lg:px-8 py-6">
+    <div class="max-w-full mx-auto px-4 sm:px-6 lg:px-8 py-6">
         <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
             <table class="min-w-full divide-y divide-gray-200">
                 <thead class="bg-gray-50">
@@ -951,7 +699,6 @@
 function applicationsKanban() {
     return {
         // state utama
-        viewMode: 'kanban',
         showFilters: false,
         selectedApplications: [],
         isLoading: false,
@@ -994,11 +741,6 @@ function applicationsKanban() {
         // comparison
         comparisonCandidates: [],
 
-        // drag and drop
-        draggedApplication: null,
-        draggedApplications: [],
-        autoScrollInterval: null,
-
         // filter
         filters: {
             position: '',
@@ -1015,9 +757,6 @@ function applicationsKanban() {
         init() {
             // flatten applications dari columns
             this.flattenApplications();
-
-            // setup auto-scroll untuk drag and drop
-            this.setupAutoScroll();
         },
 
         flattenApplications() {
@@ -1070,14 +809,6 @@ function applicationsKanban() {
                 }
             }
             return true;
-        },
-
-        getFilteredApplications(status) {
-            return this.applications.filter(app => app.status === status && this.matchesFilters(app));
-        },
-
-        getColumnCount(status) {
-            return this.getFilteredApplications(status).length;
         },
 
         getStatusLabel(status) {
@@ -1385,108 +1116,6 @@ function applicationsKanban() {
         exportSelected() {
             const ids = this.selectedApplications.join(',');
             window.location.href = `/company/applications/export?ids=${ids}`;
-        },
-
-        // drag and drop dengan auto-scroll
-        setupAutoScroll() {
-            const container = document.getElementById('kanbanContainer');
-            if (!container) return;
-
-            document.addEventListener('drag', (e) => {
-                if (!this.draggedApplication) return;
-
-                const containerRect = container.getBoundingClientRect();
-                const scrollSpeed = 10;
-                const edgeThreshold = 100;
-
-                // auto-scroll kiri
-                if (e.clientX < containerRect.left + edgeThreshold) {
-                    container.scrollLeft -= scrollSpeed;
-                }
-                // auto-scroll kanan
-                if (e.clientX > containerRect.right - edgeThreshold) {
-                    container.scrollLeft += scrollSpeed;
-                }
-            });
-        },
-
-        dragStart(event, application) {
-            // multi-select drag
-            if (this.selectedApplications.includes(application.id) && this.selectedApplications.length > 1) {
-                this.draggedApplications = this.applications.filter(a =>
-                    this.selectedApplications.includes(a.id)
-                );
-            } else {
-                this.draggedApplications = [application];
-            }
-
-            this.draggedApplication = application;
-            event.target.classList.add('dragging');
-            event.dataTransfer.effectAllowed = 'move';
-            event.dataTransfer.setData('text/plain', application.id);
-        },
-
-        dragEnd(event) {
-            event.target.classList.remove('dragging');
-            document.querySelectorAll('.kanban-column').forEach(col => col.classList.remove('drag-over'));
-            this.draggedApplication = null;
-            this.draggedApplications = [];
-        },
-
-        dragOver(event, status) {
-            event.currentTarget.classList.add('drag-over');
-        },
-
-        dragLeave(event) {
-            event.currentTarget.classList.remove('drag-over');
-        },
-
-        async drop(event, newStatus) {
-            event.currentTarget.classList.remove('drag-over');
-
-            if (this.draggedApplications.length === 0) return;
-
-            const appsToMove = this.draggedApplications.filter(app => app.status !== newStatus);
-            if (appsToMove.length === 0) return;
-
-            // update local state dulu untuk responsiveness
-            appsToMove.forEach(app => {
-                app.status = newStatus;
-            });
-
-            // sync dengan database
-            try {
-                if (appsToMove.length === 1) {
-                    await fetch(`/company/applications/${appsToMove[0].id}/status`, {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json',
-                            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
-                        },
-                        body: JSON.stringify({ status: newStatus })
-                    });
-                } else {
-                    await fetch('/company/applications/bulk-update', {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json',
-                            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
-                        },
-                        body: JSON.stringify({
-                            application_ids: appsToMove.map(a => a.id),
-                            status: newStatus
-                        })
-                    });
-                }
-
-                this.showToast('Status berhasil diperbarui');
-            } catch (error) {
-                console.error('Error updating status:', error);
-                this.showToast('Gagal memperbarui status', 'error');
-            }
-
-            this.draggedApplication = null;
-            this.draggedApplications = [];
         }
     }
 }
