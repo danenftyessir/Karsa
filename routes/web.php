@@ -368,6 +368,7 @@ Route::middleware(['auth', 'check.user.type:company'])->prefix('company')->name(
         Route::get('/{id}', [CompanyJobPostingController::class, 'show'])->name('show');
         Route::get('/{id}/edit', [CompanyJobPostingController::class, 'edit'])->name('edit');
         Route::put('/{id}', [CompanyJobPostingController::class, 'update'])->name('update');
+        Route::patch('/{id}/update-linkedin', [CompanyJobPostingController::class, 'updateLinkedin'])->name('update-linkedin');
         Route::delete('/{id}', [CompanyJobPostingController::class, 'destroy'])->name('destroy');
     });
 

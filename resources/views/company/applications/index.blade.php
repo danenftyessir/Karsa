@@ -243,33 +243,33 @@
             </div>
 
             <!-- filter panel -->
-            <div x-show="showFilters" x-collapse x-cloak class="mt-4 pt-4 border-t border-gray-200">
+            <div x-show="showFilters" x-collapse x-cloak class="mt-4 p-6 bg-gray-50 border border-gray-200 rounded-xl">
                 <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
                     <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-2">Posisi</label>
-                        <select x-model="filters.position" class="w-full px-4 py-2.5 bg-white border border-gray-300 rounded-lg text-sm shadow-sm focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-colors">
-                            <option value="">Semua Posisi</option>
+                        <label class="block text-sm font-semibold text-gray-800 mb-2">Posisi</label>
+                        <select x-model="filters.position" class="w-full px-4 py-2.5 bg-white border-2 border-gray-300 rounded-lg text-sm font-medium text-gray-900 shadow-sm focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-all cursor-pointer hover:border-gray-400">
+                            <option value="" class="text-gray-900">Semua Posisi</option>
                             @foreach($jobPostings as $job)
-                                <option value="{{ $job->id }}">{{ $job->title }}</option>
+                                <option value="{{ $job->id }}" class="text-gray-900">{{ $job->title }}</option>
                             @endforeach
                         </select>
                     </div>
                     <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-2">Tanggal Melamar</label>
-                        <select x-model="filters.dateRange" class="w-full px-4 py-2.5 bg-white border border-gray-300 rounded-lg text-sm shadow-sm focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-colors">
-                            <option value="">Semua Waktu</option>
-                            <option value="today">Hari Ini</option>
-                            <option value="week">Minggu Ini</option>
-                            <option value="month">Bulan Ini</option>
+                        <label class="block text-sm font-semibold text-gray-800 mb-2">Tanggal Melamar</label>
+                        <select x-model="filters.dateRange" class="w-full px-4 py-2.5 bg-white border-2 border-gray-300 rounded-lg text-sm font-medium text-gray-900 shadow-sm focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-all cursor-pointer hover:border-gray-400">
+                            <option value="" class="text-gray-900">Semua Waktu</option>
+                            <option value="today" class="text-gray-900">Hari Ini</option>
+                            <option value="week" class="text-gray-900">Minggu Ini</option>
+                            <option value="month" class="text-gray-900">Bulan Ini</option>
                         </select>
                     </div>
                     <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-2">Cari Nama</label>
+                        <label class="block text-sm font-semibold text-gray-800 mb-2">Cari Nama</label>
                         <input type="text" x-model="filters.search" placeholder="Ketik nama kandidat..."
-                               class="w-full px-4 py-2.5 bg-white border border-gray-300 rounded-lg text-sm shadow-sm focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-colors">
+                               class="w-full px-4 py-2.5 bg-white border-2 border-gray-300 rounded-lg text-sm font-medium text-gray-900 placeholder-gray-500 shadow-sm focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-all hover:border-gray-400">
                     </div>
                     <div class="flex items-end">
-                        <button @click="resetFilters()" class="px-5 py-2.5 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors shadow-sm">
+                        <button @click="resetFilters()" class="w-full px-5 py-2.5 text-sm font-semibold text-gray-700 bg-white border-2 border-gray-300 rounded-lg hover:bg-gray-100 hover:border-gray-400 transition-all shadow-sm">
                             Reset Filter
                         </button>
                     </div>

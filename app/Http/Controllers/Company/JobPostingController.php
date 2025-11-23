@@ -420,4 +420,30 @@ class JobPostingController extends Controller
                 ->with('error', 'Gagal menghapus lowongan!');
         }
     }
+
+    public function updateLinkedin(Request $request, $id)
+    {
+        $user = Auth::user();
+        $company = $user->company;
+
+        // Validasi input
+        $validated = $request->validate([
+            'linkedin_url' => 'nullable|url',
+            'sdg_goals' => 'nullable|array',
+            'sdg_goals.*' => 'integer|min:1|max:17',
+        ]);
+
+        // IMPLEMENTED: Update LinkedIn URL dan required SDGs di Supabase
+        $jobPosting = JobPosting::where('id', $id)
+            ->where('company_id', $company->id)
+            ->firstOrFail();
+
+        $jobPosting->update([
+            'linkedin_url' => $validated['linkedin_url'] ?? null,
+            'required_sdgs' => isset($validated['sdg_goals']) ? json_encode($validated['sdg_goals']) : null,
+        ]);
+
+        return redirect()->route('company.jobs.show', $id)
+            ->with('success', 'LinkedIn reference dan SDG requirements berhasil diperbarui!');
+    }
 }

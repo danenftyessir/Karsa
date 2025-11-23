@@ -42,6 +42,8 @@ class JobPosting extends Model
         'success_criteria',
         'status',
         'allow_guest_applications',
+        'linkedin_url',
+        'required_sdgs',
         'views_count',
         'applications_count',
         'published_at',
@@ -51,6 +53,7 @@ class JobPosting extends Model
     protected $casts = [
         'skills' => 'array', // JSON to array
         'sdg_alignment' => 'array', // JSON to array
+        'required_sdgs' => 'array', // JSON to array
         'salary_min' => 'decimal:2',
         'salary_max' => 'decimal:2',
         'allow_guest_applications' => 'boolean',
