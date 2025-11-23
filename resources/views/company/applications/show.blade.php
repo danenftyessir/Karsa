@@ -16,7 +16,7 @@
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/>
                     </svg>
                 </a>
-                <h1 class="text-3xl font-bold" style="font-family: 'Space Grotesk', sans-serif;">
+                <h1 class="text-3xl font-bold" style="font-family: 'Space Grotesk', sans-serif; color: white !important;">
                     Detail Lamaran
                 </h1>
             </div>
@@ -24,7 +24,7 @@
             <!-- Quick Info -->
             <div class="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 fade-in-up" style="animation-delay: 0.1s;">
                 <div>
-                    <h2 class="text-2xl font-bold mb-2">{{ $application->user->name }}</h2>
+                    <h2 class="text-2xl font-bold mb-2" style="color: white !important;">{{ $application->user->name }}</h2>
                     <p class="text-blue-100 mb-2">Melamar untuk: {{ $application->jobPosting->title }}</p>
                     <div class="flex items-center gap-3">
                         <span class="px-3 py-1 rounded-full text-sm font-medium {{ $application->status_badge_class }}">
@@ -184,7 +184,7 @@
                             Ubah Status
                         </button>
 
-                        <button @click="shortlistApplication()"
+                        <button @click="showShortlistModal = true"
                                 class="w-full flex items-center justify-center gap-2 px-4 py-3 bg-white border border-gray-200 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors duration-200">
                             <svg class="w-5 h-5 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
@@ -200,7 +200,7 @@
                             Tolak
                         </button>
 
-                        <button @click="hireApplicant()"
+                        <button @click="showHireModal = true"
                                 class="w-full flex items-center justify-center gap-2 px-4 py-3 bg-white border border-gray-200 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors duration-200">
                             <svg class="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
@@ -371,6 +371,58 @@
             </form>
         </div>
     </div>
+
+    <!-- Shortlist Modal -->
+    <div x-show="showShortlistModal"
+         x-cloak
+         @click.self="showShortlistModal = false"
+         class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 px-4">
+        <div class="bg-white rounded-2xl shadow-xl max-w-md w-full p-6 gpu-accelerate"
+             @click.stop>
+            <h3 class="text-xl font-bold text-gray-900 mb-4">Shortlist Lamaran</h3>
+            <p class="text-gray-600 mb-6">
+                Apakah Anda yakin ingin menambahkan pelamar ini ke daftar shortlist?
+            </p>
+            <div class="flex gap-3">
+                <button type="button"
+                        @click="showShortlistModal = false"
+                        class="flex-1 px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors">
+                    Batal
+                </button>
+                <button type="button"
+                        @click="shortlistApplication()"
+                        class="flex-1 px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors">
+                    Ya, Shortlist
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Hire Modal -->
+    <div x-show="showHireModal"
+         x-cloak
+         @click.self="showHireModal = false"
+         class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 px-4">
+        <div class="bg-white rounded-2xl shadow-xl max-w-md w-full p-6 gpu-accelerate"
+             @click.stop>
+            <h3 class="text-xl font-bold text-gray-900 mb-4">Terima Pelamar</h3>
+            <p class="text-gray-600 mb-6">
+                Apakah Anda yakin ingin menerima pelamar ini? Pelamar akan dinotifikasi tentang penerimaan mereka.
+            </p>
+            <div class="flex gap-3">
+                <button type="button"
+                        @click="showHireModal = false"
+                        class="flex-1 px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors">
+                    Batal
+                </button>
+                <button type="button"
+                        @click="hireApplicant()"
+                        class="flex-1 px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors">
+                    Ya, Terima
+                </button>
+            </div>
+        </div>
+    </div>
 </div>
 
 <script>
@@ -378,6 +430,8 @@ function applicationDetail() {
     return {
         showStatusModal: false,
         showRejectModal: false,
+        showShortlistModal: false,
+        showHireModal: false,
         formData: {
             status: '{{ $application->status }}',
             rating: {{ $application->rating ?? 0 }},
@@ -485,6 +539,7 @@ function applicationDetail() {
                 const data = await response.json();
 
                 if (data.success) {
+                    this.showShortlistModal = false;
                     window.location.reload();
                 } else {
                     alert('Gagal shortlist lamaran');
@@ -524,10 +579,6 @@ function applicationDetail() {
         },
 
         async hireApplicant() {
-            if (!confirm('Apakah Anda yakin ingin menerima pelamar ini?')) {
-                return;
-            }
-
             try {
                 const response = await fetch('{{ route("company.applications.hire", $application->id) }}', {
                     method: 'POST',
@@ -540,6 +591,7 @@ function applicationDetail() {
                 const data = await response.json();
 
                 if (data.success) {
+                    this.showHireModal = false;
                     window.location.reload();
                 } else {
                     alert('Gagal menerima pelamar');

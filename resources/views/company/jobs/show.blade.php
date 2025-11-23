@@ -290,13 +290,6 @@
                                         class="px-4 py-2.5 bg-blue-600 text-white rounded-lg text-sm font-medium hover:bg-blue-700">
                                     Copy Link
                                 </button>
-                                <button @click="shareToLinkedIn()"
-                                        class="linkedin-btn px-4 py-2.5 text-white rounded-lg text-sm font-medium">
-                                    <svg class="w-4 h-4 inline mr-1" fill="currentColor" viewBox="0 0 24 24">
-                                        <path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/>
-                                    </svg>
-                                    LinkedIn
-                                </button>
                             </div>
                         </section>
 
@@ -376,21 +369,6 @@
                                     </div>
                                 </div>
                                 @endif
-
-                                <div class="border-t border-gray-100 pt-4 space-y-2">
-                                    <div class="flex items-center gap-2 text-sm text-gray-700">
-                                        <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5h12M9 3v2m1.048 9.5A18.022 18.022 0 016.412 9m6.088 9h7M11 21l5-10 5 10M12.751 5C11.783 10.77 8.07 15.61 3 18.129"/>
-                                        </svg>
-                                        <span>{{ $jobPosting['language'] }}</span>
-                                    </div>
-                                    <div class="flex items-center gap-2 text-sm text-gray-700">
-                                        <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
-                                        </svg>
-                                        <span>{{ $jobPosting['timezone'] }}</span>
-                                    </div>
-                                </div>
                             </div>
                         </section>
 
