@@ -419,15 +419,14 @@ class JobController extends Controller
 
     /**
      * halaman job alerts
-     * NOTE: Job alerts feature belum diimplementasi - table job_alerts tidak ada
      */
     public function alerts()
     {
         $user = Auth::user();
 
-        // TODO: Implement job alerts feature
-        // Sementara return empty collection
-        $alerts = collect([]);
+        $alerts = JobAlert::byUser($user->id)
+            ->orderBy('created_at', 'desc')
+            ->get();
 
         return view('student.jobs.alerts', compact('alerts'));
     }
