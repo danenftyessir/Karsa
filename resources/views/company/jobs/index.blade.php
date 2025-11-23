@@ -11,7 +11,7 @@
         <div class="container mx-auto px-6 relative z-10">
             <div class="flex justify-between items-center fade-in-up">
                 <div>
-                    <h1 class="text-4xl font-bold mb-2 text-white" style="font-family: 'Space Grotesk', sans-serif;">
+                    <h1 class="text-4xl mb-2 text-white" style="font-family: 'Space Grotesk', sans-serif;">
                         Kelola Lowongan Pekerjaan
                     </h1>
                     <p class="text-blue-100 text-lg">
