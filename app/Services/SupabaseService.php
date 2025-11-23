@@ -167,14 +167,19 @@ class SupabaseService
             $disk = Storage::disk('supabase');
             $fullPath = "{$bucket}/{$filePath}";
 
-            if ($disk->exists($fullPath)) {
+            // Try to delete directly without checking existence
+            // This avoids issues with exists() method on some storage drivers
+            try {
                 return $disk->delete($fullPath);
+            } catch (\Exception $deleteException) {
+                // File might not exist, which is fine
+                Log::info("File not found or already deleted: {$fullPath}");
+                return false;
             }
-
-            return false;
         } catch (\Exception $e) {
             Log::error("Supabase delete file error: " . $e->getMessage());
-            throw $e;
+            // Don't throw error for delete failures - just log it
+            return false;
         }
     }
 

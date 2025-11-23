@@ -342,10 +342,16 @@
                                        class="mt-1 rounded border-gray-300 text-primary-600 focus:ring-primary-500"
                                        @click.stop>
 
-                                <img :src="talent.avatar_url || '/images/default-avatar.svg'"
-                                     :alt="talent.name"
-                                     class="w-12 h-12 rounded-full object-cover flex-shrink-0"
-                                     onerror="this.src='/images/default-avatar.svg'">
+                                <template x-if="talent.avatar_url">
+                                    <img :src="talent.avatar_url"
+                                         :alt="talent.name"
+                                         class="w-12 h-12 rounded-full object-cover flex-shrink-0">
+                                </template>
+                                <template x-if="!talent.avatar_url">
+                                    <div class="w-12 h-12 rounded-full bg-gradient-to-br from-purple-500 to-indigo-600 flex items-center justify-center flex-shrink-0">
+                                        <span class="text-white text-lg font-bold" x-text="talent.name ? talent.name.charAt(0).toUpperCase() : '?'"></span>
+                                    </div>
+                                </template>
 
                                 <div class="min-w-0 flex-1">
                                     <h4 class="font-semibold text-gray-900 truncate" x-text="talent.name"></h4>
@@ -455,8 +461,15 @@
                     <div>
                         <!-- talent info -->
                         <div class="flex items-center gap-3 mb-6 p-4 bg-gray-50 rounded-lg">
-                            <img :src="selectedTalent.avatar_url || '/images/default-avatar.svg'"
-                                 class="w-14 h-14 rounded-full object-cover">
+                            <template x-if="selectedTalent.avatar_url">
+                                <img :src="selectedTalent.avatar_url"
+                                     class="w-14 h-14 rounded-full object-cover">
+                            </template>
+                            <template x-if="!selectedTalent.avatar_url">
+                                <div class="w-14 h-14 rounded-full bg-gradient-to-br from-purple-500 to-indigo-600 flex items-center justify-center">
+                                    <span class="text-white text-xl font-bold" x-text="selectedTalent.name ? selectedTalent.name.charAt(0).toUpperCase() : '?'"></span>
+                                </div>
+                            </template>
                             <div>
                                 <p class="font-medium text-gray-900" x-text="selectedTalent.name"></p>
                                 <p class="text-sm text-gray-500" x-text="selectedTalent.title"></p>
@@ -654,8 +667,15 @@
                     <template x-for="talent in comparisonTalents" :key="talent.id">
                         <div class="border border-gray-200 rounded-lg p-4">
                             <div class="text-center mb-4 pb-4 border-b border-gray-100">
-                                <img :src="talent.avatar_url || '/images/default-avatar.svg'"
-                                     class="w-20 h-20 rounded-full mx-auto mb-3 object-cover">
+                                <template x-if="talent.avatar_url">
+                                    <img :src="talent.avatar_url"
+                                         class="w-20 h-20 rounded-full mx-auto mb-3 object-cover">
+                                </template>
+                                <template x-if="!talent.avatar_url">
+                                    <div class="w-20 h-20 rounded-full bg-gradient-to-br from-purple-500 to-indigo-600 flex items-center justify-center mx-auto mb-3">
+                                        <span class="text-white text-2xl font-bold" x-text="talent.name ? talent.name.charAt(0).toUpperCase() : '?'"></span>
+                                    </div>
+                                </template>
                                 <h4 class="font-semibold text-gray-900" x-text="talent.name"></h4>
                                 <p class="text-sm text-gray-500" x-text="talent.title"></p>
                             </div>

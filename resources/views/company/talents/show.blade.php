@@ -30,10 +30,8 @@
                              alt="{{ $talent->name }}"
                              class="w-24 h-24 rounded-2xl object-cover border-4 border-white shadow-lg">
                     @else
-                        <div class="w-24 h-24 rounded-2xl bg-white flex items-center justify-center border-4 border-white shadow-lg">
-                            <svg class="w-12 h-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
-                            </svg>
+                        <div class="w-24 h-24 rounded-2xl bg-gradient-to-br from-purple-500 to-indigo-600 flex items-center justify-center border-4 border-white shadow-lg">
+                            <span class="text-white text-3xl font-bold">{{ strtoupper(substr($talent->name, 0, 1)) }}</span>
                         </div>
                     @endif
                     @if($talent->is_verified)

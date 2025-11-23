@@ -5,9 +5,6 @@
         <div class="flex flex-col items-center mb-12 space-y-6">
             <div class="flex items-center gap-3">
                 <img src="{{ asset('karsa-logo.png') }}" alt="Karsa - Karya Untuk Bangsa" class="h-12 w-auto">
-                <span class="text-3xl font-bold bg-gradient-to-r from-cyan-400 via-blue-400 to-indigo-400 bg-clip-text text-transparent" style="font-family: 'Space Grotesk', sans-serif;">
-                    Karsa
-                </span>
             </div>
             <p class="text-gray-400 text-center max-w-2xl text-base leading-relaxed">
                 Platform Digital Yang Menghubungkan Mahasiswa Dengan Instansi Untuk Program Kuliah Kerja Nyata Berkelanjutan
@@ -33,7 +30,7 @@
         {{-- copyright --}}
         <div class="border-t border-gray-800 pt-8">
             <p class="text-center text-sm text-gray-500 leading-relaxed max-w-3xl mx-auto">
-                Hak cipta © {{ date('Y') }} Karsa - Karya Untuk Bangsa. Seluruh hak cipta dilindungi undang-undang dan terdaftar pada Direktorat Jendral Kekayaan Intelektual Republik Indonesia.
+                Hak cipta © {{ date('Y') }}. Seluruh hak cipta dilindungi undang-undang dan terdaftar pada Direktorat Jendral Kekayaan Intelektual Republik Indonesia.
             </p>
         </div>
     </div>

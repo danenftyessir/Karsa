@@ -220,11 +220,17 @@
                         <div class="flex items-center justify-between mb-4">
                             <div class="flex items-center avatar-stack">
                                 @foreach($recentApplicants as $index => $applicant)
-                                    <img src="{{ asset('storage/profiles/' . $applicant['avatar']) }}"
-                                         alt="{{ $applicant['name'] }}"
-                                         class="w-10 h-10 rounded-full border-2 border-white object-cover {{ $index > 0 ? '-ml-3' : '' }}"
-                                         style="z-index: {{ count($recentApplicants) - $index }}"
-                                         onerror="this.src='{{ asset('images/default-avatar.svg') }}'">
+                                    @if(!empty($applicant['avatar']))
+                                        <img src="{{ asset('storage/profiles/' . $applicant['avatar']) }}"
+                                             alt="{{ $applicant['name'] }}"
+                                             class="w-10 h-10 rounded-full border-2 border-white object-cover {{ $index > 0 ? '-ml-3' : '' }}"
+                                             style="z-index: {{ count($recentApplicants) - $index }}">
+                                    @else
+                                        <div class="w-10 h-10 rounded-full border-2 border-white bg-gradient-to-br from-purple-500 to-indigo-600 flex items-center justify-center {{ $index > 0 ? '-ml-3' : '' }}"
+                                             style="z-index: {{ count($recentApplicants) - $index }}">
+                                            <span class="text-white text-sm font-bold">{{ strtoupper(substr($applicant['name'], 0, 1)) }}</span>
+                                        </div>
+                                    @endif
                                 @endforeach
                             </div>
                             <div class="flex items-center gap-2">
@@ -355,10 +361,15 @@
                         <div class="pt-4 border-t border-gray-100">
                             <p class="text-sm text-gray-500 mb-2">Owner</p>
                             <div class="flex items-center gap-3">
-                                <img src="{{ asset('storage/profiles/' . $jobPosting['owner']['avatar']) }}"
-                                     alt="{{ $jobPosting['owner']['name'] }}"
-                                     class="w-10 h-10 rounded-full object-cover"
-                                     onerror="this.src='{{ asset('images/default-avatar.svg') }}'">
+                                @if(!empty($jobPosting['owner']['avatar']))
+                                    <img src="{{ asset('storage/profiles/' . $jobPosting['owner']['avatar']) }}"
+                                         alt="{{ $jobPosting['owner']['name'] }}"
+                                         class="w-10 h-10 rounded-full object-cover">
+                                @else
+                                    <div class="w-10 h-10 rounded-full bg-gradient-to-br from-purple-500 to-indigo-600 flex items-center justify-center">
+                                        <span class="text-white text-sm font-bold">{{ strtoupper(substr($jobPosting['owner']['name'], 0, 1)) }}</span>
+                                    </div>
+                                @endif
                                 <div>
                                     <p class="font-medium text-gray-900">{{ $jobPosting['owner']['name'] }}</p>
                                     <p class="text-sm text-gray-500">{{ $jobPosting['owner']['role'] }}</p>

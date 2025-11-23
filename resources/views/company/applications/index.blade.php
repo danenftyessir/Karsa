@@ -244,16 +244,18 @@
     </div>
 
     <!-- header section -->
-    <div class="bg-white border-b border-gray-200">
-        <div class="max-w-full mx-auto px-4 sm:px-6 lg:px-8 py-6">
+    <div class="relative bg-cover bg-center text-white py-12 overflow-hidden" style="background-image: url('{{ asset('company3.jpg') }}');">
+        <div class="absolute inset-0 bg-black/50"></div>
+
+        <div class="max-w-full mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
             <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
 
                 <!-- title dan stats -->
                 <div>
-                    <h1 class="text-2xl font-bold text-gray-900">Manajemen Lamaran</h1>
-                    <p class="mt-1 text-sm text-gray-500">
-                        Total <span class="font-medium text-gray-900" x-text="totalApplications"></span> lamaran aktif
-                        <span x-show="selectedApplications.length > 0" class="ml-2 text-primary-600">
+                    <h1 class="text-3xl font-bold text-white mb-2" style="font-family: 'Space Grotesk', sans-serif;">Manajemen Lamaran</h1>
+                    <p class="mt-1 text-base text-blue-100">
+                        Total <span class="font-semibold text-white" x-text="totalApplications"></span> lamaran aktif
+                        <span x-show="selectedApplications.length > 0" class="ml-2 text-yellow-300">
                             (<span x-text="selectedApplications.length"></span> dipilih)
                         </span>
                     </p>
@@ -420,10 +422,16 @@
                                         <div class="flex-1 min-w-0">
                                             <!-- avatar dan nama -->
                                             <div class="flex items-center gap-3 mb-2">
-                                                <img :src="application.avatar_url || '/images/default-avatar.svg'"
-                                                     :alt="application.name"
-                                                     class="w-10 h-10 rounded-full object-cover"
-                                                     onerror="this.src='/images/default-avatar.svg'">
+                                                <template x-if="application.avatar_url">
+                                                    <img :src="application.avatar_url"
+                                                         :alt="application.name"
+                                                         class="w-10 h-10 rounded-full object-cover">
+                                                </template>
+                                                <template x-if="!application.avatar_url">
+                                                    <div class="w-10 h-10 rounded-full bg-gradient-to-br from-purple-500 to-indigo-600 flex items-center justify-center">
+                                                        <span class="text-white text-sm font-bold" x-text="application.name ? application.name.charAt(0).toUpperCase() : '?'"></span>
+                                                    </div>
+                                                </template>
                                                 <div class="min-w-0">
                                                     <h4 class="font-medium text-gray-900 truncate" x-text="application.name"></h4>
                                                     <p class="text-sm text-gray-500 truncate" x-text="application.position"></p>
@@ -521,11 +529,19 @@
                             </td>
                             <td class="px-6 py-4">
                                 <div class="flex items-center gap-3">
-                                    <img :src="application.avatar_url || '/images/default-avatar.svg'"
-                                         :alt="application.name"
-                                         class="w-10 h-10 rounded-full object-cover"
-                                         onerror="this.src='/images/default-avatar.svg'">
-                                    <span class="font-medium text-gray-900" x-text="application.name"></span>
+                                    <template x-if="application.avatar_url">
+                                        <img :src="application.avatar_url"
+                                             :alt="application.name"
+                                             class="w-10 h-10 rounded-full object-cover">
+                                    </template>
+                                    <template x-if="!application.avatar_url">
+                                        <div class="w-10 h-10 rounded-full bg-gradient-to-br from-purple-500 to-indigo-600 flex items-center justify-center">
+                                            <span class="text-white text-sm font-bold" x-text="application.name ? application.name.charAt(0).toUpperCase() : '?'"></span>
+                                        </div>
+                                    </template>
+                                    <div class="flex-1 min-w-0">
+                                        <span class="font-medium text-gray-900" x-text="application.name"></span>
+                                    </div>
                                 </div>
                             </td>
                             <td class="px-6 py-4 text-sm text-gray-500" x-text="application.position"></td>
@@ -587,9 +603,15 @@
                     <div>
                         <!-- kandidat info -->
                         <div class="flex items-center gap-3 mb-6 p-4 bg-gray-50 rounded-lg">
-                            <img :src="selectedApplication.avatar_url || '/images/default-avatar.svg'"
-                                 class="w-14 h-14 rounded-full object-cover"
-                                 onerror="this.src='/images/default-avatar.svg'">
+                            <template x-if="selectedApplication.avatar_url">
+                                <img :src="selectedApplication.avatar_url"
+                                     class="w-14 h-14 rounded-full object-cover">
+                            </template>
+                            <template x-if="!selectedApplication.avatar_url">
+                                <div class="w-14 h-14 rounded-full bg-gradient-to-br from-purple-500 to-indigo-600 flex items-center justify-center">
+                                    <span class="text-white text-xl font-bold" x-text="selectedApplication.name ? selectedApplication.name.charAt(0).toUpperCase() : '?'"></span>
+                                </div>
+                            </template>
                             <div>
                                 <p class="font-medium text-gray-900" x-text="selectedApplication.name"></p>
                                 <p class="text-sm text-gray-500" x-text="selectedApplication.position"></p>
@@ -767,8 +789,15 @@
                 <template x-if="selectedApplication">
                     <div>
                         <div class="flex items-center gap-3 mb-6 p-3 bg-gray-50 rounded-lg">
-                            <img :src="selectedApplication.avatar_url || '/images/default-avatar.svg'"
-                                 class="w-10 h-10 rounded-full object-cover">
+                            <template x-if="selectedApplication.avatar_url">
+                                <img :src="selectedApplication.avatar_url"
+                                     class="w-10 h-10 rounded-full object-cover">
+                            </template>
+                            <template x-if="!selectedApplication.avatar_url">
+                                <div class="w-10 h-10 rounded-full bg-gradient-to-br from-purple-500 to-indigo-600 flex items-center justify-center">
+                                    <span class="text-white text-sm font-bold" x-text="selectedApplication.name ? selectedApplication.name.charAt(0).toUpperCase() : '?'"></span>
+                                </div>
+                            </template>
                             <div>
                                 <p class="font-medium text-gray-900" x-text="selectedApplication.name"></p>
                                 <p class="text-sm text-gray-500" x-text="selectedApplication.position"></p>
@@ -824,9 +853,15 @@
                         <div class="border border-gray-200 rounded-lg p-4">
                             <!-- header -->
                             <div class="text-center mb-4 pb-4 border-b border-gray-100">
-                                <img :src="candidate.avatar_url || '/images/default-avatar.svg'"
-                                     class="w-20 h-20 rounded-full mx-auto mb-3 object-cover"
-                                     onerror="this.src='/images/default-avatar.svg'">
+                                <template x-if="candidate.avatar_url">
+                                    <img :src="candidate.avatar_url"
+                                         class="w-20 h-20 rounded-full mx-auto mb-3 object-cover">
+                                </template>
+                                <template x-if="!candidate.avatar_url">
+                                    <div class="w-20 h-20 rounded-full bg-gradient-to-br from-purple-500 to-indigo-600 flex items-center justify-center mx-auto mb-3">
+                                        <span class="text-white text-2xl font-bold" x-text="candidate.name ? candidate.name.charAt(0).toUpperCase() : '?'"></span>
+                                    </div>
+                                </template>
                                 <h4 class="font-semibold text-gray-900" x-text="candidate.name"></h4>
                                 <p class="text-sm text-gray-500" x-text="candidate.position"></p>
                             </div>
