@@ -9,7 +9,7 @@
     <div class="relative h-48 bg-cover bg-center" style="background-image: url('{{ asset('company3.jpg') }}');">
         <div class="absolute inset-0 bg-black/50"></div>
         <div class="relative z-10 flex flex-col items-center justify-center h-full text-center text-white px-4">
-            <h1 class="text-2xl md:text-3xl font-bold mb-2 fade-in-up" style="font-family: 'Space Grotesk', sans-serif;">
+            <h1 class="text-2xl md:text-3xl font-bold mb-2 text-white fade-in-up" style="font-family: 'Space Grotesk', sans-serif;">
                 Buat Lowongan Baru
             </h1>
             <p class="text-sm md:text-base text-gray-300 max-w-xl fade-in-up" style="animation-delay: 0.1s;">
@@ -173,51 +173,21 @@
 
                 <div class="space-y-6">
                     <div>
-                        <div class="flex items-center justify-between mb-2">
-                            <label class="block text-sm font-medium text-gray-700">Deskripsi Pekerjaan</label>
-                            <button type="button" @click="generateDescription('description')"
-                                    :disabled="!formData.title"
-                                    class="text-xs text-violet-600 hover:text-violet-700 font-medium flex items-center gap-1 disabled:opacity-50 disabled:cursor-not-allowed">
-                                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/>
-                                </svg>
-                                Generate AI
-                            </button>
-                        </div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Deskripsi Pekerjaan</label>
                         <textarea x-model="formData.description" rows="4"
                                   placeholder="Jelaskan tentang posisi ini dan apa yang akan dikerjakan..."
                                   class="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-violet-500 focus:border-transparent transition-all resize-none"></textarea>
                     </div>
 
                     <div>
-                        <div class="flex items-center justify-between mb-2">
-                            <label class="block text-sm font-medium text-gray-700">Tanggung Jawab</label>
-                            <button type="button" @click="generateDescription('responsibilities')"
-                                    :disabled="!formData.title"
-                                    class="text-xs text-violet-600 hover:text-violet-700 font-medium flex items-center gap-1 disabled:opacity-50 disabled:cursor-not-allowed">
-                                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/>
-                                </svg>
-                                Generate AI
-                            </button>
-                        </div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Tanggung Jawab</label>
                         <textarea x-model="formData.responsibilities" rows="4"
-                                  placeholder="- Mengembangkan fitur baru&#10;- Melakukan code review&#10;- Berkolaborasi dengan tim"
+                                  placeholder="- Melakukan pendampingan masyarakat&#10;- Mendokumentasikan kegiatan&#10;- Berkoordinasi dengan tim lapangan"
                                   class="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-violet-500 focus:border-transparent transition-all resize-none"></textarea>
                     </div>
 
                     <div>
-                        <div class="flex items-center justify-between mb-2">
-                            <label class="block text-sm font-medium text-gray-700">Kualifikasi</label>
-                            <button type="button" @click="generateDescription('qualifications')"
-                                    :disabled="!formData.title"
-                                    class="text-xs text-violet-600 hover:text-violet-700 font-medium flex items-center gap-1 disabled:opacity-50 disabled:cursor-not-allowed">
-                                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/>
-                                </svg>
-                                Generate AI
-                            </button>
-                        </div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Kualifikasi</label>
                         <textarea x-model="formData.qualifications" rows="4"
                                   placeholder="- Mahasiswa aktif minimal semester 5&#10;- Berpengalaman dalam kegiatan lapangan/kemasyarakatan&#10;- Komunikatif dan dapat bekerja dengan masyarakat desa"
                                   class="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-violet-500 focus:border-transparent transition-all resize-none"></textarea>
@@ -699,32 +669,6 @@ function jobWizard() {
             }
         },
 
-        // AI Description Generator (Placeholder - would use actual API)
-        async generateDescription(field) {
-            if (!this.formData.title) {
-                window.showNotification('Isi judul lowongan terlebih dahulu', 'warning');
-                return;
-            }
-
-            window.showNotification('Generating konten dengan AI...', 'info');
-
-            // TODO: Implement actual AI API call here
-            // For now, showing placeholder
-            setTimeout(() => {
-                let generatedText = '';
-
-                if (field === 'description') {
-                    generatedText = `Kami mencari ${this.formData.title} yang berpengalaman untuk bergabung dengan tim kami. Posisi ini akan bertanggung jawab untuk mengembangkan dan memelihara sistem kami dengan fokus pada kualitas dan performa tinggi.`;
-                } else if (field === 'responsibilities') {
-                    generatedText = `- Mengembangkan dan memelihara aplikasi sesuai best practices\n- Berkolaborasi dengan tim lintas fungsi\n- Melakukan code review dan mentoring\n- Berkontribusi pada arsitektur teknis\n- Memastikan kualitas dan keamanan kode`;
-                } else if (field === 'qualifications') {
-                    generatedText = `- Minimal 3+ tahun pengalaman di posisi serupa\n- Menguasai teknologi yang relevan\n- Pengalaman dengan metodologi Agile/Scrum\n- Kemampuan problem solving yang kuat\n- Komunikasi dan kolaborasi tim yang baik`;
-                }
-
-                this.formData[field] = generatedText;
-                window.showNotification('Konten berhasil di-generate! Silahkan edit sesuai kebutuhan.', 'success');
-            }, 1500);
-        },
 
         // Salary Benchmarking (Placeholder)
         suggestSalary() {
