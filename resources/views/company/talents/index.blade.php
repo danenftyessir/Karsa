@@ -2,45 +2,145 @@
 
 @section('title', 'Temukan Talenta')
 
+@push('styles')
+{{-- Import Google Font - Space Grotesk for Hero --}}
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@600;700&display=swap" rel="stylesheet">
+
+<style>
+    .marketplace-hero {
+        position: relative;
+        background-image:
+            linear-gradient(135deg, rgba(99, 102, 241, 0.35) 0%, rgba(129, 140, 248, 0.30) 50%, rgba(156, 163, 175, 0.25) 100%),
+            url('/company1.jpg');
+        background-size: cover;
+        background-position: center;
+        background-attachment: fixed;
+        min-height: 480px;
+    }
+
+    .hero-title {
+        font-family: 'Space Grotesk', sans-serif;
+        font-weight: 700;
+        letter-spacing: -0.02em;
+    }
+
+    .dashboard-fade-in {
+        animation: fadeInUp 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    @keyframes fadeInUp {
+        from {
+            opacity: 0;
+            transform: translateY(30px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    /* animasi fade in up untuk elemen lain */
+    .fade-in-up {
+        animation: fadeInUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        opacity: 0;
+    }
+
+    /* GPU acceleration untuk performa smooth */
+    .gpu-accelerate {
+        transform: translateZ(0);
+        will-change: transform, opacity;
+        backface-visibility: hidden;
+    }
+
+    /* hover effect untuk cards */
+    .hover-lift {
+        transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.2s ease;
+    }
+
+    .hover-lift:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 25px -5px rgba(0, 0, 0, 0.1);
+    }
+
+    /* custom scrollbar untuk filter sidebar */
+    .custom-scrollbar::-webkit-scrollbar {
+        width: 4px;
+    }
+
+    .custom-scrollbar::-webkit-scrollbar-track {
+        background: #F3F4F6;
+        border-radius: 2px;
+    }
+
+    .custom-scrollbar::-webkit-scrollbar-thumb {
+        background: #D1D5DB;
+        border-radius: 2px;
+    }
+
+    .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+        background: #9CA3AF;
+    }
+
+    /* reduced motion support untuk aksesibilitas */
+    @media (prefers-reduced-motion: reduce) {
+        .fade-in-up, .dashboard-fade-in {
+            animation: none;
+            opacity: 1;
+        }
+
+        .hover-lift:hover {
+            transform: none;
+        }
+    }
+</style>
+@endpush
+
 @section('content')
 <div class="min-h-screen bg-gray-50" x-data="talentBrowser()">
 
-    {{-- hero section with image background and search --}}
-    <div class="relative bg-cover bg-center text-white py-16 overflow-hidden" style="background-image: url('{{ asset('company1.jpg') }}');">
-        <div class="absolute inset-0 bg-black/50"></div>
+    {{-- marketplace-style hero section --}}
+    <section class="marketplace-hero text-white relative overflow-hidden">
+        <div class="max-w-7xl mx-auto px-6 sm:px-8 lg:px-12 relative z-10 py-12">
+            <div class="max-w-4xl mx-auto text-center">
+                <div class="dashboard-fade-in">
+                    {{-- Hero Title --}}
+                    <h1 class="hero-title text-4xl md:text-6xl font-bold mb-6 !text-white leading-tight" style="color: white !important;">
+                        Temukan Talenta Terbaik Untuk Tim Anda
+                    </h1>
 
-        <div class="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="text-center text-white mb-8">
-                <h1 class="text-3xl md:text-4xl font-bold mb-3 fade-in-up" style="font-family: 'Space Grotesk', sans-serif;">
-                    Temukan Talenta Terbaik Untuk Tim Anda
-                </h1>
-                <p class="text-base md:text-lg text-violet-100 max-w-2xl mx-auto fade-in-up" style="animation-delay: 0.1s;">
-                    Jelajahi profil terverifikasi, sesuaikan dengan nilai Anda, dan temukan kecocokan sempurna
-                </p>
-            </div>
+                    <p class="text-lg md:text-xl leading-relaxed max-w-2xl mx-auto mb-8 font-medium" style="color: #ffffff !important; text-shadow: 0 2px 8px rgba(0, 0, 0, 0.5), 0 4px 12px rgba(0, 0, 0, 0.4);">
+                        Jelajahi profil terverifikasi, sesuaikan dengan nilai Anda, dan temukan kecocokan sempurna
+                    </p>
 
-            {{-- Search Bar --}}
-            <div class="max-w-3xl mx-auto fade-in-up" style="animation-delay: 0.2s;">
-                <div class="relative">
-                    <input type="text"
-                           x-model="searchQuery"
-                           @input="handleSearch()"
-                           placeholder="Cari mahasiswa berdasarkan nama, skill, atau universitas..."
-                           class="w-full px-6 py-4 pl-14 pr-4 text-gray-900 placeholder-gray-500 bg-white rounded-2xl shadow-2xl focus:outline-none focus:ring-4 focus:ring-violet-300 transition-all">
-                    <svg class="absolute left-5 top-1/2 transform -translate-y-1/2 w-6 h-6 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
-                    </svg>
-                    <div x-show="searchQuery"
-                         @click="searchQuery = ''; handleSearch()"
-                         class="absolute right-5 top-1/2 transform -translate-y-1/2 w-6 h-6 text-gray-400 hover:text-gray-600 cursor-pointer">
-                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
-                        </svg>
+                    {{-- Search Bar --}}
+                    <div class="max-w-3xl mx-auto">
+                        <div class="relative">
+                            <input type="text"
+                                   x-model="searchQuery"
+                                   @input="handleSearch()"
+                                   placeholder="Cari mahasiswa berdasarkan nama, skill, atau universitas..."
+                                   class="w-full px-6 py-4 pl-14 pr-4 text-gray-900 placeholder-gray-500 bg-white rounded-2xl shadow-2xl focus:outline-none focus:ring-4 focus:ring-violet-300 transition-all">
+                            <svg class="absolute left-5 top-1/2 transform -translate-y-1/2 w-6 h-6 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+                            </svg>
+                            <div x-show="searchQuery"
+                                 @click="searchQuery = ''; handleSearch()"
+                                 class="absolute right-5 top-1/2 transform -translate-y-1/2 w-6 h-6 text-gray-400 hover:text-gray-600 cursor-pointer">
+                                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                                </svg>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
-    </div>
+
+        {{-- straight divider --}}
+        <div class="absolute bottom-0 left-0 right-0 h-1 bg-white"></div>
+    </section>
 
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
 
@@ -570,73 +670,6 @@
         </div>
     </div>
 </div>
-
-<style>
-/* animasi fade in up */
-.fade-in-up {
-    animation: fadeInUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-    opacity: 0;
-}
-
-@keyframes fadeInUp {
-    from {
-        opacity: 0;
-        transform: translate3d(0, 20px, 0);
-    }
-    to {
-        opacity: 1;
-        transform: translate3d(0, 0, 0);
-    }
-}
-
-/* GPU acceleration untuk performa smooth */
-.gpu-accelerate {
-    transform: translateZ(0);
-    will-change: transform, opacity;
-    backface-visibility: hidden;
-}
-
-/* hover effect untuk cards */
-.hover-lift {
-    transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.2s ease;
-}
-
-.hover-lift:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 8px 25px -5px rgba(0, 0, 0, 0.1);
-}
-
-/* custom scrollbar untuk filter sidebar */
-.custom-scrollbar::-webkit-scrollbar {
-    width: 4px;
-}
-
-.custom-scrollbar::-webkit-scrollbar-track {
-    background: #F3F4F6;
-    border-radius: 2px;
-}
-
-.custom-scrollbar::-webkit-scrollbar-thumb {
-    background: #D1D5DB;
-    border-radius: 2px;
-}
-
-.custom-scrollbar::-webkit-scrollbar-thumb:hover {
-    background: #9CA3AF;
-}
-
-/* reduced motion support untuk aksesibilitas */
-@media (prefers-reduced-motion: reduce) {
-    .fade-in-up {
-        animation: none;
-        opacity: 1;
-    }
-
-    .hover-lift:hover {
-        transform: none;
-    }
-}
-</style>
 @endsection
 
 @push('scripts')

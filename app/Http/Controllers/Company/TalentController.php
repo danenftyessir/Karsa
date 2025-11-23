@@ -432,7 +432,7 @@ class TalentController extends Controller
         $company = $user->company;
 
         $savedTalents = SavedTalent::where('company_id', $company->id)
-            ->with('user.profile')
+            ->with('user.student')
             ->get();
 
         $filename = 'saved_talents_' . date('Y-m-d') . '.csv';
