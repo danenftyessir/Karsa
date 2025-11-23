@@ -229,7 +229,7 @@ class TalentController extends Controller
                         'name' => $user->name,
                         'username' => $user->username,
                         'title' => $student->major ?? 'No Major',
-                        'avatar' => $student->profile_photo_path ?? 'default-avatar.jpg',
+                        'avatar_url' => $student ? $student->profile_photo_url : null,
                         'verified' => !is_null($user->email_verified_at),
                         'description' => 'Student', // Description if available
                         'notes' => $savedTalent->notes,

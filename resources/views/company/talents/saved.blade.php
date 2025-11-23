@@ -144,7 +144,7 @@
 
     <!-- toast notification -->
     <div x-show="toast.show" x-cloak
-         class="fixed top-4 right-4 z-50 px-4 py-3 rounded-lg shadow-lg"
+         class="fixed top-4 right-4 z-[9999] px-4 py-3 rounded-lg shadow-lg"
          :class="toast.type === 'success' ? 'bg-green-500 text-white' : 'bg-red-500 text-white'"
          x-transition:enter="transition ease-out duration-300"
          x-transition:enter-start="opacity-0 transform translate-x-full"
@@ -163,13 +163,13 @@
     </div>
 
     <!-- header section -->
-    <div class="relative bg-cover bg-center text-white py-12 overflow-hidden" style="background-image: url('{{ asset('company6.jpg') }}');">
+    <div class="relative bg-cover bg-center text-white py-12 overflow-hidden" style="background-image: url('{{ asset('company4.jpg') }}');">
         <div class="absolute inset-0 bg-black/50"></div>
 
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
             <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
                 <div>
-                    <h1 class="text-3xl font-bold text-white mb-2" style="font-family: 'Space Grotesk', sans-serif;">Talent Tersimpan</h1>
+                    <h1 class="text-3xl font-bold mb-2" style="font-family: 'Space Grotesk', sans-serif; color: white;">Talent Tersimpan</h1>
                     <p class="mt-1 text-base text-blue-100">
                         Total <span class="font-semibold text-white" x-text="totalTalents"></span> talent tersimpan
                         <span x-show="selectedTalents.length > 0" class="ml-2 text-yellow-300">
@@ -295,36 +295,28 @@
                         </template>
                     </div>
                 </div>
-
-                <!-- status filter -->
-                <div class="bg-white rounded-xl border border-gray-200 overflow-hidden mt-4">
-                    <div class="px-4 py-3 border-b border-gray-200">
-                        <h3 class="font-semibold text-gray-900">Filter Status</h3>
-                    </div>
-                    <div class="p-2 space-y-1">
-                        <button @click="statusFilter = ''"
-                                class="w-full text-left px-3 py-2 rounded-lg text-sm"
-                                :class="statusFilter === '' ? 'bg-gray-100 font-medium' : 'hover:bg-gray-50'">
-                            Semua Status
-                        </button>
-                        <template x-for="status in statusOptions" :key="status.value">
-                            <button @click="statusFilter = status.value"
-                                    class="w-full text-left px-3 py-2 rounded-lg text-sm flex items-center gap-2"
-                                    :class="statusFilter === status.value ? 'bg-gray-100 font-medium' : 'hover:bg-gray-50'">
-                                <span class="w-2 h-2 rounded-full" :class="'status-' + status.value"></span>
-                                <span x-text="status.label"></span>
-                            </button>
-                        </template>
-                    </div>
-                </div>
             </div>
 
             <!-- talent list -->
             <div class="flex-1">
                 <!-- search bar -->
                 <div class="mb-4">
-                    <input type="text" x-model="searchQuery" placeholder="Cari talent berdasarkan nama..."
-                           class="w-full rounded-lg border-gray-300 text-sm focus:ring-primary-500 focus:border-primary-500">
+                    <div class="relative">
+                        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                            <svg class="h-5 w-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+                            </svg>
+                        </div>
+                        <input type="text" x-model="searchQuery" placeholder="Cari talent berdasarkan nama..."
+                               class="w-full pl-10 pr-4 py-2.5 rounded-lg border-gray-300 text-sm focus:ring-2 focus:ring-primary-500 focus:border-primary-500 shadow-sm">
+                        <div x-show="searchQuery" class="absolute inset-y-0 right-0 pr-3 flex items-center">
+                            <button @click="searchQuery = ''" class="text-gray-400 hover:text-gray-600">
+                                <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                                </svg>
+                            </button>
+                        </div>
+                    </div>
                 </div>
 
                 <!-- talent grid -->
@@ -620,9 +612,17 @@
 
                 <div class="space-y-4">
                     <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-1">Nama Folder</label>
-                        <input type="text" x-model="folderName" placeholder="Contoh: Frontend Developer"
-                               class="w-full rounded-lg border-gray-300 text-sm focus:ring-primary-500 focus:border-primary-500">
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Nama Folder</label>
+                        <div class="relative">
+                            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                <svg class="h-5 w-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z"/>
+                                </svg>
+                            </div>
+                            <input type="text" x-model="folderName" placeholder="Contoh: Frontend Developer"
+                                   @keydown.enter="saveFolderModal()"
+                                   class="w-full pl-10 pr-4 py-2.5 rounded-lg border-gray-300 text-sm focus:ring-2 focus:ring-primary-500 focus:border-primary-500 shadow-sm">
+                        </div>
                     </div>
 
                     <div class="flex gap-3">
@@ -734,7 +734,6 @@ function savedTalentsPage() {
         isLoading: false,
         searchQuery: '',
         selectedFolder: null,
-        statusFilter: '',
         selectedTalents: [],
         dragOverFolder: null,
         draggedTalent: null,
@@ -801,7 +800,6 @@ function savedTalentsPage() {
                         allTalents.push({
                             ...talent,
                             folder_id: group.name !== 'Uncategorized' ? (group.id || 'folder-' + index) : null,
-                            avatar_url: talent.avatar ? '/storage/profiles/' + talent.avatar : null,
                             status: talent.status || 'new',
                             rating: talent.rating || 0,
                             saved_at: talent.saved_at || new Date().toISOString()
@@ -819,11 +817,6 @@ function savedTalentsPage() {
             return this.talents.filter(talent => {
                 // folder filter
                 if (this.selectedFolder !== null && talent.folder_id !== this.selectedFolder) {
-                    return false;
-                }
-
-                // status filter
-                if (this.statusFilter && talent.status !== this.statusFilter) {
                     return false;
                 }
 
