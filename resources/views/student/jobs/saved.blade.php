@@ -1,4 +1,4 @@
-@extends('layouts.student')
+@extends('layouts.app')
 
 @section('title', 'Lowongan Tersimpan')
 

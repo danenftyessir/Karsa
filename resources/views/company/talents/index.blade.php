@@ -9,7 +9,14 @@
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@600;700&display=swap" rel="stylesheet">
 
 <style>
-    .marketplace-hero {
+    /* gpu acceleration untuk performa smooth */
+    * {
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+    }
+
+    /* Hero section style mirip student jobs */
+    .marketplace-hero-talents {
         position: relative;
         background-image:
             linear-gradient(135deg, rgba(99, 102, 241, 0.35) 0%, rgba(129, 140, 248, 0.30) 50%, rgba(156, 163, 175, 0.25) 100%),
@@ -20,13 +27,19 @@
         min-height: 480px;
     }
 
-    .hero-title {
+    .hero-title-talents {
         font-family: 'Space Grotesk', sans-serif;
         font-weight: 700;
         letter-spacing: -0.02em;
     }
 
-    .dashboard-fade-in {
+    .text-shadow-strong {
+        text-shadow:
+            0 2px 4px rgba(0, 0, 0, 0.4),
+            0 4px 8px rgba(0, 0, 0, 0.3);
+    }
+
+    .talents-fade-in {
         animation: fadeInUp 0.8s cubic-bezier(0.4, 0, 0.2, 1);
     }
 
@@ -85,7 +98,7 @@
 
     /* reduced motion support untuk aksesibilitas */
     @media (prefers-reduced-motion: reduce) {
-        .fade-in-up, .dashboard-fade-in {
+        .fade-in-up, .talents-fade-in {
             animation: none;
             opacity: 1;
         }
@@ -94,28 +107,33 @@
             transform: none;
         }
     }
+
+    /* smooth scroll behavior */
+    html {
+        scroll-behavior: smooth;
+    }
 </style>
 @endpush
 
 @section('content')
 <div class="min-h-screen bg-gray-50" x-data="talentBrowser()">
 
-    {{-- marketplace-style hero section --}}
-    <section class="marketplace-hero text-white relative overflow-hidden">
-        <div class="max-w-7xl mx-auto px-6 sm:px-8 lg:px-12 relative z-10 py-12">
+    {{-- marketplace-style hero section mirip student jobs --}}
+    <section class="marketplace-hero-talents text-white relative flex items-center justify-center">
+        <div class="max-w-7xl mx-auto px-6 sm:px-8 lg:px-12 relative z-10 w-full">
             <div class="max-w-4xl mx-auto text-center">
-                <div class="dashboard-fade-in">
-                    {{-- Hero Title --}}
-                    <h1 class="hero-title text-4xl md:text-6xl font-bold mb-6 !text-white leading-tight" style="color: white !important;">
+                <div class="talents-fade-in">
+                    {{-- Judul dan deskripsi --}}
+                    <h1 class="hero-title-talents text-4xl md:text-6xl font-bold mb-6 text-white leading-tight" style="color: white !important;">
                         Temukan Talenta Terbaik Untuk Tim Anda
                     </h1>
 
-                    <p class="text-lg md:text-xl leading-relaxed max-w-2xl mx-auto mb-8 font-medium" style="color: #ffffff !important; text-shadow: 0 2px 8px rgba(0, 0, 0, 0.5), 0 4px 12px rgba(0, 0, 0, 0.4);">
+                    <p class="text-lg md:text-xl leading-relaxed max-w-2xl mx-auto font-medium mb-8" style="color: #ffffff !important; text-shadow: 0 2px 8px rgba(0, 0, 0, 0.5), 0 4px 12px rgba(0, 0, 0, 0.4);">
                         Jelajahi profil terverifikasi, sesuaikan dengan nilai Anda, dan temukan kecocokan sempurna
                     </p>
 
                     {{-- Search Bar --}}
-                    <div class="max-w-3xl mx-auto">
+                    <div class="max-w-3xl mx-auto mb-6">
                         <div class="relative">
                             <input type="text"
                                    x-model="searchQuery"
@@ -134,12 +152,26 @@
                             </div>
                         </div>
                     </div>
+
+                    {{-- primary CTAs --}}
+                    <div class="flex flex-col sm:flex-row gap-4 justify-center">
+                        <a href="{{ route('company.talents.saved') }}"
+                           class="inline-flex items-center justify-center px-8 py-3 bg-indigo-600 text-white font-bold rounded-full hover:bg-indigo-700 transition-all duration-300 shadow-xl hover:shadow-2xl hover:scale-105">
+                            <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 24 24"><path d="M17 3H7c-1.1 0-2 .9-2 2v16l7-3 7 3V5c0-1.1-.9-2-2-2z"/></svg>
+                            <span>Talenta Tersimpan</span>
+                        </a>
+                        <a href="{{ route('company.talents.export') }}"
+                           class="inline-flex items-center justify-center px-8 py-3 bg-white/20 backdrop-blur-sm text-white font-bold rounded-full hover:bg-white/30 transition-all duration-300 border-2 border-white hover:scale-105">
+                            <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+                            <span>Export Data</span>
+                        </a>
+                    </div>
                 </div>
             </div>
         </div>
 
         {{-- straight divider --}}
-        <div class="absolute bottom-0 left-0 right-0 h-1 bg-white"></div>
+        <div class="absolute bottom-0 left-0 right-0 bg-white" style="height: 4px; margin: 0;"></div>
     </section>
 
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">

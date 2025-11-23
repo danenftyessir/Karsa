@@ -346,14 +346,34 @@ class JobPostingController extends Controller
         $user = Auth::user();
         $company = $user->company;
 
-        // IMPLEMENTED: Hapus job posting dari Supabase (soft delete)
-        $jobPosting = JobPosting::where('id', $id)
-            ->where('company_id', $company->id)
-            ->firstOrFail();
+        try {
+            // IMPLEMENTED: Hapus job posting dari Supabase (soft delete)
+            $jobPosting = JobPosting::where('id', $id)
+                ->where('company_id', $company->id)
+                ->firstOrFail();
 
-        $jobPosting->delete();
+            $jobPosting->delete();
 
-        return redirect()->route('company.jobs.index')
-            ->with('success', 'Lowongan berhasil dihapus!');
+            // Return JSON response for AJAX request
+            if (request()->expectsJson() || request()->ajax()) {
+                return response()->json([
+                    'success' => true,
+                    'message' => 'Lowongan berhasil dihapus!'
+                ]);
+            }
+
+            return redirect()->route('company.jobs.index')
+                ->with('success', 'Lowongan berhasil dihapus!');
+        } catch (\Exception $e) {
+            if (request()->expectsJson() || request()->ajax()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Gagal menghapus lowongan: ' . $e->getMessage()
+                ], 500);
+            }
+
+            return redirect()->route('company.jobs.index')
+                ->with('error', 'Gagal menghapus lowongan!');
+        }
     }
 }

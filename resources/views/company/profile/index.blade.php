@@ -40,7 +40,7 @@
                         <!-- Logo -->
                         <div class="relative flex-shrink-0">
                             @if($company->logo)
-                                <img src="{{ $company->logo }}"
+                                <img src="{{ $company->logo_url }}"
                                      alt="{{ $company->name }}"
                                      crossorigin="anonymous"
                                      class="w-24 h-24 rounded-2xl object-cover border-2 border-gray-200">

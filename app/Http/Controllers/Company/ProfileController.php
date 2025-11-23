@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Company;
 use App\Http\Controllers\Controller;
 use App\Models\Company;
 use App\Services\SupabaseService;
+use App\Services\SupabaseStorageService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
@@ -18,10 +19,12 @@ use Illuminate\Support\Str;
 class ProfileController extends Controller
 {
     protected $supabase;
+    protected $storageService;
 
-    public function __construct(SupabaseService $supabase)
+    public function __construct(SupabaseService $supabase, SupabaseStorageService $storageService)
     {
         $this->supabase = $supabase;
+        $this->storageService = $storageService;
     }
 
     /**
@@ -121,35 +124,28 @@ class ProfileController extends Controller
             'logo' => 'nullable|image|mimes:jpeg,png,jpg,webp|max:5120', // 5MB max
         ]);
 
-        // ✅ COPAS dari Student ProfileController - Handle logo upload to Supabase Storage
-        $logoUrl = $company->logo; // initialize dengan logo yang sudah ada
-
+        // Handle logo upload to Supabase Storage
         if ($request->hasFile('logo')) {
             $logoFile = $request->file('logo');
-            $logoFileName = 'company_' . $company->id . '_' . time() . '.' . $logoFile->getClientOriginalExtension();
 
             // Delete old logo from Supabase Storage if exists
             if ($company->logo) {
-                $oldLogoPath = str_replace(env('SUPABASE_URL') . '/storage/v1/object/public/company_logos/', '', $company->logo);
-                $this->supabase->deleteFile('company_logos', $oldLogoPath);
+                $this->storageService->delete($company->logo);
             }
 
-            // IMPLEMENTED: Upload to Supabase Storage
-            $uploadedUrl = $this->supabase->uploadFile('company_logos', $logoFileName, $logoFile);
+            // IMPLEMENTED: Upload to Supabase Storage using proper service
+            $logoPath = $this->storageService->uploadCompanyLogo($logoFile, $company->id);
 
-            // jika upload berhasil, gunakan URL baru. Jika gagal, tetap gunakan logo lama
-            if ($uploadedUrl) {
-                $logoUrl = $uploadedUrl;
-                \Log::info("Logo berhasil diupload untuk company ID {$company->id}");
+            // jika upload berhasil, simpan path. Jika gagal, tetap gunakan logo lama
+            if ($logoPath) {
+                $validated['logo'] = $logoPath;
+                \Log::info("Logo berhasil diupload untuk company ID {$company->id}", ['path' => $logoPath]);
             } else {
                 // tetap gunakan logo lama jika upload gagal
-                $logoUrl = $company->logo;
+                $validated['logo'] = $company->logo;
                 \Log::warning("Gagal upload logo untuk company ID {$company->id}, menggunakan logo lama");
             }
         }
-
-        // Set logo ke validated data
-        $validated['logo'] = $logoUrl;
 
         // IMPLEMENTED: Update di Supabase PostgreSQL
         $company->update($validated);
@@ -161,7 +157,6 @@ class ProfileController extends Controller
     /**
      * Upload or update company logo
      * IMPLEMENTED: Upload langsung ke Supabase Storage
-     * ✅ COPAS dari Student ProfileController - dengan error handling
      */
     public function uploadLogo(Request $request)
     {
@@ -173,28 +168,26 @@ class ProfileController extends Controller
         $company = $user->company;
 
         $logoFile = $request->file('logo');
-        $logoFileName = 'company_' . $company->id . '_' . time() . '.' . $logoFile->getClientOriginalExtension();
 
         // Delete old logo from Supabase Storage if exists
         if ($company->logo) {
-            $oldLogoPath = str_replace(env('SUPABASE_URL') . '/storage/v1/object/public/company_logos/', '', $company->logo);
-            $this->supabase->deleteFile('company_logos', $oldLogoPath);
+            $this->storageService->delete($company->logo);
         }
 
         // IMPLEMENTED: Upload to Supabase Storage
-        $uploadedUrl = $this->supabase->uploadFile('company_logos', $logoFileName, $logoFile);
+        $logoPath = $this->storageService->uploadCompanyLogo($logoFile, $company->id);
 
         // jika upload berhasil, update logo. Jika gagal, kembalikan error
-        if ($uploadedUrl) {
-            // IMPLEMENTED: Update logo URL di Supabase PostgreSQL
-            $company->update(['logo' => $uploadedUrl]);
+        if ($logoPath) {
+            // IMPLEMENTED: Update logo path di Supabase PostgreSQL
+            $company->update(['logo' => $logoPath]);
 
-            \Log::info("Logo berhasil diupload untuk company ID {$company->id}");
+            \Log::info("Logo berhasil diupload untuk company ID {$company->id}", ['path' => $logoPath]);
 
             return response()->json([
                 'success' => true,
                 'message' => 'Logo uploaded successfully',
-                'logo_url' => $uploadedUrl,
+                'logo_url' => $company->logo_url,
             ]);
         } else {
             \Log::error("Gagal upload logo untuk company ID {$company->id}");
@@ -223,8 +216,7 @@ class ProfileController extends Controller
         }
 
         // IMPLEMENTED: Delete from Supabase Storage
-        $logoPath = str_replace(env('SUPABASE_URL') . '/storage/v1/object/public/company_logos/', '', $company->logo);
-        $this->supabase->deleteFile('company_logos', $logoPath);
+        $this->storageService->delete($company->logo);
 
         // IMPLEMENTED: Update di Supabase PostgreSQL
         $company->update(['logo' => null]);

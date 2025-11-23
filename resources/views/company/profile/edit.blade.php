@@ -220,7 +220,7 @@
                         <div class="mb-4 flex justify-center">
                             @if($company->logo)
                                 <div x-show="!logoPreview" class="relative">
-                                    <img src="{{ $company->logo }}"
+                                    <img src="{{ $company->logo_url }}"
                                          alt="{{ $company->name }}"
                                          crossorigin="anonymous"
                                          class="w-32 h-32 rounded-2xl object-cover border-2 border-gray-200">
