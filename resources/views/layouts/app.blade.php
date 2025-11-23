@@ -67,23 +67,6 @@
     @stack('styles')
 </head>
 <body class="font-sans antialiased">
-    <!-- flash messages untuk notification -->
-    @if(session('success'))
-        <div data-success-message="{{ session('success') }}" class="hidden"></div>
-    @endif
-    
-    @if(session('error'))
-        <div data-error-message="{{ session('error') }}" class="hidden"></div>
-    @endif
-    
-    @if(session('info'))
-        <div data-info-message="{{ session('info') }}" class="hidden"></div>
-    @endif
-    
-    @if(session('warning'))
-        <div data-warning-message="{{ session('warning') }}" class="hidden"></div>
-    @endif
-
     <div class="min-h-screen bg-gray-50">
         <!-- navbar -->
         @include('components.navbar')
@@ -149,8 +132,8 @@
 
             this.container = document.createElement('div');
             this.container.id = 'notification-container';
-            // PERBAIKAN: ubah z-50 menjadi z-[1100]
-            this.container.className = 'fixed top-20 right-4 z-[1100] space-y-2 max-w-sm';
+            // z-[9999] agar selalu di atas navbar (z-50) dan elemen lainnya
+            this.container.className = 'fixed top-20 right-4 z-[9999] space-y-2 max-w-sm';
             document.body.appendChild(this.container);
         }
 
@@ -230,7 +213,8 @@
     // initialize notification manager
     const notificationManager = new NotificationManager();
 
-    // export untuk digunakan di tempat lain
+    // export ke window agar bisa digunakan di tempat lain
+    window.notificationManager = notificationManager;
     window.showNotification = (message, type, duration) => {
         notificationManager.show(message, type, duration);
     };

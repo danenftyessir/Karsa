@@ -15,34 +15,7 @@
         -moz-osx-font-smoothing: grayscale;
     }
 
-    /* Hero section style mirip student jobs */
-    .marketplace-hero-talents {
-        position: relative;
-        background-image:
-            linear-gradient(135deg, rgba(99, 102, 241, 0.35) 0%, rgba(129, 140, 248, 0.30) 50%, rgba(156, 163, 175, 0.25) 100%),
-            url('/company1.jpg');
-        background-size: cover;
-        background-position: center;
-        background-attachment: fixed;
-        min-height: 480px;
-    }
-
-    .hero-title-talents {
-        font-family: 'Space Grotesk', sans-serif;
-        font-weight: 700;
-        letter-spacing: -0.02em;
-    }
-
-    .text-shadow-strong {
-        text-shadow:
-            0 2px 4px rgba(0, 0, 0, 0.4),
-            0 4px 8px rgba(0, 0, 0, 0.3);
-    }
-
-    .talents-fade-in {
-        animation: fadeInUp 0.8s cubic-bezier(0.4, 0, 0.2, 1);
-    }
-
+    /* animasi fade in up untuk elemen */
     @keyframes fadeInUp {
         from {
             opacity: 0;
@@ -54,7 +27,6 @@
         }
     }
 
-    /* animasi fade in up untuk elemen lain */
     .fade-in-up {
         animation: fadeInUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
         opacity: 0;
@@ -118,63 +90,46 @@
 @section('content')
 <div class="min-h-screen bg-gray-50" x-data="talentBrowser()">
 
-    {{-- marketplace-style hero section mirip student jobs --}}
-    <section class="marketplace-hero-talents text-white relative flex items-center justify-center">
-        <div class="max-w-7xl mx-auto px-6 sm:px-8 lg:px-12 relative z-10 w-full">
-            <div class="max-w-4xl mx-auto text-center">
-                <div class="talents-fade-in">
-                    {{-- Judul dan deskripsi --}}
-                    <h1 class="hero-title-talents text-4xl md:text-6xl font-bold mb-6 text-white leading-tight" style="color: white !important;">
-                        Temukan Talenta Terbaik Untuk Tim Anda
+    {{-- Header Section --}}
+    <div class="relative bg-cover bg-center text-white py-16 overflow-hidden" style="background-image: url('{{ asset('company1.jpg') }}');">
+        <div class="absolute inset-0 bg-black/50"></div>
+
+        <div class="container mx-auto px-6 relative z-10">
+            <div class="flex justify-between items-center fade-in-up">
+                <div>
+                    <h1 class="text-4xl font-bold mb-2" style="font-family: 'Space Grotesk', sans-serif;">
+                        Temukan Talenta Terbaik
                     </h1>
-
-                    <p class="text-lg md:text-xl leading-relaxed max-w-2xl mx-auto font-medium mb-8" style="color: #ffffff !important; text-shadow: 0 2px 8px rgba(0, 0, 0, 0.5), 0 4px 12px rgba(0, 0, 0, 0.4);">
-                        Jelajahi profil terverifikasi, sesuaikan dengan nilai Anda, dan temukan kecocokan sempurna
+                    <p class="text-blue-100 text-lg">
+                        Jelajahi Dan Kelola Talenta Untuk Tim Anda
                     </p>
-
-                    {{-- Search Bar --}}
-                    <div class="max-w-3xl mx-auto mb-6">
-                        <div class="relative">
-                            <input type="text"
-                                   x-model="searchQuery"
-                                   @input="handleSearch()"
-                                   placeholder="Cari mahasiswa berdasarkan nama, skill, atau universitas..."
-                                   class="w-full px-6 py-4 pl-14 pr-4 text-gray-900 placeholder-gray-500 bg-white rounded-2xl shadow-2xl focus:outline-none focus:ring-4 focus:ring-violet-300 transition-all">
-                            <svg class="absolute left-5 top-1/2 transform -translate-y-1/2 w-6 h-6 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
-                            </svg>
-                            <div x-show="searchQuery"
-                                 @click="searchQuery = ''; handleSearch()"
-                                 class="absolute right-5 top-1/2 transform -translate-y-1/2 w-6 h-6 text-gray-400 hover:text-gray-600 cursor-pointer">
-                                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
-                                </svg>
-                            </div>
-                        </div>
-                    </div>
-
-                    {{-- primary CTAs --}}
-                    <div class="flex flex-col sm:flex-row gap-4 justify-center">
-                        <a href="{{ route('company.talents.saved') }}"
-                           class="inline-flex items-center justify-center px-8 py-3 bg-indigo-600 text-white font-bold rounded-full hover:bg-indigo-700 transition-all duration-300 shadow-xl hover:shadow-2xl hover:scale-105">
-                            <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 24 24"><path d="M17 3H7c-1.1 0-2 .9-2 2v16l7-3 7 3V5c0-1.1-.9-2-2-2z"/></svg>
-                            <span>Talenta Tersimpan</span>
-                        </a>
-                        <a href="{{ route('company.talents.export') }}"
-                           class="inline-flex items-center justify-center px-8 py-3 bg-white/20 backdrop-blur-sm text-white font-bold rounded-full hover:bg-white/30 transition-all duration-300 border-2 border-white hover:scale-105">
-                            <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
-                            <span>Export Data</span>
-                        </a>
-                    </div>
                 </div>
             </div>
         </div>
-
-        {{-- straight divider --}}
-        <div class="absolute bottom-0 left-0 right-0 bg-white" style="height: 4px; margin: 0;"></div>
-    </section>
+    </div>
 
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+
+        {{-- Search Bar Section --}}
+        <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-4 mb-6 fade-in-up">
+            <div class="relative">
+                <input type="text"
+                       x-model="searchQuery"
+                       @input="handleSearch()"
+                       placeholder="Cari mahasiswa berdasarkan nama, skill, atau universitas..."
+                       class="w-full px-6 py-3 pl-12 pr-10 text-gray-900 placeholder-gray-500 bg-white border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-violet-500 focus:border-transparent transition-all">
+                <svg class="absolute left-4 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+                </svg>
+                <button x-show="searchQuery"
+                        @click="searchQuery = ''; handleSearch()"
+                        class="absolute right-3 top-1/2 transform -translate-y-1/2 p-1 text-gray-400 hover:text-gray-600 transition-colors">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                    </svg>
+                </button>
+            </div>
+        </div>
 
         {{-- Quick Actions Panel --}}
         <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6 mb-6 fade-in-up gpu-accelerate">

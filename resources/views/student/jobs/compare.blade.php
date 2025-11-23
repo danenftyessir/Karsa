@@ -53,11 +53,11 @@
                             @foreach($jobs as $job)
                             <th class="compare-cell p-4 border-b border-r border-gray-200 last:border-r-0">
                                 <div class="flex items-start gap-3">
-                                    <div class="w-12 h-12 rounded-lg bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center flex-shrink-0">
+                                    <div class="w-12 h-12 rounded-lg flex items-center justify-center flex-shrink-0 overflow-hidden">
                                         @if($job->company && $job->company->logo_url)
-                                        <img src="{{ $job->company->logo_url }}" alt="" crossorigin="anonymous" class="w-full h-full object-cover rounded-lg">
+                                            <img src="{{ $job->company->logo_url }}" alt="{{ $job->company->name }}" class="w-full h-full object-cover">
                                         @else
-                                        <span class="text-white font-bold">{{ substr($job->company->name ?? 'C', 0, 1) }}</span>
+                                            <img src="{{ $job->company->avatar_svg }}" alt="{{ $job->company->name ?? 'Company' }}" class="w-full h-full object-cover">
                                         @endif
                                     </div>
                                     <div class="text-left">

@@ -300,11 +300,11 @@
                     <div class="job-card bg-white rounded-2xl border border-gray-100 p-6 hover:border-blue-200">
                         <div class="flex items-start gap-4">
                             {{-- company logo --}}
-                            <div class="w-14 h-14 rounded-xl bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center flex-shrink-0 overflow-hidden">
+                            <div class="w-14 h-14 rounded-xl flex items-center justify-center flex-shrink-0 overflow-hidden">
                                 @if($job->company && $job->company->logo_url)
-                                <img src="{{ $job->company->logo_url }}" alt="{{ $job->company->name }}" crossorigin="anonymous" class="w-full h-full object-cover">
+                                    <img src="{{ $job->company->logo_url }}" alt="{{ $job->company->name }}" class="w-full h-full object-cover">
                                 @else
-                                <span class="text-white text-xl font-bold">{{ substr($job->company->name ?? 'C', 0, 1) }}</span>
+                                    <img src="{{ $job->company->avatar_svg }}" alt="{{ $job->company->name ?? 'Company' }}" class="w-full h-full object-cover">
                                 @endif
                             </div>
 

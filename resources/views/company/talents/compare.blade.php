@@ -30,13 +30,13 @@
                             @foreach($talents as $talent)
                             <th class="px-6 py-4 text-center border-l border-gray-100">
                                 <div class="flex flex-col items-center gap-2">
-                                    <img src="{{ $talent->avatar ?? 'default-avatar.jpg' }}"
+                                    <img src="{{ $talent->profile_photo_url }}"
                                          alt="{{ $talent->name }}"
                                          class="w-16 h-16 rounded-full object-cover"
                                          onerror="this.src='https://ui-avatars.com/api/?name={{ urlencode($talent->name) }}&background=6366F1&color=fff'">
                                     <div>
                                         <p class="font-semibold text-gray-900">{{ $talent->name }}</p>
-                                        <p class="text-xs text-gray-500">{{ $talent->profile->headline ?? 'No Title' }}</p>
+                                        <p class="text-xs text-gray-500">{{ $talent->profile->major ?? 'No Major' }}</p>
                                     </div>
                                 </div>
                             </th>
@@ -49,7 +49,7 @@
                             <td class="px-6 py-4 font-medium text-gray-700">Lokasi</td>
                             @foreach($talents as $talent)
                             <td class="px-6 py-4 text-center border-l border-gray-100">
-                                <span class="text-sm text-gray-600">{{ $talent->profile->location ?? 'N/A' }}</span>
+                                <span class="text-sm text-gray-600">{{ $talent->profile->university->city ?? 'N/A' }}</span>
                             </td>
                             @endforeach
                         </tr>
@@ -99,7 +99,7 @@
                             <td class="px-6 py-4 font-medium text-gray-700">Jumlah Proyek</td>
                             @foreach($talents as $talent)
                             <td class="px-6 py-4 text-center border-l border-gray-100">
-                                <span class="text-lg font-semibold text-gray-900">{{ $talent->profile->projects_count ?? 0 }}</span>
+                                <span class="text-lg font-semibold text-gray-900">{{ $talent->profile->projects->count() ?? 0 }}</span>
                             </td>
                             @endforeach
                         </tr>

@@ -336,10 +336,10 @@ class TalentController extends Controller
                 ->with('error', 'Pilih 2-3 talenta untuk dibandingkan');
         }
 
-        // Get talents data
+        // Get talents data with all necessary relationships
         $talents = User::where('user_type', 'student')
             ->whereIn('id', $ids)
-            ->with(['student', 'student.projects'])
+            ->with(['student.university', 'student.projects'])
             ->get();
 
         if ($talents->count() < 2) {
@@ -389,7 +389,7 @@ class TalentController extends Controller
             $talentsQuery->whereNotNull('email_verified_at');
         }
 
-        $talents = $talentsQuery->with(['student'])->get();
+        $talents = $talentsQuery->with(['student.university', 'student.projects'])->get();
 
         $filename = 'talents_' . date('Y-m-d') . '.csv';
         $headers = [
@@ -404,15 +404,17 @@ class TalentController extends Controller
             foreach ($talents as $talent) {
                 $profile = $talent->profile ?? null;
                 $skills = is_array($profile->skills ?? null) ? implode(', ', $profile->skills) : 'N/A';
+                $location = $profile && $profile->university ? $profile->university->city : 'N/A';
+                $projectsCount = $profile && $profile->projects ? $profile->projects->count() : 0;
 
                 fputcsv($file, [
                     $talent->name,
                     $talent->email,
-                    $profile->headline ?? 'N/A',
-                    $profile->location ?? 'N/A',
+                    $profile->major ?? 'N/A',
+                    $location,
                     $skills,
                     $talent->email_verified_at ? 'Yes' : 'No',
-                    $profile->projects_count ?? 0,
+                    $projectsCount,
                 ]);
             }
 
@@ -432,7 +434,7 @@ class TalentController extends Controller
         $company = $user->company;
 
         $savedTalents = SavedTalent::where('company_id', $company->id)
-            ->with('user.student')
+            ->with('user.student.university', 'user.student.projects')
             ->get();
 
         $filename = 'saved_talents_' . date('Y-m-d') . '.csv';
@@ -448,11 +450,13 @@ class TalentController extends Controller
             foreach ($savedTalents as $savedTalent) {
                 $user = $savedTalent->user;
                 $profile = $user->profile ?? null;
+                $location = $profile && $profile->university ? $profile->university->city : 'N/A';
+
                 fputcsv($file, [
                     $user->name,
                     $user->email,
-                    $profile->headline ?? 'N/A',
-                    $profile->location ?? 'N/A',
+                    $profile->major ?? 'N/A',
+                    $location,
                     $savedTalent->category ?? 'N/A',
                     $savedTalent->notes ?? 'N/A',
                     $savedTalent->saved_at->format('Y-m-d H:i:s'),

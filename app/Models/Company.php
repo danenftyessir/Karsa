@@ -75,9 +75,10 @@ class Company extends Model
 
     /**
      * Get the company logo URL
-     * Returns Supabase URL if logo exists, otherwise returns UI Avatars fallback
+     * Returns Supabase URL if logo exists, otherwise returns null
+     * SVG avatar will be generated in view using AvatarHelper
      */
-    public function getLogoUrlAttribute(): string
+    public function getLogoUrlAttribute(): ?string
     {
         if ($this->logo) {
             // Check if it's already a full URL
@@ -90,7 +91,21 @@ class Company extends Model
             return $storageService->getPublicUrl($this->logo);
         }
 
-        // Fallback to UI Avatars with company name initial
-        return 'https://ui-avatars.com/api/?name=' . urlencode(substr($this->name ?? 'C', 0, 2)) . '&size=200&background=F59E0B&color=ffffff';
+        // Return null - SVG avatar will be generated in view
+        return null;
+    }
+
+    /**
+     * Get SVG avatar data URI as fallback
+     * Menggunakan AvatarHelper untuk generate SVG inline
+     */
+    public function getAvatarSvgAttribute(): string
+    {
+        return \App\Helpers\AvatarHelper::generateDataUri(
+            $this->name ?? 'Company',
+            \App\Helpers\AvatarHelper::generateColorFromString($this->name ?? 'Company'),
+            'ffffff',
+            200
+        );
     }
 }

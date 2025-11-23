@@ -102,12 +102,15 @@ class NotificationManager {
     }
 }
 
-// init notification manager
-const notificationManager = new NotificationManager();
-
-// export untuk digunakan di tempat lain
-window.showNotification = (message, type, duration) => {
-    notificationManager.show(message, type, duration);
+// DISABLED: NotificationManager sudah dihandle di app.blade.php
+// Hanya export showNotification untuk digunakan di tempat lain
+window.showNotification = (message, type = 'info', duration = 5000) => {
+    // Gunakan NotificationManager yang sudah di-init di app.blade.php
+    if (window.notificationManager) {
+        window.notificationManager.show(message, type, duration);
+    } else {
+        console.warn('NotificationManager belum di-init');
+    }
 };
 
 /**

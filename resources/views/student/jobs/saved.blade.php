@@ -51,11 +51,11 @@
                 <div class="p-5">
                     <!-- Company Info -->
                     <div class="flex items-start gap-3 mb-4">
-                        <div class="w-12 h-12 rounded-lg bg-gray-100 flex items-center justify-center overflow-hidden">
+                        <div class="w-12 h-12 rounded-lg flex items-center justify-center overflow-hidden">
                             @if($job->company->logo_url)
-                            <img src="{{ $job->company->logo_url }}" alt="{{ $job->company->name }}" crossorigin="anonymous" class="w-full h-full object-cover">
+                                <img src="{{ $job->company->logo_url }}" alt="{{ $job->company->name }}" class="w-full h-full object-cover">
                             @else
-                            <span class="text-xl font-bold text-gray-400">{{ substr($job->company->name, 0, 1) }}</span>
+                                <img src="{{ $job->company->avatar_svg }}" alt="{{ $job->company->name }}" class="w-full h-full object-cover">
                             @endif
                         </div>
                         <div class="flex-1 min-w-0">
