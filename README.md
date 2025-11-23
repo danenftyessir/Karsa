@@ -78,7 +78,7 @@ Karsa hadir sebagai solusi untuk menjembatani ketiga pihak ini dalam ekosistem y
 - **Sistem Matching**: Algoritma pencocokan otomatis berdasarkan skills dan kebutuhan
 - **Real-time Tracking**: Monitoring progress magang secara langsung
 - **Sertifikasi Digital**: Penerbitan sertifikat otomatis setelah program selesai
-- **Analytics & Reporting**: Laporan komprehensif untuk semua stakeholder
+- **Analytics & Reporting**: Laporan terperinci untuk semua stakeholder
 
 ## Tim Pengembang
 
@@ -119,5 +119,4 @@ Project ini dikembangkan sebagai solusi untuk memfasilitasi ekosistem magang dan
 
 <div align="center">
   <p>Dibuat dengan dedikasi untuk memajukan program Kuliah Kerja Nyata Indonesia</p>
-  <p>&copy; 2024 Karsa Platform</p>
 </div>
