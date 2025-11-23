@@ -33,32 +33,42 @@ class DatabaseSeeder extends Seeder
             DummyDataSeeder::class,
         ]);
 
-        // 3. seed problems
+        // 3. seed company users (fokus lapangan)
+        $this->call([
+            UserSeeder::class,
+        ]);
+
+        // 4. seed companies dengan data detail
+        $this->call([
+            CompanySeeder::class,
+        ]);
+
+        // 5. seed problems
         $this->call([
             ProblemsSeeder::class,
         ]);
 
-        // 4. seed problem images (menggunakan gambar yang sudah disiapkan)
+        // 6. seed problem images (menggunakan gambar yang sudah disiapkan)
         $this->call([
             ProblemImagesSeeder::class,
         ]);
 
-        // 5. seed applications
+        // 7. seed applications
         $this->call([
             ApplicationsSeeder::class,
         ]);
 
-        // 6. seed projects
+        // 8. seed projects (75% completed untuk lebih banyak mahasiswa yang selesai KKN)
         $this->call([
             ProjectsSeeder::class,
         ]);
 
-        // 7. seed documents
+        // 9. seed documents
         $this->call([
             DocumentsSeeder::class,
         ]);
 
-        // 8. seed notifications (BARU)
+        // 10. seed notifications
         $this->call([
             NotificationsSeeder::class,
         ]);
@@ -82,6 +92,7 @@ class DatabaseSeeder extends Seeder
             'Users' => \App\Models\User::count(),
             'Students' => \App\Models\Student::count(),
             'Institutions' => \App\Models\Institution::count(),
+            'Companies' => \App\Models\Company::count(),
             'Provinces' => \App\Models\Province::count(),
             'Regencies' => \App\Models\Regency::count(),
             'Universities' => \App\Models\University::count(),

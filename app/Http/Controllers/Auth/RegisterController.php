@@ -605,16 +605,18 @@ class RegisterController extends Controller
 
     /**
      * helper method untuk convert company size ke employee count
+     * PERBAIKAN: Return string sesuai dengan database schema dan seeder
      */
-    private function getEmployeeCountFromSize(string $size): ?int
+    private function getEmployeeCountFromSize(string $size): ?string
     {
+        // Return string langsung untuk konsistensi dengan database dan seeder
         return match($size) {
-            '1-10' => 10,
-            '11-50' => 50,
-            '51-200' => 200,
-            '201-500' => 500,
-            '501-1000' => 1000,
-            '1000+' => 1000,
+            '1-10' => '1-10',
+            '11-50' => '11-50',
+            '51-200' => '51-100', // Mapping ke format yang digunakan di seeder
+            '201-500' => '101-200', // Mapping ke format yang digunakan di seeder
+            '501-1000' => '201-500', // Mapping ke format yang digunakan di seeder
+            '1000+' => '201-500',
             default => null,
         };
     }

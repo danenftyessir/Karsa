@@ -91,9 +91,9 @@ class ProjectsSeeder extends Seeder
         
         foreach ($acceptedApplications as $application) {
             $problem = $application->problem;
-            
-            // tentukan status project (70% active, 30% completed)
-            $isCompleted = rand(1, 100) <= 30;
+
+            // tentukan status project (75% completed, 25% active) - BANYAK YANG SUDAH SELESAI
+            $isCompleted = rand(1, 100) <= 75;
             $status = $isCompleted ? 'completed' : 'active';
             
             // tentukan progress

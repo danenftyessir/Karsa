@@ -278,12 +278,12 @@ class DummyDataSeeder extends Seeder
     }
 
     /**
-     * seeding students dummy (400 students untuk 120+ universitas)
+     * seeding students dummy (700 students untuk 120+ universitas - LEBIH BANYAK UNTUK KKN)
      */
     private function seedStudents(): void
     {
         echo "seeding students...\n";
-        
+
         $firstNames = [
             'Andi', 'Budi', 'Citra', 'Devi', 'Eko', 'Farah', 'Gilang', 'Hana', 'Indra', 'Joko',
             'Kiki', 'Lisa', 'Maya', 'Nanda', 'Olivia', 'Putra', 'Qori', 'Rina', 'Sari', 'Tika',
@@ -296,7 +296,7 @@ class DummyDataSeeder extends Seeder
             'Eka', 'Fadli', 'Gandi', 'Hilda', 'Irfan', 'Jasmine', 'Krisna', 'Luki', 'Mira', 'Novi',
             'Oki', 'Prima', 'Qori', 'Rizki', 'Sinta', 'Tito', 'Uli', 'Vira', 'Widi', 'Yanto'
         ];
-        
+
         $lastNames = [
             'Pratama', 'Santoso', 'Putri', 'Wijaya', 'Kusuma', 'Permata', 'Saputra', 'Lestari',
             'Sari', 'Nugroho', 'Wibowo', 'Rahayu', 'Susanto', 'Hartono', 'Setiawan', 'Anggraini',
@@ -304,7 +304,7 @@ class DummyDataSeeder extends Seeder
             'Syahputra', 'Syahputri', 'Rachman', 'Hakim', 'Adiputra', 'Salsabila', 'Rizqullah',
             'Azhari', 'Azzahra', 'Firdaus', 'Aisyah', 'Hasanah', 'Kamila', 'Nabila', 'Zahira'
         ];
-        
+
         $majors = [
             'Teknik Informatika', 'Sistem Informasi', 'Ilmu Komunikasi', 'Manajemen', 'Akuntansi',
             'Teknik Sipil', 'Arsitektur', 'Psikologi', 'Hukum', 'Kedokteran',
@@ -314,21 +314,22 @@ class DummyDataSeeder extends Seeder
             'Sosiologi', 'Antropologi', 'Sastra Indonesia', 'Desain Komunikasi Visual',
             'Teknik Elektro', 'Teknik Mesin', 'Teknik Industri', 'Agroteknologi', 'Agribisnis'
         ];
-        
+
         $universities = University::all();
-        
+
         if ($universities->isEmpty()) {
             echo "  ERROR: Tidak ada universities!\n";
             return;
         }
-        
-        // buat 400 students dengan distribusi merata ke semua universitas
-        for ($i = 0; $i < 400; $i++) {
+
+        // buat 700 students dengan distribusi merata ke semua universitas
+        for ($i = 0; $i < 700; $i++) {
             $firstName = $firstNames[array_rand($firstNames)];
             $lastName = $lastNames[array_rand($lastNames)];
-            $username = strtolower($firstName . $lastName . rand(100, 999));
+            // Tambahkan index $i untuk memastikan username unique
+            $username = strtolower($firstName . $lastName . ($i + 1000));
             $university = $universities->random();
-            
+
             // generate email domain dari kode universitas
             $emailDomain = $this->getUniversityEmailDomain($university->code);
             $email = $username . '@' . $emailDomain;

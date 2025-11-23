@@ -992,7 +992,21 @@
                     // Check if response is JSON
                     const contentType = response.headers.get('content-type');
                     if (contentType && contentType.includes('application/json')) {
-                        return response.json().then(data => ({ data, status: response.status }));
+                        // Clone response to read text for debugging
+                        return response.clone().text().then(text => {
+                            console.log('Raw response text:', text);
+                            console.log('Response length:', text.length);
+
+                            try {
+                                const data = JSON.parse(text);
+                                return { data, status: response.status };
+                            } catch (e) {
+                                console.error('JSON parse error:', e);
+                                console.error('Character at position 252:', text.charAt(252));
+                                console.error('Text around position 252:', text.substring(240, 270));
+                                throw new Error('Invalid JSON response from server. Please check browser console for details.');
+                            }
+                        });
                     } else {
                         // If not JSON, might be a redirect or HTML
                         // Consider it as success and redirect to home

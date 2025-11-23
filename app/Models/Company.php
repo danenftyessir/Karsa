@@ -10,6 +10,9 @@ class Company extends Model
 {
     use HasFactory;
 
+    // PENTING: Specify connection ke Supabase PostgreSQL
+    protected $connection = 'pgsql';
+
     protected $fillable = [
         'user_id',
         'name',

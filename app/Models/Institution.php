@@ -14,6 +14,9 @@ class Institution extends Model
 {
     use HasFactory;
 
+    // PENTING: Specify connection ke Supabase PostgreSQL
+    protected $connection = 'pgsql';
+
     /**
      * attributes yang dapat diisi mass assignment
      */

@@ -18,6 +18,9 @@ class User extends Authenticatable implements MustVerifyEmail
 {
     use HasFactory, Notifiable, HasApiTokens;
 
+    // PENTING: Specify connection ke Supabase PostgreSQL
+    protected $connection = 'pgsql';
+
     /**
      * attributes yang dapat diisi mass assignment
      */

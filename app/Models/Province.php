@@ -12,6 +12,9 @@ class Province extends Model
 {
     use HasFactory;
 
+    // PENTING: Specify connection ke Supabase PostgreSQL
+    protected $connection = 'pgsql';
+
     protected $fillable = ['name', 'code'];
 
     public $timestamps = false;
