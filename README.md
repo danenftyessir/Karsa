@@ -4,11 +4,11 @@
 
 # Karsa - Platform Magang dan Rekrutmen Mahasiswa
 
-Karsa adalah platform digital yang menghubungkan mahasiswa dengan perusahaan untuk program magang dan perekrutan, dengan dukungan penuh dari institusi pendidikan dan pemerintah.
+Karsa adalah platform digital yang menghubungkan program Kuliah Kerja Nyata mahasiswa dengan perusahaan untuk program magang dan perekrutan, dengan dukungan penuh dari institusi pendidikan dan pemerintah.
 
 ## Latar Belakang
 
-Banyak mahasiswa kesulitan menemukan kesempatan magang yang sesuai dengan jurusan dan minat mereka. Di sisi lain, perusahaan membutuhkan talenta muda berkualitas namun menghadapi kendala dalam proses rekrutmen. Institusi pendidikan juga memerlukan sistem yang efektif untuk memantau dan memvalidasi kegiatan magang mahasiswa.
+Banyak mahasiswa kesulitan menemukan kesempatan magang yang sesuai dengan jurusan dan minat mereka, selain itu mahasiswa pun merasa bahwa KKN tidak memberikan dampak yang signifikan terhadap karir mereka kedepannya. Di sisi lain, perusahaan membutuhkan talenta muda berkualitas namun menghadapi kendala dalam proses rekrutmen. Institusi pendidikan juga memerlukan sistem yang efektif untuk memantau dan memvalidasi kegiatan magang mahasiswa.
 
 Karsa hadir sebagai solusi untuk menjembatani ketiga pihak ini dalam ekosistem yang terintegrasi dan efisien.
 
