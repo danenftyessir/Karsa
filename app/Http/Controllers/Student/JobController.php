@@ -403,7 +403,6 @@ class JobController extends Controller
             'cover_letter' => $request->input('cover_letter', $user->default_cover_letter ?? null),
             'resume_url' => $profile->resume_url ?? null,
             'portfolio_url' => route('student.profile.public', $user->username ?? $user->id),
-            'applied_at' => now(),
         ]);
 
         $job->increment('applications_count');

@@ -15,11 +15,39 @@
         scroll-behavior: smooth;
     }
 
-    /* kanban container dengan optimasi scrolling */
+    /* kanban container dengan grid responsive */
     .kanban-container {
         scroll-behavior: smooth;
-        -webkit-overflow-scrolling: touch;
-        will-change: scroll-position;
+    }
+
+    .kanban-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+        gap: 1rem;
+    }
+
+    @media (max-width: 768px) {
+        .kanban-grid {
+            grid-template-columns: 1fr;
+        }
+    }
+
+    @media (min-width: 769px) and (max-width: 1200px) {
+        .kanban-grid {
+            grid-template-columns: repeat(2, 1fr);
+        }
+    }
+
+    @media (min-width: 1201px) and (max-width: 1600px) {
+        .kanban-grid {
+            grid-template-columns: repeat(3, 1fr);
+        }
+    }
+
+    @media (min-width: 1601px) {
+        .kanban-grid {
+            grid-template-columns: repeat(4, 1fr);
+        }
     }
 
     /* kolom kanban dengan transisi yang dioptimasi */
@@ -30,6 +58,7 @@
         transform: translateZ(0);
         will-change: transform;
         backface-visibility: hidden;
+        width: 100%;
     }
 
     /* item aplikasi dengan GPU acceleration */
@@ -252,7 +281,7 @@
 
                 <!-- title dan stats -->
                 <div>
-                    <h1 class="text-3xl font-bold text-white mb-2" style="font-family: 'Space Grotesk', sans-serif;">Manajemen Lamaran</h1>
+                    <h1 class="text-3xl font-bold mb-2" style="font-family: 'Space Grotesk', sans-serif; color: white !important;">Manajemen Lamaran</h1>
                     <p class="mt-1 text-base text-blue-100">
                         Total <span class="font-semibold text-white" x-text="totalApplications"></span> lamaran aktif
                         <span x-show="selectedApplications.length > 0" class="ml-2 text-yellow-300">
@@ -378,13 +407,13 @@
     </div>
 
     <!-- kanban board view -->
-    <div x-show="viewMode === 'kanban'" class="kanban-container overflow-x-auto" id="kanbanContainer">
+    <div x-show="viewMode === 'kanban'" class="kanban-container" id="kanbanContainer">
         <div class="max-w-full mx-auto px-4 sm:px-6 lg:px-8 py-6">
-            <div class="flex gap-4 min-w-max">
+            <div class="kanban-grid">
 
                 <!-- columns -->
                 <template x-for="(column, status) in columns" :key="status">
-                    <div class="kanban-column w-80 flex-shrink-0 bg-gray-100 rounded-xl p-4"
+                    <div class="kanban-column bg-gray-100 rounded-xl p-4"
                          :class="'column-' + status"
                          :data-status="status"
                          @dragover.prevent="dragOver($event, status)"

@@ -104,7 +104,7 @@ class ApplicationController extends Controller
         }
 
         // sorting
-        $jobQuery->orderBy('applied_at', $sort === 'oldest' ? 'asc' : 'desc');
+        $jobQuery->orderBy('created_at', $sort === 'oldest' ? 'asc' : 'desc');
 
         $jobApplications = $jobQuery->paginate(10, ['*'], 'job_page')->withQueryString();
 
@@ -421,7 +421,7 @@ class ApplicationController extends Controller
         // ambil semua job applications dengan status timeline
         $jobApplications = JobApplication::with(['jobPosting.company'])
             ->where('user_id', $user->id)
-            ->orderBy('applied_at', 'desc')
+            ->orderBy('created_at', 'desc')
             ->get();
 
         // ambil semua project applications
@@ -446,7 +446,7 @@ class ApplicationController extends Controller
             $weeklyActivity[$date] = [
                 'date' => now()->subDays($i)->format('d M'),
                 'applications' => $jobApplications->filter(function($app) use ($date) {
-                    return $app->applied_at && $app->applied_at->format('Y-m-d') === $date;
+                    return $app->created_at && $app->created_at->format('Y-m-d') === $date;
                 })->count() + $projectApplications->filter(function($app) use ($date) {
                     return $app->applied_at && $app->applied_at->format('Y-m-d') === $date;
                 })->count(),
@@ -455,7 +455,7 @@ class ApplicationController extends Controller
 
         // recent updates (aplikasi dengan perubahan status terbaru)
         $recentUpdates = $jobApplications->filter(function($app) {
-            return $app->updated_at > $app->applied_at;
+            return $app->updated_at > $app->created_at;
         })->take(5);
 
         return view('student.applications.tracker', compact(
