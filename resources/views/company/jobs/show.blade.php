@@ -314,15 +314,23 @@
                                 Invite Candidates
                             </button>
 
+                            <button @click="linkedinImportOpen = true"
+                                    class="w-full py-2.5 px-4 linkedin-btn text-white rounded-lg text-sm font-medium">
+                                <svg class="w-4 h-4 inline mr-2" fill="currentColor" viewBox="0 0 24 24">
+                                    <path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/>
+                                </svg>
+                                Import from LinkedIn
+                            </button>
+
                             <div class="flex items-center justify-between p-4 border border-gray-200 rounded-lg bg-gray-50">
                                 <div>
-                                    <p class="text-sm font-medium text-gray-900">Guest Applications</p>
-                                    <p class="text-xs text-gray-500 mt-0.5">Allow non-users to apply</p>
+                                    <p class="text-sm font-medium text-gray-900">Guest View Only</p>
+                                    <p class="text-xs text-gray-500 mt-0.5">Guests can view but not apply</p>
                                 </div>
-                                <button @click="allowGuestApplications = !allowGuestApplications"
-                                        :class="allowGuestApplications ? 'bg-blue-600' : 'bg-gray-300'"
+                                <button @click="allowGuestView = !allowGuestView"
+                                        :class="allowGuestView ? 'bg-blue-600' : 'bg-gray-300'"
                                         class="relative inline-flex h-6 w-11 items-center rounded-full transition-colors">
-                                    <span :class="allowGuestApplications ? 'translate-x-6' : 'translate-x-1'"
+                                    <span :class="allowGuestView ? 'translate-x-6' : 'translate-x-1'"
                                           class="inline-block h-4 w-4 transform rounded-full bg-white transition-transform"></span>
                                 </button>
                             </div>
@@ -335,18 +343,26 @@
                             <div class="space-y-4">
                                 <div>
                                     <p class="text-xs text-gray-500 uppercase tracking-wide mb-1">Budget</p>
-                                    <p class="font-semibold text-gray-900">{{ $jobPosting['budget'] }}</p>
-                                    <p class="text-sm text-gray-600">{{ $jobPosting['budget_type'] }}</p>
+                                    <p class="font-semibold text-gray-900">
+                                        {{ !empty($jobPosting['budget']) ? $jobPosting['budget'] : 'Not specified' }}
+                                    </p>
+                                    @if(!empty($jobPosting['budget_type']))
+                                        <p class="text-sm text-gray-600">{{ $jobPosting['budget_type'] }}</p>
+                                    @endif
                                 </div>
 
                                 <div class="border-t border-gray-100 pt-4">
                                     <p class="text-xs text-gray-500 uppercase tracking-wide mb-1">Delivery Time</p>
-                                    <p class="font-semibold text-gray-900">{{ $jobPosting['delivery_time'] }}</p>
+                                    <p class="font-semibold text-gray-900">
+                                        {{ !empty($jobPosting['delivery_time']) ? $jobPosting['delivery_time'] : 'Flexible' }}
+                                    </p>
                                 </div>
 
                                 <div class="border-t border-gray-100 pt-4">
                                     <p class="text-xs text-gray-500 uppercase tracking-wide mb-1">Positions</p>
-                                    <p class="font-semibold text-gray-900">{{ $jobPosting['individual_hires'] }} hire(s)</p>
+                                    <p class="font-semibold text-gray-900">
+                                        {{ !empty($jobPosting['individual_hires']) ? $jobPosting['individual_hires'] . ' hire(s)' : '1 hire' }}
+                                    </p>
                                 </div>
 
                                 @if(!empty($jobPosting['tags']) && is_array($jobPosting['tags']))
@@ -452,21 +468,93 @@
                 <div class="space-y-4">
                     <div>
                         <label class="block text-sm font-medium text-gray-700 mb-2">Email Address</label>
-                        <input type="email" x-model="inviteEmail" placeholder="candidate@example.com"
-                               class="w-full rounded-lg border-gray-300 text-sm">
+                        <div class="relative">
+                            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                <svg class="h-5 w-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
+                                </svg>
+                            </div>
+                            <input type="email" x-model="inviteEmail" placeholder="candidate@example.com"
+                                   class="w-full pl-10 pr-4 py-2.5 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm">
+                        </div>
                     </div>
                     <div>
                         <label class="block text-sm font-medium text-gray-700 mb-2">Message (Optional)</label>
                         <textarea x-model="inviteMessage" rows="3" placeholder="Add a personal message..."
-                                  class="w-full rounded-lg border-gray-300 text-sm"></textarea>
+                                  class="w-full px-4 py-2.5 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm resize-none"></textarea>
                     </div>
                     <div class="flex gap-3">
                         <button @click="sendInvite()"
-                                class="flex-1 px-4 py-2 bg-blue-600 text-white rounded-lg font-medium hover:bg-blue-700">
+                                class="flex-1 px-4 py-2.5 bg-blue-600 text-white rounded-lg font-medium hover:bg-blue-700 transition-colors">
                             Send Invite
                         </button>
                         <button @click="inviteModalOpen = false"
-                                class="px-4 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50">
+                                class="px-4 py-2.5 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 transition-colors">
+                            Cancel
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {{-- linkedin import modal --}}
+    <div x-show="linkedinImportOpen" x-cloak
+         class="fixed inset-0 z-50 overflow-y-auto"
+         @keydown.escape.window="linkedinImportOpen = false">
+        <div class="flex items-center justify-center min-h-screen px-4">
+            <div class="fixed inset-0 bg-black/50" @click="linkedinImportOpen = false"></div>
+            <div class="relative bg-white rounded-xl shadow-xl max-w-2xl w-full p-6">
+                <div class="flex items-center gap-3 mb-6">
+                    <svg class="w-6 h-6 text-blue-600" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/>
+                    </svg>
+                    <h3 class="text-lg font-semibold text-gray-900">Import Job from LinkedIn</h3>
+                </div>
+
+                <div class="space-y-4">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">LinkedIn Job URL</label>
+                        <div class="relative">
+                            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                <svg class="h-5 w-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"/>
+                                </svg>
+                            </div>
+                            <input type="url" x-model="linkedinJobUrl" placeholder="https://www.linkedin.com/jobs/view/..."
+                                   class="w-full pl-10 pr-4 py-2.5 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm">
+                        </div>
+                        <p class="mt-1 text-xs text-gray-500">Paste the URL of the LinkedIn job posting you want to import</p>
+                    </div>
+
+                    <div class="border-t border-gray-200 pt-4">
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Required SDG Goals for KKN Students</label>
+                        <p class="text-xs text-gray-600 mb-3">Select the SDG goals that students must have experience with from their KKN projects</p>
+
+                        <div class="grid grid-cols-3 gap-2">
+                            <template x-for="sdg in [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17]" :key="sdg">
+                                <label class="flex items-center p-2.5 border rounded-lg cursor-pointer hover:bg-gray-50 transition-colors"
+                                       :class="selectedSDGs.includes(sdg) ? 'border-blue-500 bg-blue-50' : 'border-gray-300'">
+                                    <input type="checkbox" :value="sdg"
+                                           @change="toggleSDG(sdg)"
+                                           :checked="selectedSDGs.includes(sdg)"
+                                           class="rounded border-gray-300 text-blue-600 focus:ring-blue-500 mr-2">
+                                    <span class="text-sm font-medium text-gray-900">SDG <span x-text="sdg"></span></span>
+                                </label>
+                            </template>
+                        </div>
+                    </div>
+
+                    <div class="flex gap-3 pt-4">
+                        <button @click="importLinkedInJob()"
+                                class="flex-1 px-4 py-2.5 bg-blue-600 text-white rounded-lg font-medium hover:bg-blue-700 transition-colors">
+                            <svg class="w-4 h-4 inline mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/>
+                            </svg>
+                            Import Job
+                        </button>
+                        <button @click="linkedinImportOpen = false"
+                                class="px-4 py-2.5 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 transition-colors">
                             Cancel
                         </button>
                     </div>
@@ -481,11 +569,14 @@
 <script>
 function jobShowPage() {
     return {
-        allowGuestApplications: {{ $jobPosting['allow_guest_applications'] ? 'true' : 'false' }},
+        allowGuestView: {{ $jobPosting['allow_guest_applications'] ? 'true' : 'false' }},
         shareModalOpen: false,
         inviteModalOpen: false,
+        linkedinImportOpen: false,
         inviteEmail: '',
         inviteMessage: '',
+        linkedinJobUrl: '',
+        selectedSDGs: [],
         shareUrl: '{{ $jobPosting['share_url'] }}',
         jobTitle: '{{ $jobPosting['title'] }}',
 
@@ -516,6 +607,69 @@ function jobShowPage() {
             this.inviteEmail = '';
             this.inviteMessage = '';
             alert('Invitation sent successfully!');
+        },
+
+        toggleSDG(sdgNumber) {
+            const index = this.selectedSDGs.indexOf(sdgNumber);
+            if (index === -1) {
+                this.selectedSDGs.push(sdgNumber);
+            } else {
+                this.selectedSDGs.splice(index, 1);
+            }
+        },
+
+        async importLinkedInJob() {
+            if (!this.linkedinJobUrl) {
+                alert('Please enter a LinkedIn job URL');
+                return;
+            }
+
+            if (this.selectedSDGs.length === 0) {
+                alert('Please select at least one SDG goal');
+                return;
+            }
+
+            // TODO: Send to backend API
+            const data = {
+                linkedin_url: this.linkedinJobUrl,
+                sdg_requirements: this.selectedSDGs,
+                job_id: '{{ $jobPosting['id'] }}'
+            };
+
+            console.log('Importing LinkedIn job:', data);
+
+            // TODO: Replace with actual API call
+            /*
+            try {
+                const response = await fetch('/api/jobs/import-linkedin', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                    },
+                    body: JSON.stringify(data)
+                });
+
+                if (response.ok) {
+                    alert('Job imported successfully! SDG requirements have been added.');
+                    this.linkedinImportOpen = false;
+                    this.linkedinJobUrl = '';
+                    this.selectedSDGs = [];
+                    window.location.reload();
+                } else {
+                    alert('Failed to import job. Please try again.');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('An error occurred while importing the job.');
+            }
+            */
+
+            // For now, just show success
+            alert('LinkedIn job import feature coming soon!\n\nYou selected SDG Goals: ' + this.selectedSDGs.join(', '));
+            this.linkedinImportOpen = false;
+            this.linkedinJobUrl = '';
+            this.selectedSDGs = [];
         }
     }
 }

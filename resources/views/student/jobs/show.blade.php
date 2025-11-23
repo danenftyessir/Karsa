@@ -31,14 +31,6 @@
     .job-type-internship { background-color: #f3e8ff; color: #7c3aed; }
     .job-type-freelance { background-color: #fce7f3; color: #be185d; }
 
-    /* sticky apply card */
-    .apply-card-sticky {
-        position: sticky;
-        top: 2rem;
-        z-index: 10;
-        align-self: flex-start;
-    }
-
     /* similar job card */
     .similar-job-card {
         transition: transform 0.2s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.2s ease;
@@ -218,7 +210,7 @@
             {{-- sidebar --}}
             <aside class="w-full lg:w-80 flex-shrink-0">
                 {{-- apply card --}}
-                <div class="bg-white rounded-2xl border border-gray-100 p-6 mb-6 apply-card-sticky">
+                <div class="bg-white rounded-2xl border border-gray-100 p-6 mb-6 apply-card">
                     @if($hasApplied)
                         <div class="text-center">
                             <div class="w-16 h-16 rounded-full bg-green-100 flex items-center justify-center mx-auto mb-4">
