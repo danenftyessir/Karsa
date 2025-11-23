@@ -31,19 +31,12 @@
     .job-type-internship { background-color: #f3e8ff; color: #7c3aed; }
     .job-type-freelance { background-color: #fce7f3; color: #be185d; }
 
-    /* smooth scroll */
-    html {
-        scroll-behavior: smooth;
-    }
-
-    @media (prefers-reduced-motion: reduce) {
-        * {
-            animation-duration: 0.01ms !important;
-            transition-duration: 0.01ms !important;
-        }
-        html {
-            scroll-behavior: auto;
-        }
+    /* sticky apply card */
+    .apply-card-sticky {
+        position: sticky;
+        top: 2rem;
+        z-index: 10;
+        align-self: flex-start;
     }
 
     /* similar job card */
@@ -225,7 +218,7 @@
             {{-- sidebar --}}
             <aside class="w-full lg:w-80 flex-shrink-0">
                 {{-- apply card --}}
-                <div class="bg-white rounded-2xl border border-gray-100 p-6 mb-6 sticky top-24">
+                <div class="bg-white rounded-2xl border border-gray-100 p-6 mb-6 apply-card-sticky">
                     @if($hasApplied)
                         <div class="text-center">
                             <div class="w-16 h-16 rounded-full bg-green-100 flex items-center justify-center mx-auto mb-4">
