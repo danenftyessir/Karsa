@@ -18,11 +18,32 @@
     /* hero section */
     .jobs-hero {
         position: relative;
-        background: linear-gradient(135deg, rgba(59, 130, 246, 0.9) 0%, rgba(147, 51, 234, 0.85) 100%);
+        background-image: linear-gradient(135deg, rgba(59, 130, 246, 0.85) 0%, rgba(147, 51, 234, 0.8) 100%),
+                          url('{{ asset('magang-preview.jpg') }}');
+        background-size: cover;
+        background-position: center;
+        background-repeat: no-repeat;
         min-height: 320px;
         transform: translate3d(0, 0, 0);
         will-change: transform;
         backface-visibility: hidden;
+    }
+
+    /* overlay untuk memastikan text terbaca */
+    .jobs-hero::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(0, 0, 0, 0.15);
+        z-index: 0;
+    }
+
+    .jobs-hero > * {
+        position: relative;
+        z-index: 1;
     }
 
     .hero-title {

@@ -37,7 +37,13 @@ class JobController extends Controller
 
         // filter by job type
         if ($request->filled('job_type')) {
-            $query->byType($request->job_type);
+            $types = $request->job_type;
+            // expand "internship" to include "magang" untuk backward compatibility
+            if (is_array($types) && in_array('internship', $types)) {
+                $types = array_merge($types, ['magang']);
+                $types = array_unique($types);
+            }
+            $query->byType($types);
         }
 
         // filter by location
