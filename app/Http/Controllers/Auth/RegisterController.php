@@ -532,8 +532,11 @@ class RegisterController extends Controller
                 'company_name' => $company->name
             ]);
 
+            // DISABLED: Email verification untuk company (SMTP timeout di Railway)
             // Kirim email verifikasi SETELAH response dikirim (async)
             // Ini mencegah blocking redirect jika email server lambat
+            // CATATAN: Aktifkan kembali setelah SMTP dikonfigurasi dengan benar
+            /*
             $userId = $user->id;
             dispatch(function () use ($userId) {
                 try {
@@ -549,6 +552,7 @@ class RegisterController extends Controller
                     ]);
                 }
             })->afterResponse();
+            */
 
             // TIDAK auto-login user - konsisten dengan institution
             // User akan login manual setelah registrasi
