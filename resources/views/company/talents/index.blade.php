@@ -5,16 +5,41 @@
 @section('content')
 <div class="min-h-screen bg-gray-50" x-data="talentBrowser()">
 
-    {{-- hero section --}}
-    <div class="relative h-48 bg-cover bg-center" style="background-image: url('{{ asset('deal-work-together.jpg') }}');">
-        <div class="absolute inset-0 bg-black/50"></div>
-        <div class="relative z-10 flex flex-col items-center justify-center h-full text-center text-white px-4">
-            <h1 class="text-2xl md:text-3xl font-bold mb-2 fade-in-up" style="font-family: 'Space Grotesk', sans-serif;">
-                Temukan Talenta Terbaik Untuk Tim Anda
-            </h1>
-            <p class="text-sm md:text-base text-gray-200 max-w-xl fade-in-up" style="animation-delay: 0.1s;">
-                Jelajahi profil terverifikasi, sesuaikan dengan nilai Anda, dan temukan kecocokan sempurna dengan insight berbasis data.
-            </p>
+    {{-- hero section with gradient background and search --}}
+    <div class="relative bg-gradient-to-br from-violet-600 via-purple-600 to-indigo-700 py-16">
+        <div class="absolute inset-0 bg-black/10"></div>
+        <div class="absolute inset-0 opacity-20" style="background-image: url('data:image/svg+xml,%3Csvg width=\'60\' height=\'60\' viewBox=\'0 0 60 60\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cg fill=\'none\' fill-rule=\'evenodd\'%3E%3Cg fill=\'%23ffffff\' fill-opacity=\'0.4\'%3E%3Cpath d=\'M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z\'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E');"></div>
+
+        <div class="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center text-white mb-8">
+                <h1 class="text-3xl md:text-4xl font-bold mb-3 fade-in-up" style="font-family: 'Space Grotesk', sans-serif;">
+                    Temukan Talenta Terbaik Untuk Tim Anda
+                </h1>
+                <p class="text-base md:text-lg text-violet-100 max-w-2xl mx-auto fade-in-up" style="animation-delay: 0.1s;">
+                    Jelajahi profil terverifikasi, sesuaikan dengan nilai Anda, dan temukan kecocokan sempurna
+                </p>
+            </div>
+
+            {{-- Search Bar --}}
+            <div class="max-w-3xl mx-auto fade-in-up" style="animation-delay: 0.2s;">
+                <div class="relative">
+                    <input type="text"
+                           x-model="searchQuery"
+                           @input="handleSearch()"
+                           placeholder="Cari mahasiswa berdasarkan nama, skill, atau universitas..."
+                           class="w-full px-6 py-4 pl-14 pr-4 text-gray-900 placeholder-gray-500 bg-white rounded-2xl shadow-2xl focus:outline-none focus:ring-4 focus:ring-violet-300 transition-all">
+                    <svg class="absolute left-5 top-1/2 transform -translate-y-1/2 w-6 h-6 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+                    </svg>
+                    <div x-show="searchQuery"
+                         @click="searchQuery = ''; handleSearch()"
+                         class="absolute right-5 top-1/2 transform -translate-y-1/2 w-6 h-6 text-gray-400 hover:text-gray-600 cursor-pointer">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                        </svg>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 
@@ -276,9 +301,9 @@
                 </div>
 
                 {{-- grid view --}}
-                <div x-show="viewMode === 'grid' && filteredTalents.length > 0"
+                <div x-show="viewMode === 'grid' && paginatedTalents.length > 0"
                      class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4">
-                    <template x-for="(talent, index) in filteredTalents" :key="talent.id">
+                    <template x-for="(talent, index) in paginatedTalents" :key="talent.id">
                         <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-4 hover-lift gpu-accelerate fade-in-up"
                              :style="'animation-delay: ' + (0.25 + index * 0.05) + 's'">
 
@@ -383,60 +408,159 @@
                     </template>
                 </div>
 
-                {{-- pagination controls --}}
-                <div x-show="filteredTalents.length > 0" class="flex items-center justify-between mt-8 bg-white rounded-lg p-4 shadow-sm border border-gray-100">
-                    <div class="text-sm text-gray-600">
-                        Menampilkan <span class="font-semibold" x-text="Math.min(perPage, filteredTalents.length)"></span> dari <span class="font-semibold" x-text="filteredTalents.length"></span> talenta
-                    </div>
-                    <div class="flex items-center gap-3">
-                        <label class="text-sm text-gray-600">Tampilkan per halaman:</label>
-                        <select x-model="perPage" @change="perPageChanged()"
-                                class="px-3 py-2 text-sm border border-gray-200 rounded-lg focus:ring-2 focus:ring-violet-500 focus:border-transparent">
-                            <option value="4">4</option>
-                            <option value="8">8</option>
-                            <option value="12">12</option>
-                        </select>
+                {{-- Modern Pagination with Page Numbers --}}
+                <div x-show="filteredTalents.length > 0" class="mt-8">
+                    <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
+                        <div class="flex flex-col sm:flex-row items-center justify-between gap-4">
+                            {{-- Results Info --}}
+                            <div class="text-sm text-gray-600">
+                                Menampilkan
+                                <span class="font-semibold text-gray-900" x-text="((currentPage - 1) * perPage) + 1"></span>
+                                -
+                                <span class="font-semibold text-gray-900" x-text="Math.min(currentPage * perPage, filteredTalents.length)"></span>
+                                dari
+                                <span class="font-semibold text-gray-900" x-text="filteredTalents.length"></span>
+                                talenta
+                            </div>
+
+                            {{-- Page Numbers --}}
+                            <div class="flex items-center gap-2">
+                                {{-- Previous Button --}}
+                                <button @click="goToPage(currentPage - 1)"
+                                        :disabled="currentPage === 1"
+                                        :class="currentPage === 1 ? 'opacity-50 cursor-not-allowed' : 'hover:bg-violet-50'"
+                                        class="p-2 rounded-lg border border-gray-200 transition-colors">
+                                    <svg class="w-5 h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
+                                    </svg>
+                                </button>
+
+                                {{-- Page Numbers --}}
+                                <template x-for="page in visiblePages" :key="page">
+                                    <button @click="page !== '...' && goToPage(page)"
+                                            :class="{
+                                                'bg-violet-600 text-white font-semibold': page === currentPage,
+                                                'text-gray-700 hover:bg-gray-50': page !== currentPage && page !== '...',
+                                                'cursor-default': page === '...'
+                                            }"
+                                            class="min-w-[40px] h-10 px-3 rounded-lg border border-gray-200 text-sm transition-colors"
+                                            x-text="page">
+                                    </button>
+                                </template>
+
+                                {{-- Next Button --}}
+                                <button @click="goToPage(currentPage + 1)"
+                                        :disabled="currentPage === totalPages"
+                                        :class="currentPage === totalPages ? 'opacity-50 cursor-not-allowed' : 'hover:bg-violet-50'"
+                                        class="p-2 rounded-lg border border-gray-200 transition-colors">
+                                    <svg class="w-5 h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+                                    </svg>
+                                </button>
+                            </div>
+
+                            {{-- Per Page Selector --}}
+                            <div class="flex items-center gap-2">
+                                <label class="text-sm text-gray-600 whitespace-nowrap">Per halaman:</label>
+                                <select x-model="perPage" @change="perPageChanged()"
+                                        class="px-3 py-2 text-sm border border-gray-200 rounded-lg focus:ring-2 focus:ring-violet-500 focus:border-transparent bg-white">
+                                    <option value="8">8</option>
+                                    <option value="12">12</option>
+                                    <option value="16">16</option>
+                                    <option value="24">24</option>
+                                </select>
+                            </div>
+                        </div>
                     </div>
                 </div>
 
-                {{-- list view --}}
-                <div x-show="viewMode === 'list' && filteredTalents.length > 0" class="space-y-3">
-                    <template x-for="(talent, index) in filteredTalents" :key="talent.id">
-                        <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-4 hover-lift gpu-accelerate">
-                            <div class="flex items-center gap-4">
-                                <div class="relative flex-shrink-0">
-                                    <img :src="'/'+talent.avatar"
-                                         :alt="talent.name"
-                                         class="w-14 h-14 rounded-full object-cover"
-                                         onerror="this.src='https://ui-avatars.com/api/?name='+encodeURIComponent(this.alt)+'&background=6366F1&color=fff'">
-                                    <span x-show="talent.online"
-                                          class="absolute bottom-0 right-0 w-3.5 h-3.5 bg-green-500 border-2 border-white rounded-full"></span>
-                                </div>
-                                <div class="flex-1 min-w-0">
-                                    <div class="flex items-center gap-2">
-                                        <h3 class="font-semibold text-gray-900" x-text="talent.name"></h3>
-                                        <span x-show="talent.verified" class="flex items-center gap-1 text-xs text-green-600">
-                                            <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
-                                                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
-                                            </svg>
-                                            Terverifikasi
-                                        </span>
+                {{-- list view with improved styling --}}
+                <div x-show="viewMode === 'list' && paginatedTalents.length > 0" class="space-y-4">
+                    <template x-for="(talent, index) in paginatedTalents" :key="talent.id">
+                        <div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden hover-lift gpu-accelerate transition-all hover:shadow-md"
+                             :style="'animation-delay: ' + (0.25 + index * 0.03) + 's'">
+                            <div class="p-5">
+                                <div class="flex items-start gap-5">
+                                    {{-- Avatar Section --}}
+                                    <div class="relative flex-shrink-0">
+                                        <img :src="'/'+talent.avatar"
+                                             :alt="talent.name"
+                                             class="w-20 h-20 rounded-xl object-cover ring-2 ring-gray-100"
+                                             onerror="this.src='https://ui-avatars.com/api/?name='+encodeURIComponent(this.alt)+'&background=6366F1&color=fff'">
+                                        <span x-show="talent.online"
+                                              class="absolute -bottom-1 -right-1 w-5 h-5 bg-green-500 border-3 border-white rounded-full"></span>
                                     </div>
-                                    <p class="text-sm text-gray-500" x-text="talent.title"></p>
-                                    <div class="flex flex-wrap gap-1.5 mt-2">
-                                        <template x-for="skill in talent.skills" :key="skill">
-                                            <span class="px-2 py-0.5 bg-gray-100 text-gray-700 text-xs rounded-full" x-text="skill"></span>
-                                        </template>
+
+                                    {{-- Info Section --}}
+                                    <div class="flex-1 min-w-0">
+                                        <div class="flex items-start justify-between mb-2">
+                                            <div class="flex-1">
+                                                <div class="flex items-center gap-2 mb-1">
+                                                    <h3 class="text-lg font-bold text-gray-900" x-text="talent.name"></h3>
+                                                    <span x-show="talent.verified" class="flex items-center gap-1 px-2 py-0.5 bg-green-50 text-green-700 text-xs font-medium rounded-full">
+                                                        <svg class="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 20 20">
+                                                            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
+                                                        </svg>
+                                                        Terverifikasi
+                                                    </span>
+                                                </div>
+                                                <p class="text-sm font-medium text-violet-600 mb-1" x-text="talent.title"></p>
+                                                <div class="flex items-center gap-4 text-sm text-gray-500">
+                                                    <span class="flex items-center gap-1">
+                                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/>
+                                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/>
+                                                        </svg>
+                                                        <span x-text="talent.location"></span>
+                                                    </span>
+                                                    <span class="flex items-center gap-1" x-show="talent.university">
+                                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/>
+                                                        </svg>
+                                                        <span x-text="talent.university"></span>
+                                                    </span>
+                                                </div>
+                                            </div>
+
+                                            {{-- Comparison Checkbox --}}
+                                            <div x-show="comparisonMode" class="ml-4">
+                                                <input type="checkbox"
+                                                       :checked="isSelectedForComparison(talent.id)"
+                                                       @change="toggleTalentSelection(talent.id)"
+                                                       :disabled="!isSelectedForComparison(talent.id) && selectedForComparison.length >= 3"
+                                                       class="w-5 h-5 text-violet-600 border-gray-300 rounded focus:ring-violet-500">
+                                            </div>
+                                        </div>
+
+                                        {{-- Skills --}}
+                                        <div class="flex flex-wrap gap-2 mb-3" x-show="talent.skills && talent.skills.length > 0">
+                                            <template x-for="skill in talent.skills.slice(0, 5)" :key="skill">
+                                                <span class="px-3 py-1 bg-violet-50 text-violet-700 text-xs font-medium rounded-full border border-violet-100" x-text="skill"></span>
+                                            </template>
+                                            <span x-show="talent.skills.length > 5" class="px-3 py-1 bg-gray-100 text-gray-600 text-xs font-medium rounded-full">
+                                                +<span x-text="talent.skills.length - 5"></span> lainnya
+                                            </span>
+                                        </div>
+
+                                        {{-- Actions --}}
+                                        <div class="flex items-center gap-2 pt-3 border-t border-gray-100">
+                                            <a :href="'/profile/' + talent.username"
+                                               class="px-4 py-2 bg-violet-600 text-white text-sm font-semibold rounded-lg hover:bg-violet-700 transition-colors">
+                                                Lihat Profil
+                                            </a>
+                                            <button @click="toggleSave(talent.id)"
+                                                    :class="savedTalents.includes(talent.id) ? 'bg-amber-50 text-amber-600 border-amber-200' : 'bg-white text-gray-600 border-gray-200'"
+                                                    class="px-4 py-2 border text-sm font-semibold rounded-lg hover:bg-gray-50 transition-colors">
+                                                <span x-show="!savedTalents.includes(talent.id)">Simpan</span>
+                                                <span x-show="savedTalents.includes(talent.id)">Tersimpan</span>
+                                            </button>
+                                            <button class="ml-auto p-2 text-gray-400 hover:text-gray-600 transition-colors">
+                                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 5v.01M12 12v.01M12 19v.01M12 6a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z"/>
+                                                </svg>
+                                            </button>
+                                        </div>
                                     </div>
-                                </div>
-                                <div class="flex items-center gap-3">
-                                    <div class="text-right text-sm">
-                                        <p class="text-gray-500" x-text="talent.location"></p>
-                                    </div>
-                                    <a :href="'/profile/' + talent.username"
-                                       class="px-4 py-2 bg-violet-600 text-white text-sm font-semibold rounded-lg hover:bg-violet-700 transition-colors">
-                                        Lihat Profil
-                                    </a>
                                 </div>
                             </div>
                         </div>
@@ -521,6 +645,7 @@
 function talentBrowser() {
     return {
         viewMode: '{{ $viewMode }}',
+        searchQuery: '',
         filters: {
             skills: [],
             sdg_alignment: [],
@@ -536,8 +661,8 @@ function talentBrowser() {
         selectedForComparison: [],
         loading: false,
         perPage: 12,
+        currentPage: 1,
         hasMore: {{ $talents->hasMorePages() ? 'true' : 'false' }},
-        currentPage: {{ $talents->currentPage() }},
 
         init() {
             // Load saved searches dari localStorage
@@ -555,6 +680,21 @@ function talentBrowser() {
 
         get filteredTalents() {
             let result = this.talents;
+
+            // filter berdasarkan search query
+            if (this.searchQuery.trim()) {
+                const query = this.searchQuery.toLowerCase().trim();
+                result = result.filter(talent => {
+                    return (
+                        talent.name.toLowerCase().includes(query) ||
+                        talent.title.toLowerCase().includes(query) ||
+                        (talent.university && talent.university.toLowerCase().includes(query)) ||
+                        (talent.skills && talent.skills.some(skill =>
+                            skill.toLowerCase().includes(query)
+                        ))
+                    );
+                });
+            }
 
             // filter berdasarkan skills
             if (this.filters.skills.length > 0) {
@@ -585,11 +725,70 @@ function talentBrowser() {
                 result = result.filter(talent => talent.verified);
             }
 
-            // Apply pagination - slice to show only perPage items
-            return result.slice(0, parseInt(this.perPage));
+            return result;
+        },
+
+        get totalPages() {
+            return Math.ceil(this.filteredTalents.length / parseInt(this.perPage));
+        },
+
+        get paginatedTalents() {
+            const start = (this.currentPage - 1) * parseInt(this.perPage);
+            const end = start + parseInt(this.perPage);
+            return this.filteredTalents.slice(start, end);
+        },
+
+        get visiblePages() {
+            const total = this.totalPages;
+            const current = this.currentPage;
+            const pages = [];
+
+            if (total <= 7) {
+                // Show all pages if total is 7 or less
+                for (let i = 1; i <= total; i++) {
+                    pages.push(i);
+                }
+            } else {
+                // Always show first page
+                pages.push(1);
+
+                if (current > 3) {
+                    pages.push('...');
+                }
+
+                // Show pages around current page
+                const start = Math.max(2, current - 1);
+                const end = Math.min(total - 1, current + 1);
+
+                for (let i = start; i <= end; i++) {
+                    pages.push(i);
+                }
+
+                if (current < total - 2) {
+                    pages.push('...');
+                }
+
+                // Always show last page
+                pages.push(total);
+            }
+
+            return pages;
+        },
+
+        handleSearch() {
+            // Reset to first page when searching
+            this.currentPage = 1;
+        },
+
+        goToPage(page) {
+            if (page < 1 || page > this.totalPages) return;
+            this.currentPage = page;
+            // Scroll to top of results
+            window.scrollTo({ top: 300, behavior: 'smooth' });
         },
 
         applyFilters() {
+            this.currentPage = 1; // Reset to first page when applying filters
             console.log('Filters applied:', this.filters);
         },
 
@@ -640,7 +839,9 @@ function talentBrowser() {
                 impact_score_max: 100,
                 verified_only: false
             };
-            window.showNotification('Filter direset', 'info');
+            this.searchQuery = ''; // Reset search query
+            this.currentPage = 1; // Reset to first page
+            window.showNotification('Filter dan pencarian direset', 'info');
         },
 
         // Comparison Mode functionality
@@ -715,6 +916,7 @@ function talentBrowser() {
 
         // Pagination handler
         perPageChanged() {
+            this.currentPage = 1; // Reset to first page
             console.log('Per page changed to:', this.perPage);
             window.showNotification(`Menampilkan ${this.perPage} talenta per halaman`, 'info');
         },

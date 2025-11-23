@@ -45,7 +45,7 @@ class JobApplicationController extends Controller
         $search = $request->get('search');
 
         $applicationsQuery = $company->jobApplications()
-            ->with(['user.profile', 'jobPosting']);
+            ->with(['user.student', 'jobPosting']);
 
         // Apply filters
         if ($jobPostingId) {
@@ -108,7 +108,7 @@ class JobApplicationController extends Controller
         $company = $user->company;
 
         // IMPLEMENTED: Ambil data application dari Supabase
-        $application = JobApplication::with(['user.profile', 'jobPosting', 'reviewer'])
+        $application = JobApplication::with(['user.student', 'jobPosting', 'reviewer'])
             ->whereHas('jobPosting', function ($query) use ($company) {
                 $query->where('company_id', $company->id);
             })
@@ -279,7 +279,7 @@ class JobApplicationController extends Controller
         $jobPostingId = $request->get('job_posting_id');
 
         $applicationsQuery = $company->jobApplications()
-            ->with(['user.profile', 'jobPosting']);
+            ->with(['user.student', 'jobPosting']);
 
         if ($jobPostingId) {
             $applicationsQuery->where('job_posting_id', $jobPostingId);

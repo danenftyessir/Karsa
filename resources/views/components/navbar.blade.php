@@ -80,10 +80,6 @@
                            class="text-gray-700 hover:text-black px-3 py-2 text-sm font-semibold transition-all duration-300 rounded-lg hover:bg-gray-100 {{ request()->routeIs('company.talents.saved') ? 'text-black bg-gray-100' : '' }}">
                             Saved Talents
                         </a>
-                        <a href="{{ route('company.talents.leaderboard') }}"
-                           class="text-gray-700 hover:text-black px-3 py-2 text-sm font-semibold transition-all duration-300 rounded-lg hover:bg-gray-100 {{ request()->routeIs('company.talents.leaderboard') ? 'text-black bg-gray-100' : '' }}">
-                            Leaderboard
-                        </a>
                     @endif
                     
                     {{-- notification icon --}}
@@ -321,10 +317,6 @@
                     <a href="{{ route('company.talents.saved') }}"
                        class="block px-4 py-3 rounded-md text-base font-medium text-gray-700 hover:text-blue-600 hover:bg-blue-50 transition-colors {{ request()->routeIs('company.talents.saved') ? 'text-blue-600 bg-blue-50' : '' }}">
                         Saved Talents
-                    </a>
-                    <a href="{{ route('company.talents.leaderboard') }}"
-                       class="block px-4 py-3 rounded-md text-base font-medium text-gray-700 hover:text-blue-600 hover:bg-blue-50 transition-colors {{ request()->routeIs('company.talents.leaderboard') ? 'text-blue-600 bg-blue-50' : '' }}">
-                        Leaderboard
                     </a>
                 @endif
                 

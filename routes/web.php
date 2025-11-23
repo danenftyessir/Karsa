@@ -375,7 +375,6 @@ Route::middleware(['auth', 'check.user.type:company'])->prefix('company')->name(
     Route::prefix('talents')->name('talents.')->group(function () {
         Route::get('/', [CompanyTalentController::class, 'index'])->name('index');
         Route::get('/saved', [CompanyTalentController::class, 'saved'])->name('saved');
-        Route::get('/leaderboard', [CompanyTalentController::class, 'leaderboard'])->name('leaderboard');
         Route::get('/compare', [CompanyTalentController::class, 'compare'])->name('compare');
         Route::get('/export', [CompanyTalentController::class, 'export'])->name('export');
         Route::post('/{id}/toggle-save', [CompanyTalentController::class, 'toggleSave'])->name('toggle-save');

@@ -227,6 +227,7 @@ class TalentController extends Controller
                     return [
                         'id' => $user->id,
                         'name' => $user->name,
+                        'username' => $user->username,
                         'title' => $student->major ?? 'No Major',
                         'avatar' => $student->profile_photo_path ?? 'default-avatar.jpg',
                         'verified' => !is_null($user->email_verified_at),
@@ -317,121 +318,6 @@ class TalentController extends Controller
         ]);
     }
 
-    public function leaderboard(Request $request)
-    {
-        $user = Auth::user();
-        $company = $user->company;
-
-        if (!$company) {
-            return redirect()->route('home')
-                ->with('error', 'profil perusahaan tidak ditemukan');
-        }
-
-        // IMPLEMENTED: Ambil data leaderboard talents dari Supabase
-        // Sorted by impact score or contribution metrics
-        $leaderboardTalents = User::where('user_type', 'student')
-            ->whereHas('student')
-            ->with('student.university', 'student.projects.problem')
-            ->orderBy('created_at', 'desc')
-            ->paginate(20);
-
-        // Transform for view
-        $leaderboardTalents->getCollection()->transform(function ($talent, $index) use ($request) {
-            $student = $talent->student;
-
-            // Get location from university
-            $location = 'Indonesia';
-            if ($student && $student->university) {
-                $location = $student->university->city ?? 'Indonesia';
-            }
-
-            // Get first SDG badge from completed projects
-            $sdgBadge = null;
-            if ($student && $student->projects) {
-                $colorMap = [
-                    1 => 'red', 2 => 'amber', 3 => 'green', 4 => 'blue', 5 => 'orange',
-                    6 => 'cyan', 7 => 'yellow', 8 => 'red', 9 => 'orange', 10 => 'pink',
-                    11 => 'amber', 12 => 'yellow', 13 => 'green', 16 => 'blue'
-                ];
-
-                $completedProjects = $student->projects->where('status', 'completed');
-                foreach ($completedProjects as $project) {
-                    if ($project->problem && $project->problem->sdg_categories) {
-                        $categories = $project->problem->sdg_categories;
-
-                        // Handle jika masih string JSON
-                        if (is_string($categories)) {
-                            $categories = json_decode($categories, true) ?? [];
-                        }
-
-                        if (is_array($categories) && !empty($categories)) {
-                            $firstSdgId = $categories[0];
-                            $sdgBadge = [
-                                'id' => $firstSdgId,
-                                'name' => $this->getSdgName($firstSdgId),
-                                'color' => $colorMap[$firstSdgId] ?? 'blue'
-                            ];
-                            break; // Use first SDG found
-                        }
-                    }
-                }
-            }
-
-            return [
-                'id' => $talent->id,
-                'username' => $talent->username,
-                'rank' => ($request->input('page', 1) - 1) * 20 + $index + 1,
-                'name' => $talent->name,
-                'location' => $location,
-                'avatar' => $student->profile_photo_path ?? 'default-avatar.jpg',
-                'skills' => $student->skills ?? [],
-                'sdg_badge' => $sdgBadge,
-            ];
-        });
-
-        // daftar skills untuk filter
-        $availableSkills = [
-            'AI/ML', 'Data Science', 'Cloud Architecture', 'Full Stack Dev',
-            'DevOps', 'Cybersecurity', 'UI/UX Design', 'Product Management',
-            'Financial Modeling', 'Content Strategy', 'SEO/SEM',
-            'Quantum Computing', 'Game Development', '3D Modeling'
-        ];
-
-        // daftar SDG untuk filter
-        $sdgOptions = [
-            ['id' => 1, 'name' => 'No Poverty'],
-            ['id' => 2, 'name' => 'Zero Hunger'],
-            ['id' => 3, 'name' => 'Good Health And Well-being'],
-            ['id' => 4, 'name' => 'Quality Education'],
-            ['id' => 5, 'name' => 'Gender Equality'],
-            ['id' => 6, 'name' => 'Clean Water And Sanitation'],
-            ['id' => 7, 'name' => 'Affordable And Clean Energy'],
-            ['id' => 8, 'name' => 'Decent Work And Economic Growth'],
-            ['id' => 9, 'name' => 'Industry, Innovation And Infrastructure'],
-            ['id' => 10, 'name' => 'Reduced Inequalities'],
-            ['id' => 11, 'name' => 'Sustainable Cities And Communities'],
-            ['id' => 12, 'name' => 'Responsible Consumption And Production'],
-            ['id' => 13, 'name' => 'Climate Action'],
-            ['id' => 16, 'name' => 'Peace, Justice And Strong Institutions'],
-        ];
-
-        // impact breakdown metrics untuk sidebar
-        $impactBreakdown = [
-            ['name' => 'Problem Solving', 'value' => 85],
-            ['name' => 'Strategic Thinking', 'value' => 70],
-            ['name' => 'Collaboration', 'value' => 90],
-            ['name' => 'Innovation', 'value' => 60],
-        ];
-
-        return view('company.talents.leaderboard', compact(
-            'company',
-            'leaderboardTalents',
-            'availableSkills',
-            'sdgOptions',
-            'impactBreakdown'
-        ));
-    }
-
     /**
      * Compare talents side by side
      * IMPLEMENTED: Data dari Supabase PostgreSQL
@@ -453,7 +339,7 @@ class TalentController extends Controller
         // Get talents data
         $talents = User::where('user_type', 'student')
             ->whereIn('id', $ids)
-            ->with(['profile', 'repositories', 'projects'])
+            ->with(['student', 'student.projects'])
             ->get();
 
         if ($talents->count() < 2) {
@@ -482,11 +368,11 @@ class TalentController extends Controller
         ];
 
         $talentsQuery = User::where('user_type', 'student')
-            ->whereHas('profile');
+            ->whereHas('student');
 
         // Apply filters (same as index method)
         if (!empty($filters['skills'])) {
-            $talentsQuery->whereHas('profile', function ($query) use ($filters) {
+            $talentsQuery->whereHas('student', function ($query) use ($filters) {
                 foreach ($filters['skills'] as $skill) {
                     $query->whereJsonContains('skills', $skill);
                 }
@@ -494,7 +380,7 @@ class TalentController extends Controller
         }
 
         if (!empty($filters['location'])) {
-            $talentsQuery->whereHas('profile', function ($query) use ($filters) {
+            $talentsQuery->whereHas('student', function ($query) use ($filters) {
                 $query->where('location', 'ILIKE', '%' . $filters['location'] . '%');
             });
         }
@@ -503,7 +389,7 @@ class TalentController extends Controller
             $talentsQuery->whereNotNull('email_verified_at');
         }
 
-        $talents = $talentsQuery->with(['profile'])->get();
+        $talents = $talentsQuery->with(['student'])->get();
 
         $filename = 'talents_' . date('Y-m-d') . '.csv';
         $headers = [

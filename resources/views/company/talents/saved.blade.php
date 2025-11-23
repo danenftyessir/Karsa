@@ -395,7 +395,7 @@
 
                             <!-- action buttons -->
                             <div class="flex items-center gap-2 pt-3 border-t border-gray-100">
-                                <a :href="'/company/talents/' + talent.id"
+                                <a :href="'/profile/' + talent.username"
                                    class="flex-1 text-center px-3 py-1.5 border border-gray-300 rounded-lg text-sm font-medium text-gray-700 hover:bg-gray-50 transition-colors">
                                     Profil
                                 </a>
@@ -689,7 +689,7 @@
                             </div>
 
                             <div class="mt-4 pt-4 border-t border-gray-100">
-                                <a :href="'/company/talents/' + talent.id"
+                                <a :href="'/profile/' + talent.username"
                                    class="block w-full text-center px-4 py-2 bg-primary-600 text-white rounded-lg text-sm hover:bg-primary-700">
                                     Lihat Profil
                                 </a>
