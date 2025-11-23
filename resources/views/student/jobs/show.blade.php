@@ -100,7 +100,14 @@
                             <div class="flex items-start justify-between gap-4">
                                 <div>
                                     <h1 class="text-2xl font-bold text-gray-900">{{ $job->title }}</h1>
-                                    <p class="text-lg text-gray-600 mt-1">{{ $job->company->name ?? 'Company' }}</p>
+                                    @if($job->company)
+                                        <a href="{{ route('company.public', $job->company->id) }}"
+                                           class="text-lg text-gray-600 hover:text-blue-600 mt-1 inline-block transition-colors">
+                                            {{ $job->company->name }}
+                                        </a>
+                                    @else
+                                        <p class="text-lg text-gray-600 mt-1">Company</p>
+                                    @endif
                                 </div>
                                 <span class="job-type-badge job-type-{{ $job->job_type }}">
                                     {{ ucfirst(str_replace('_', ' ', $job->job_type)) }}
@@ -326,16 +333,26 @@
                     <p class="text-sm text-gray-600 mb-4">{{ Str::limit($job->company->description, 150) }}</p>
                     @endif
 
-                    @if($job->company->website)
-                    <a href="{{ $job->company->website }}"
-                       target="_blank"
-                       class="inline-flex items-center gap-1 text-sm text-blue-600 hover:text-blue-700">
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/>
-                        </svg>
-                        Kunjungi Website
-                    </a>
-                    @endif
+                    <div class="flex flex-wrap gap-3">
+                        <a href="{{ route('company.public', $job->company->id) }}"
+                           class="inline-flex items-center gap-1 text-sm text-blue-600 hover:text-blue-700 font-medium">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/>
+                            </svg>
+                            Lihat Profil Perusahaan
+                        </a>
+
+                        @if($job->company->website)
+                        <a href="{{ $job->company->website }}"
+                           target="_blank"
+                           class="inline-flex items-center gap-1 text-sm text-blue-600 hover:text-blue-700">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/>
+                            </svg>
+                            Kunjungi Website
+                        </a>
+                        @endif
+                    </div>
                 </div>
                 @endif
 

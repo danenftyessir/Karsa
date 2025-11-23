@@ -164,6 +164,18 @@
                         </div>
                         @endif
 
+                        @if($company->postal_code)
+                        <div class="flex items-start gap-3">
+                            <svg class="w-5 h-5 text-gray-400 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 19v-8.93a2 2 0 01.89-1.664l7-4.666a2 2 0 012.22 0l7 4.666A2 2 0 0121 10.07V19M3 19a2 2 0 002 2h14a2 2 0 002-2M3 19l6.75-4.5M21 19l-6.75-4.5M3 10l6.75 4.5M21 10l-6.75 4.5m0 0l-1.14.76a2 2 0 01-2.22 0l-1.14-.76"/>
+                            </svg>
+                            <div>
+                                <p class="text-sm text-gray-500 mb-1">Kode Pos</p>
+                                <p class="text-gray-900">{{ $company->postal_code }}</p>
+                            </div>
+                        </div>
+                        @endif
+
                         @if($company->address)
                         <div class="flex items-start gap-3 md:col-span-2">
                             <svg class="w-5 h-5 text-gray-400 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -286,12 +298,12 @@
 
                 <!-- Actions -->
                 @if(!$company->is_verified)
-                <div class="bg-gradient-to-br from-blue-500 to-purple-600 rounded-2xl shadow-lg p-6 text-white fade-in-up gpu-accelerate" style="animation-delay: 0.2s;">
-                    <h3 class="text-lg font-bold mb-3">Verifikasi Perusahaan</h3>
-                    <p class="text-blue-100 text-sm mb-4">
+                <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 fade-in-up gpu-accelerate" style="animation-delay: 0.2s;">
+                    <h3 class="text-lg font-bold text-gray-900 mb-3">Verifikasi Perusahaan</h3>
+                    <p class="text-gray-600 text-sm mb-4">
                         Verifikasi akun Anda untuk mendapatkan akses penuh dan meningkatkan kepercayaan talenta
                     </p>
-                    <button class="w-full bg-white text-blue-600 px-4 py-3 rounded-lg font-semibold hover:bg-blue-50 transition-colors duration-200">
+                    <button class="w-full border border-gray-300 text-gray-700 px-4 py-3 rounded-lg font-medium hover:bg-gray-50 transition-colors duration-200">
                         Ajukan Verifikasi
                     </button>
                 </div>

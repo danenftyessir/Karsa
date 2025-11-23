@@ -439,6 +439,16 @@ Route::middleware(['auth'])->prefix('notifications')->name('notifications.')->gr
 
 /*
 |--------------------------------------------------------------------------
+| Public Company Profile
+|--------------------------------------------------------------------------
+*/
+
+Route::get('/company/{id}', [\App\Http\Controllers\Company\ProfileController::class, 'showPublic'])
+    ->where('id', '[0-9]+')
+    ->name('company.public');
+
+/*
+|--------------------------------------------------------------------------
 | Public Institution Profile
 |--------------------------------------------------------------------------
 */

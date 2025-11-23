@@ -53,6 +53,31 @@ class ProfileController extends Controller
     }
 
     /**
+     * Display public company profile
+     * IMPLEMENTED: Data dari Supabase PostgreSQL
+     * Accessible by all users (students, companies, guests)
+     */
+    public function showPublic($id)
+    {
+        $company = Company::with('province')->findOrFail($id);
+
+        // Get active job postings (limit to 5 for display)
+        $activeJobs = $company->jobPostings()
+            ->active()
+            ->orderBy('created_at', 'desc')
+            ->limit(5)
+            ->get();
+
+        // Statistics for public view
+        $stats = [
+            'total_jobs' => $company->jobPostings()->count(),
+            'active_jobs' => $company->jobPostings()->active()->count(),
+        ];
+
+        return view('company.profile.public', compact('company', 'activeJobs', 'stats'));
+    }
+
+    /**
      * Show edit profile form
      * IMPLEMENTED: Data dari Supabase PostgreSQL
      */
@@ -112,15 +137,24 @@ class ProfileController extends Controller
 
         $validated = $request->validate([
             'name' => 'required|string|max:255',
-            'industry' => 'required|string|max:100',
+            'tagline' => 'nullable|string|max:255',
+            'industry' => 'nullable|string|max:100',
+            'company_size' => 'nullable|string|max:50',
             'description' => 'nullable|string',
+            'email' => 'nullable|email|max:255',
+            'phone' => 'nullable|string|max:20',
             'website' => 'nullable|url|max:255',
+            'location' => 'nullable|string|max:255',
+            'postal_code' => 'nullable|string|max:20',
             'address' => 'nullable|string|max:500',
             'city' => 'nullable|string|max:100',
             'province_id' => 'nullable|exists:provinces,id',
-            'phone' => 'nullable|string|max:20',
             'employee_count' => 'nullable|string|max:20',
             'founded_year' => 'nullable|integer|min:1800|max:' . date('Y'),
+            'linkedin' => 'nullable|url|max:255',
+            'twitter' => 'nullable|url|max:255',
+            'facebook' => 'nullable|url|max:255',
+            'instagram' => 'nullable|url|max:255',
             'logo' => 'nullable|image|mimes:jpeg,png,jpg,webp|max:5120', // 5MB max
         ]);
 

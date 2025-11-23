@@ -16,16 +16,25 @@ class Company extends Model
     protected $fillable = [
         'user_id',
         'name',
+        'tagline',
         'industry',
         'description',
         'website',
         'logo',
+        'email',
+        'phone',
+        'location',
+        'postal_code',
         'address',
         'city',
         'province_id',
-        'phone',
+        'company_size',
         'employee_count',
         'founded_year',
+        'linkedin',
+        'twitter',
+        'facebook',
+        'instagram',
         'verification_status',
         'verified_at',
     ];
@@ -107,5 +116,13 @@ class Company extends Model
             'ffffff',
             200
         );
+    }
+
+    /**
+     * Check if company is verified
+     */
+    public function getIsVerifiedAttribute(): bool
+    {
+        return $this->verification_status === 'verified' || $this->verified_at !== null;
     }
 }
