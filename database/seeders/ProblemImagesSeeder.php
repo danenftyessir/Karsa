@@ -140,7 +140,12 @@ class ProblemImagesSeeder extends Seeder
         $imageIndex = 0;
 
         // assign gambar ke setiap problem
-        foreach ($problems as $problem) {
+        foreach ($problems as $index => $problem) {
+            // Reconnect every 5 problems to prevent prepared statement errors
+            if ($index % 5 == 0) {
+                \DB::reconnect('pgsql');
+            }
+
             // setiap problem dapat 2-4 gambar
             $numImages = rand(2, 4);
             $assignedImages = [];

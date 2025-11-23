@@ -16,11 +16,40 @@ return new class extends Migration
         // Untuk PostgreSQL, kita perlu mengubah kolom dengan raw SQL
         // karena Laravel tidak support alter enum directly
 
-        // Drop constraint lama
-        DB::statement("ALTER TABLE users DROP CONSTRAINT IF EXISTS users_user_type_check");
+        // Check if users table exists first
+        if (!Schema::hasTable('users')) {
+            return; // Skip if users table doesn't exist yet
+        }
 
-        // Recreate constraint dengan nilai baru
-        DB::statement("ALTER TABLE users ADD CONSTRAINT users_user_type_check CHECK (user_type IN ('student', 'institution', 'admin', 'company'))");
+        try {
+            // Check if constraint already has 'company' value
+            $result = DB::select("
+                SELECT pg_get_constraintdef(oid) as definition
+                FROM pg_constraint
+                WHERE conrelid = 'users'::regclass
+                AND conname = 'users_user_type_check'
+            ");
+
+            // If constraint exists and already includes 'company', skip this migration
+            if (!empty($result) && strpos($result[0]->definition, 'company') !== false) {
+                return; // Already has 'company', skip
+            }
+
+            // Drop the specific constraint if it exists
+            DB::statement("ALTER TABLE users DROP CONSTRAINT IF EXISTS users_user_type_check");
+
+            // Recreate constraint with new values including 'company'
+            DB::statement("
+                ALTER TABLE users ADD CONSTRAINT users_user_type_check
+                CHECK (user_type::text = ANY (ARRAY['student'::text, 'institution'::text, 'admin'::text, 'company'::text]))
+            ");
+        } catch (\Exception $e) {
+            // Log error but don't fail migration if constraint already correct
+            if (strpos($e->getMessage(), 'does not exist') === false &&
+                strpos($e->getMessage(), 'already exists') === false) {
+                throw $e;
+            }
+        }
     }
 
     /**

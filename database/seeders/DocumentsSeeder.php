@@ -247,6 +247,8 @@ class DocumentsSeeder extends Seeder
      */
     public function run(): void
     {
+        \DB::reconnect('pgsql');
+
         // Ambil users untuk uploaded_by
         $users = User::whereHas('student')->orWhereHas('institution')->get();
 

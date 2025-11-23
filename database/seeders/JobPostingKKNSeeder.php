@@ -31,35 +31,47 @@ class JobPostingKKNSeeder extends Seeder
     {
         $this->command->info('🌱 Seeding realistic KKN-based job postings...');
 
-        // Get all companies
-        $companies = $this->supabase->select('companies', ['id', 'name', 'industry']);
+        // Get all companies - use DB facade
+        $companies = \DB::table('companies')->select('id', 'name', 'industry')->get();
 
-        // Get all job categories
-        $categories = $this->supabase->select('job_categories', ['id', 'name', 'slug']);
+        // Get all job categories - use DB facade
+        $categories = \DB::table('job_categories')->select('id', 'name', 'slug')->get();
         $categoriesMap = collect($categories)->keyBy('slug')->toArray();
 
         $jobCount = 0;
         $skippedCount = 0;
-        foreach ($companies as $company) {
-            // Check existing job count for this company
-            $existingJobs = $this->supabase->select('job_postings', ['id'], ['company_id' => $company->id]);
+        foreach ($companies as $index => $company) {
+            // Reconnect every 20 iterations
+            if ($index % 20 == 0) {
+                \DB::reconnect('pgsql');
+            }
+
+            // Check existing job count for this company - use DB facade
+            $existingJobs = \DB::table('job_postings')
+                ->select('id', 'job_category_id')
+                ->where('company_id', $company->id)
+                ->get();
             $existingJobCount = count($existingJobs);
 
-            // Skip if company already has 5 or more jobs
-            if ($existingJobCount >= 5) {
+            // Skip if company already has enough jobs
+            if ($existingJobCount >= 4) {
                 $skippedCount++;
                 continue;
             }
 
-            // Create jobs only if needed (to reach 5-10 total)
-            $targetJobs = rand(5, 10);
+            // Create jobs only if needed (to reach 4-6 total, ensuring >3 requirement)
+            $targetJobs = rand(4, 6);
             $jobsToCreate = max(0, $targetJobs - $existingJobCount);
 
+            // Track used categories to ensure >3 different categories
+            $usedCategoryIds = collect($existingJobs)->pluck('job_category_id')->unique()->toArray();
+
             for ($i = 0; $i < $jobsToCreate; $i++) {
-                $job = $this->generateKKNJob($company, $categoriesMap);
+                $job = $this->generateKKNJob($company, $categoriesMap, $usedCategoryIds);
                 if ($job) {
                     try {
-                        $this->supabase->insert('job_postings', $job);
+                        \DB::table('job_postings')->insert($job);
+                        $usedCategoryIds[] = $job['job_category_id'];
                         $jobCount++;
 
                         if ($jobCount % 20 == 0) {
@@ -81,11 +93,28 @@ class JobPostingKKNSeeder extends Seeder
         $this->command->info("📊 Total job postings: $jobCount");
     }
 
-    private function generateKKNJob($company, $categoriesMap): ?array
+    private function generateKKNJob($company, $categoriesMap, $usedCategoryIds = []): ?array
     {
-        // Select random KKN job template based on company industry
+        // Select random KKN job template, prioritizing unused categories
         $jobTemplates = $this->getKKNJobTemplates();
-        $template = $jobTemplates[array_rand($jobTemplates)];
+
+        // Shuffle templates to randomize
+        shuffle($jobTemplates);
+
+        // Try to find a template with an unused category first
+        $template = null;
+        foreach ($jobTemplates as $t) {
+            $cat = $categoriesMap[$t['category_slug']] ?? null;
+            if ($cat && !in_array($cat->id, $usedCategoryIds)) {
+                $template = $t;
+                break;
+            }
+        }
+
+        // If all categories are used, just pick random
+        if (!$template) {
+            $template = $jobTemplates[array_rand($jobTemplates)];
+        }
 
         // Get category
         $category = $categoriesMap[$template['category_slug']] ?? null;

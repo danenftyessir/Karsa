@@ -380,7 +380,7 @@ Route::middleware(['auth', 'check.user.type:company'])->prefix('company')->name(
         Route::get('/export', [CompanyTalentController::class, 'export'])->name('export');
         Route::post('/{id}/toggle-save', [CompanyTalentController::class, 'toggleSave'])->name('toggle-save');
         Route::post('/{id}/contact', [CompanyTalentController::class, 'contact'])->name('contact');
-        Route::get('/{id}', [CompanyTalentController::class, 'show'])->name('show');
+        // Route::get('/{id}', [CompanyTalentController::class, 'show'])->name('show'); // DELETED: Use public student profiles instead
     });
 
     // job applications review

@@ -261,16 +261,30 @@ class JobCategorySeeder extends Seeder
         $insertedCount = 0;
         $skippedCount = 0;
 
-        foreach ($categories as $category) {
-            // Check if category already exists
-            $existing = $this->supabase->select('job_categories', ['id'], ['slug' => $category['slug']]);
+        foreach ($categories as $index => $category) {
+            // Reconnect every 10 iterations
+            if ($index % 10 == 0) {
+                \DB::reconnect('pgsql');
+            }
 
-            if (empty($existing)) {
-                // Insert ke Supabase jika belum ada
-                $this->supabase->insert('job_categories', $category);
-                $insertedCount++;
-            } else {
-                $skippedCount++;
+            try {
+                // Check if category already exists - use DB facade
+                $existingCount = \DB::table('job_categories')->where('slug', $category['slug'])->count();
+
+                if ($existingCount == 0) {
+                    // Insert if not exists
+                    \DB::table('job_categories')->insert($category);
+                    $insertedCount++;
+                } else {
+                    $skippedCount++;
+                }
+            } catch (\Exception $e) {
+                // Skip duplicates
+                if (strpos($e->getMessage(), 'duplicate key') !== false || strpos($e->getMessage(), 'Duplicate entry') !== false) {
+                    $skippedCount++;
+                } else {
+                    $this->command->error("❌ Failed to insert category: {$category['name']} - " . $e->getMessage());
+                }
             }
         }
 

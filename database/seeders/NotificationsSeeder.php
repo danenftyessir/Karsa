@@ -16,6 +16,8 @@ class NotificationsSeeder extends Seeder
      */
     public function run(): void
     {
+        \DB::reconnect('pgsql');
+
         // ambil beberapa user untuk dijadikan penerima notifikasi
         $students = Student::with('user')->limit(10)->get();
         $institutions = Institution::with('user')->limit(5)->get();

@@ -40,12 +40,17 @@ class ProblemsSeeder extends Seeder
 
         // create problems untuk setiap template
         foreach ($problemsTemplates as $index => $template) {
+            // Reconnect every 5 iterations to prevent prepared statement errors
+            if ($index % 5 == 0) {
+                \DB::reconnect('pgsql');
+            }
+
             // pilih institution random
             $institution = $institutions->random();
-            
+
             // pilih province random
             $province = $provinces->random();
-            
+
             // ambil regency dari province tersebut
             $regency = Regency::where('province_id', $province->id)->inRandomOrder()->first();
             

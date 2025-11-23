@@ -22,6 +22,8 @@ class ApplicationsSeeder extends Seeder
      */
     public function run(): void
     {
+        \DB::reconnect('pgsql');
+
         // disable query log untuk performa lebih baik
         DB::connection()->disableQueryLog();
         

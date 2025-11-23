@@ -36,24 +36,30 @@ class CompanySeeder extends Seeder
         $skippedCount = 0;
 
         foreach ($companies as $index => $companyData) {
+            // Reconnect every 10 iterations to prevent prepared statement errors
+            if ($index % 10 == 0) {
+                \DB::reconnect('pgsql');
+            }
+
             try {
                 // Generate email sama seperti di UserSeeder
                 $slug = str_replace(' ', '', strtolower($companyData['name']));
                 $userEmail = 'hr@' . substr($slug, 0, 30) . '.co.id';
 
-                $users = $this->supabase->select('users', ['id'], ['email' => $userEmail]);
+                // Use DB facade instead of SupabaseService for better reliability
+                $user = \DB::table('users')->where('email', $userEmail)->first();
 
-                if ($users->isEmpty()) {
+                if (!$user) {
                     $this->command->warn("⚠️  User not found: $userEmail - Skipping...");
                     $skippedCount++;
                     continue;
                 }
 
-                $userId = $users->first()->id;
+                $userId = $user->id;
 
                 // Check if company already exists
-                $existingCompany = $this->supabase->select('companies', ['id'], ['user_id' => $userId]);
-                if (!empty($existingCompany)) {
+                $existingCount = \DB::table('companies')->where('user_id', $userId)->count();
+                if ($existingCount > 0) {
                     $skippedCount++;
                     continue;
                 }
@@ -85,7 +91,7 @@ class CompanySeeder extends Seeder
                     'updated_at' => now()->toDateTimeString(),
                 ];
 
-                $this->supabase->insert('companies', $company);
+                \DB::table('companies')->insert($company);
                 $createdCount++;
 
                 // Reconnect setiap 10 companies
@@ -111,6 +117,7 @@ class CompanySeeder extends Seeder
     private function getCompanyNames(): array
     {
         return [
+            // Original 50 companies
             'Koperasi Tani Makmur Jaya', 'Koperasi Susu Sapi Perah Bandung', 'Koperasi Produsen Tempe Tahu Indonesia',
             'Pabrik Tahu Sumedang Asli', 'Pabrik Kerupuk Udang Sidoarjo', 'Pabrik Batik Tulis Solo',
             'CV Mebel Jati Jepara', 'CV Kerajinan Perak Kotagede', 'CV Anyaman Bambu Tasikmalaya',
@@ -128,6 +135,34 @@ class CompanySeeder extends Seeder
             'Pabrik Gula Aren Cianjur', 'Pabrik Kecap Benteng Tangerang', 'Pabrik Sambal Pecel Madiun',
             'Pusat Pelatihan Menjahit Griya Mode', 'Balai Pelatihan Kerja Mandiri', 'LPK Otomotif Harapan Bangsa',
             'Toko Oleh-Oleh Khas Malang', 'Toko Pia Khas Semarang', 'Restoran Seafood Jimbaran',
+
+            // Additional 60+ companies (Total >110 companies)
+            'Koperasi Nelayan Pantai Selatan', 'Koperasi Pengrajin Anyaman Mendong', 'Koperasi Peternak Sapi Potong',
+            'Pabrik Gula Merah Banyumas', 'Pabrik Teh Celup Bogor', 'Pabrik Kopi Bubuk Toraja',
+            'CV Furnitur Kayu Mahoni', 'CV Batik Cap Pekalongan', 'CV Bordir Tradisional Kudus',
+            'UD Sandal Jepit Bogor', 'UD Kaos Sablon Yogyakarta', 'UD Batik Printing Surabaya',
+            'Peternakan Bebek Petelur Brebes', 'Peternakan Ikan Lele Depok', 'Peternakan Kelinci Sukabumi',
+            'Perkebunan Kakao Sulawesi', 'Perkebunan Cengkeh Maluku', 'Perkebunan Vanili Bali',
+            'Desa Wisata Umbul Ponggok', 'Desa Wisata Kampoeng Batik Laweyan', 'Desa Wisata Sade Lombok',
+            'Balai Latihan Kerja Jawa Timur', 'Balai Benih Sayuran Lembang', 'Balai Pengembangan UMKM',
+            'BUMDES Karya Bersama', 'BUMDES Usaha Maju', 'BUMDES Tani Sejahtera',
+            'Industri Rumahan Abon Sapi', 'Industri Rumahan Kue Kering', 'Industri Rumahan Asinan Jakarta',
+            'Bengkel Motor Jaya Abadi', 'Bengkel Mobil Mandiri', 'Toko Elektronik Sumber Makmur',
+            'Pabrik Keramik Dinoyo', 'Pabrik Batu Alam Tulungagung', 'Pabrik Marmer Majalengka',
+            'Sentra Kerajinan Kulit Garut', 'Sentra Batik Tulis Madura', 'Sentra Gerabah Kasongan',
+            'Kelompok Tani Organik Nusantara', 'Kelompok Ternak Ayam Kampung', 'Kelompok Nelayan Tradisional',
+            'Pabrik Roti Manis Bandung', 'Pabrik Coklat Premium Bali', 'Pabrik Keripik Pedas Madiun',
+            'LPK Komputer Nusantara', 'LPK Bahasa Inggris Global', 'LPK Tata Boga Indonesia',
+            'Toko Kerajinan Tangan Bali', 'Toko Batik Nusantara', 'Restoran Sunda Khas Priangan',
+            'Koperasi Pengrajin Wayang Kulit', 'Koperasi Petani Sayur Organik', 'Koperasi Produsen Susu Kambing',
+            'Pabrik Minuman Tradisional', 'Pabrik Jamu Herbal Jawa', 'Pabrik Minyak Kelapa VCO',
+            'CV Kontraktor Bangunan', 'CV Advertising Kreatif', 'CV Event Organizer Profesional',
+            'UD Percetakan Modern', 'UD Fotokopi Digital', 'UD Alat Tulis Kantor',
+            'Peternakan Burung Puyuh', 'Peternakan Domba Garut', 'Peternakan Udang Vaname',
+            'Perkebunan Jeruk Pontianak', 'Perkebunan Salak Pondoh', 'Perkebunan Durian Medan',
+            'Desa Wisata Dieng Plateau', 'Desa Wisata Kete Kesu Toraja', 'Desa Wisata Osing Banyuwangi',
+            'Balai Pelatihan Teknologi', 'Balai Pengembangan Perikanan', 'Balai Penelitian Pertanian',
+            'BUMDES Wisata Alam', 'BUMDES Energi Terbarukan', 'BUMDES Keuangan Mikro',
         ];
     }
 
@@ -173,7 +208,14 @@ class CompanySeeder extends Seeder
             'Penglipuran' => 'Bali', 'Bali' => 'Bali', 'Wae Rebo' => 'Nusa Tenggara Timur',
             'NTT' => 'Nusa Tenggara Timur', 'Naga' => 'Jawa Barat', 'Mojokerto' => 'Jawa Timur',
             'Madiun' => 'Jawa Timur', 'Malang' => 'Jawa Timur', 'Semarang' => 'Jawa Tengah',
-            'Jimbaran' => 'Bali',
+            'Jimbaran' => 'Bali', 'Brebes' => 'Jawa Tengah', 'Depok' => 'Jawa Barat',
+            'Toraja' => 'Sulawesi Selatan', 'Sulawesi' => 'Sulawesi Selatan', 'Maluku' => 'Maluku',
+            'Ponggok' => 'Jawa Tengah', 'Laweyan' => 'Jawa Tengah', 'Lombok' => 'Nusa Tenggara Barat',
+            'Yogyakarta' => 'Yogyakarta', 'Surabaya' => 'Jawa Timur', 'Kudus' => 'Jawa Tengah',
+            'Pekalongan' => 'Jawa Tengah', 'Banyumas' => 'Jawa Tengah', 'Tulungagung' => 'Jawa Timur',
+            'Majalengka' => 'Jawa Barat', 'Madura' => 'Jawa Timur', 'Kasongan' => 'Yogyakarta',
+            'Pontianak' => 'Kalimantan Barat', 'Medan' => 'Sumatera Utara', 'Dieng' => 'Jawa Tengah',
+            'Banyuwangi' => 'Jawa Timur', 'Dinoyo' => 'Jawa Timur', 'Priangan' => 'Jawa Barat',
         ];
 
         foreach ($companyNames as $index => $name) {

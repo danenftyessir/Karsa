@@ -251,30 +251,34 @@ class DummyDataSeeder extends Seeder
             ['name' => 'Universitas Muhammadiyah Tangerang', 'code' => 'UMT', 'province_hint' => 'Banten', 'type' => 'swasta', 'accreditation' => 'B'],
         ];
         
-        $createdCount = 0;
-        
+        // Prepare batch data untuk bulk insert
+        $universitiesBatch = [];
+
         foreach ($universitiesData as $univData) {
             // dapatkan lokasi berdasarkan hint
             $location = $getLocation($univData['province_hint'] ?? null);
-            
+
             // skip jika tidak dapat location
             if (!$location || !$location['province_id']) {
                 continue;
             }
-            
-            University::create([
+
+            $universitiesBatch[] = [
                 'name' => $univData['name'],
                 'code' => $univData['code'],
                 'province_id' => $location['province_id'],
                 'regency_id' => $location['regency_id'],
                 'type' => $univData['type'],
                 'accreditation' => $univData['accreditation'],
-            ]);
-            
-            $createdCount++;
+                'created_at' => now(),
+                'updated_at' => now(),
+            ];
         }
-        
-        echo "  -> {$createdCount} universities berhasil dibuat\n";
+
+        // Batch insert semua universities sekaligus
+        DB::table('universities')->insert($universitiesBatch);
+
+        echo "  -> " . count($universitiesBatch) . " universities berhasil dibuat\n";
     }
 
     /**
@@ -323,42 +327,79 @@ class DummyDataSeeder extends Seeder
         }
 
         // buat 700 students dengan distribusi merata ke semua universitas
-        for ($i = 0; $i < 700; $i++) {
-            $firstName = $firstNames[array_rand($firstNames)];
-            $lastName = $lastNames[array_rand($lastNames)];
-            // Tambahkan index $i untuk memastikan username unique
-            $username = strtolower($firstName . $lastName . ($i + 1000));
-            $university = $universities->random();
+        // MENGGUNAKAN DB FACADE untuk menghindari prepared statement errors dengan Eloquent
+        $batchSize = 50;
+        $totalStudents = 700;
+        $batches = ceil($totalStudents / $batchSize);
 
-            // generate email domain dari kode universitas
-            $emailDomain = $this->getUniversityEmailDomain($university->code);
-            $email = $username . '@' . $emailDomain;
-            
-            // buat user
-            $user = User::create([
-                'name' => $firstName . ' ' . $lastName,
-                'email' => $email,
-                'username' => $username,
-                'password' => Hash::make('password123'),
-                'user_type' => 'student',
-                'is_active' => true,
-                'email_verified_at' => now(),
-            ]);
+        for ($batch = 0; $batch < $batches; $batch++) {
+            $usersBatch = [];
+            $studentsBatch = [];
+            $startIndex = $batch * $batchSize;
+            $endIndex = min(($batch + 1) * $batchSize, $totalStudents);
 
-            // buat student
-            Student::create([
-                'user_id' => $user->id,
-                'first_name' => $firstName,
-                'last_name' => $lastName,
-                'university_id' => $university->id,
-                'major' => $majors[array_rand($majors)],
-                'nim' => rand(1000000000, 9999999999),
-                'semester' => rand(1, 8),
-                'phone' => '+628' . rand(1000000000, 9999999999),
-            ]);
+            // Track max user ID before insert
+            $maxUserIdBefore = DB::table('users')->max('id') ?? 0;
+
+            for ($i = $startIndex; $i < $endIndex; $i++) {
+                $firstName = $firstNames[array_rand($firstNames)];
+                $lastName = $lastNames[array_rand($lastNames)];
+                $username = strtolower($firstName . $lastName . ($i + 1000));
+                $university = $universities->random();
+                $emailDomain = $this->getUniversityEmailDomain($university->code);
+                $email = $username . '@' . $emailDomain;
+
+                $usersBatch[] = [
+                    'name' => $firstName . ' ' . $lastName,
+                    'email' => $email,
+                    'username' => $username,
+                    'password' => Hash::make('password123'),
+                    'user_type' => 'student',
+                    'is_active' => true,
+                    'email_verified_at' => now(),
+                    'created_at' => now(),
+                    'updated_at' => now(),
+                ];
+            }
+
+            // insert users batch
+            DB::table('users')->insert($usersBatch);
+
+            // get user IDs yang baru saja dibuat (with ID > maxUserIdBefore)
+            $insertedUsers = DB::table('users')
+                ->where('user_type', 'student')
+                ->where('id', '>', $maxUserIdBefore)
+                ->orderBy('id', 'asc')
+                ->get();
+
+            // buat students batch dengan user_id yang sesuai
+            for ($i = $startIndex; $i < $endIndex; $i++) {
+                $localIndex = $i - $startIndex;
+                $firstName = $firstNames[array_rand($firstNames)];
+                $lastName = $lastNames[array_rand($lastNames)];
+                $university = $universities->random();
+
+                $studentsBatch[] = [
+                    'user_id' => $insertedUsers[$localIndex]->id,
+                    'first_name' => $firstName,
+                    'last_name' => $lastName,
+                    'university_id' => $university->id,
+                    'major' => $majors[array_rand($majors)],
+                    'nim' => rand(1000000000, 9999999999),
+                    'semester' => rand(1, 8),
+                    'phone' => '+628' . rand(1000000000, 9999999999),
+                    'created_at' => now(),
+                    'updated_at' => now(),
+                ];
+            }
+
+            // insert students batch
+            DB::table('students')->insert($studentsBatch);
+
+            echo "  -> " . ($endIndex) . " students created...\n";
         }
-        
-        echo "  -> " . Student::count() . " students berhasil dibuat\n";
+
+        echo "  -> " . DB::table('students')->count() . " students berhasil dibuat\n";
     }
 
     /**
@@ -492,8 +533,23 @@ class DummyDataSeeder extends Seeder
         
         echo "  -> tersedia " . $provinces->count() . " provinsi dari BPS\n";
         
-        $createdCount = 0;
-        
+        // Prepare batch data
+        $usersBatch = [];
+        $institutionsData_prepared = [];
+
+        $streetNames = [
+            'Jl. Merdeka',
+            'Jl. Sudirman',
+            'Jl. Ahmad Yani',
+            'Jl. Diponegoro',
+            'Jl. Gajah Mada',
+            'Jl. Veteran',
+            'Jl. Pemuda',
+            'Jl. RA Kartini',
+            'Jl. Cut Nyak Dien',
+            'Jl. Soekarno Hatta'
+        ];
+
         foreach ($institutionsData as $instData) {
             // cari province berdasarkan hint
             $province = null;
@@ -502,47 +558,33 @@ class DummyDataSeeder extends Seeder
                     return stripos($p->name, $instData['province_hint']) !== false;
                 });
             }
-            
+
             // fallback ke random province jika tidak ditemukan
             if (!$province) {
                 $province = $provinces->random();
             }
-            
+
             // ambil regency dari province tersebut
             $regencies = Regency::where('province_id', $province->id)->get();
-            
+
             if ($regencies->isEmpty()) {
                 // skip jika tidak ada regency
                 continue;
             }
-            
+
             $regency = $regencies->random();
-            
+
             // generate username dan email yang bersih dari nama institusi
-            $cleanName = preg_replace('/[^a-zA-Z0-9\s]/', '', $instData['name']); // hapus karakter spesial
+            $cleanName = preg_replace('/[^a-zA-Z0-9\s]/', '', $instData['name']);
             $cleanName = strtolower(str_replace(' ', '', $cleanName));
-            $username = substr($cleanName, 0, 30) . rand(1, 99); // batasi panjang username
+            $username = substr($cleanName, 0, 30) . rand(1, 99);
             $email = $username . '@' . strtolower(str_replace(' ', '', $instData['type'])) . '.go.id';
-            
-            // ambil nama jalan yang sesuai dengan kabupaten/kota
-            $streetNames = [
-                'Jl. Merdeka',
-                'Jl. Sudirman',
-                'Jl. Ahmad Yani',
-                'Jl. Diponegoro',
-                'Jl. Gajah Mada',
-                'Jl. Veteran',
-                'Jl. Pemuda',
-                'Jl. RA Kartini',
-                'Jl. Cut Nyak Dien',
-                'Jl. Soekarno Hatta'
-            ];
-            
+
             $street = $streetNames[array_rand($streetNames)];
             $address = $street . ' No. ' . rand(1, 200) . ', ' . $regency->name . ', ' . $province->name;
-            
-            // buat user
-            $user = User::create([
+
+            // prepare user data
+            $usersBatch[] = [
                 'name' => ucwords($instData['name']),
                 'email' => $email,
                 'username' => $username,
@@ -550,11 +592,12 @@ class DummyDataSeeder extends Seeder
                 'user_type' => 'institution',
                 'is_active' => true,
                 'email_verified_at' => now(),
-            ]);
+                'created_at' => now(),
+                'updated_at' => now(),
+            ];
 
-            // buat institution
-            Institution::create([
-                'user_id' => $user->id,
+            // save institution data for later
+            $institutionsData_prepared[] = [
                 'name' => ucwords($instData['name']),
                 'type' => $instData['type'],
                 'province_id' => $province->id,
@@ -565,13 +608,47 @@ class DummyDataSeeder extends Seeder
                 'pic_name' => $instData['pic_name'],
                 'pic_position' => $instData['pic_position'],
                 'description' => 'Instansi Yang Bergerak Di Bidang ' . $instData['type'] . ' Dengan Fokus Pemberdayaan Masyarakat Dan Peningkatan Kualitas Hidup Masyarakat.',
-                'is_verified' => true,
-            ]);
-            
-            $createdCount++;
+            ];
         }
-        
-        echo "  -> {$createdCount} institutions berhasil dibuat\n";
+
+        // Track max user ID before insert
+        $maxUserIdBefore = DB::table('users')->max('id') ?? 0;
+
+        // Batch insert users
+        DB::table('users')->insert($usersBatch);
+
+        // Get inserted user IDs
+        $insertedUsers = DB::table('users')
+            ->where('user_type', 'institution')
+            ->where('id', '>', $maxUserIdBefore)
+            ->orderBy('id', 'asc')
+            ->get();
+
+        // Prepare institutions batch with user_id
+        $institutionsBatch = [];
+        foreach ($institutionsData_prepared as $index => $instData) {
+            $institutionsBatch[] = [
+                'user_id' => $insertedUsers[$index]->id,
+                'name' => $instData['name'],
+                'type' => $instData['type'],
+                'province_id' => $instData['province_id'],
+                'regency_id' => $instData['regency_id'],
+                'email' => $instData['email'],
+                'address' => $instData['address'],
+                'phone' => $instData['phone'],
+                'pic_name' => $instData['pic_name'],
+                'pic_position' => $instData['pic_position'],
+                'description' => $instData['description'],
+                'is_verified' => true,
+                'created_at' => now(),
+                'updated_at' => now(),
+            ];
+        }
+
+        // Batch insert institutions
+        DB::table('institutions')->insert($institutionsBatch);
+
+        echo "  -> " . count($institutionsBatch) . " institutions berhasil dibuat\n";
     }
 
     /**

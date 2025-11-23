@@ -23,6 +23,8 @@ class FriendSeeder extends Seeder
      */
     public function run(): void
     {
+        \DB::reconnect('pgsql');
+
         $students = Student::all();
         
         if ($students->count() < 2) {

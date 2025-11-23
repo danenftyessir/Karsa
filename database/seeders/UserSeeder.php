@@ -34,23 +34,29 @@ class UserSeeder extends Seeder
         $insertedCompany = 0;
         $skippedCompany = 0;
         foreach ($companyUsers as $index => $user) {
+            // Reconnect every 10 iterations to avoid prepared statement limit
+            if ($index % 10 == 0) {
+                \DB::reconnect('pgsql');
+            }
+
             try {
-                // Check if user already exists
-                $existingUser = $this->supabase->select('users', ['id'], ['email' => $user['email']]);
-                if (!empty($existingUser)) {
+                // Use DB facade instead of Supabase Service for better reliability
+                $existingCount = \DB::table('users')->where('email', $user['email'])->count();
+                if ($existingCount > 0) {
                     $skippedCompany++;
                     continue;
                 }
 
-                $this->supabase->insert('users', $user);
+                \DB::table('users')->insert($user);
                 $insertedCompany++;
 
-                // Flush connection every 10 inserts to avoid prepared statement limit
-                if (($index + 1) % 10 == 0) {
-                    \DB::reconnect('pgsql');
-                }
             } catch (\Exception $e) {
-                $this->command->error("❌ Failed to insert user: {$user['email']} - " . $e->getMessage());
+                // Skip if duplicate key error
+                if (strpos($e->getMessage(), 'duplicate key') !== false || strpos($e->getMessage(), 'Duplicate entry') !== false) {
+                    $skippedCompany++;
+                } else {
+                    $this->command->error("❌ Failed to insert user: {$user['email']} - " . $e->getMessage());
+                }
             }
         }
 
@@ -70,7 +76,7 @@ class UserSeeder extends Seeder
     {
         $users = [];
         $companyNames = [
-            // Company lapangan yang realistis untuk program KKN
+            // Original 50 companies
             'Koperasi Tani Makmur Jaya', 'Koperasi Susu Sapi Perah Bandung', 'Koperasi Produsen Tempe Tahu Indonesia',
             'Pabrik Tahu Sumedang Asli', 'Pabrik Kerupuk Udang Sidoarjo', 'Pabrik Batik Tulis Solo',
             'CV Mebel Jati Jepara', 'CV Kerajinan Perak Kotagede', 'CV Anyaman Bambu Tasikmalaya',
@@ -88,6 +94,34 @@ class UserSeeder extends Seeder
             'Pabrik Gula Aren Cianjur', 'Pabrik Kecap Benteng Tangerang', 'Pabrik Sambal Pecel Madiun',
             'Pusat Pelatihan Menjahit Griya Mode', 'Balai Pelatihan Kerja Mandiri', 'LPK Otomotif Harapan Bangsa',
             'Toko Oleh-Oleh Khas Malang', 'Toko Pia Khas Semarang', 'Restoran Seafood Jimbaran',
+
+            // Additional 60+ companies (Total >110 companies) - MUST MATCH CompanySeeder.php
+            'Koperasi Nelayan Pantai Selatan', 'Koperasi Pengrajin Anyaman Mendong', 'Koperasi Peternak Sapi Potong',
+            'Pabrik Gula Merah Banyumas', 'Pabrik Teh Celup Bogor', 'Pabrik Kopi Bubuk Toraja',
+            'CV Furnitur Kayu Mahoni', 'CV Batik Cap Pekalongan', 'CV Bordir Tradisional Kudus',
+            'UD Sandal Jepit Bogor', 'UD Kaos Sablon Yogyakarta', 'UD Batik Printing Surabaya',
+            'Peternakan Bebek Petelur Brebes', 'Peternakan Ikan Lele Depok', 'Peternakan Kelinci Sukabumi',
+            'Perkebunan Kakao Sulawesi', 'Perkebunan Cengkeh Maluku', 'Perkebunan Vanili Bali',
+            'Desa Wisata Umbul Ponggok', 'Desa Wisata Kampoeng Batik Laweyan', 'Desa Wisata Sade Lombok',
+            'Balai Latihan Kerja Jawa Timur', 'Balai Benih Sayuran Lembang', 'Balai Pengembangan UMKM',
+            'BUMDES Karya Bersama', 'BUMDES Usaha Maju', 'BUMDES Tani Sejahtera',
+            'Industri Rumahan Abon Sapi', 'Industri Rumahan Kue Kering', 'Industri Rumahan Asinan Jakarta',
+            'Bengkel Motor Jaya Abadi', 'Bengkel Mobil Mandiri', 'Toko Elektronik Sumber Makmur',
+            'Pabrik Keramik Dinoyo', 'Pabrik Batu Alam Tulungagung', 'Pabrik Marmer Majalengka',
+            'Sentra Kerajinan Kulit Garut', 'Sentra Batik Tulis Madura', 'Sentra Gerabah Kasongan',
+            'Kelompok Tani Organik Nusantara', 'Kelompok Ternak Ayam Kampung', 'Kelompok Nelayan Tradisional',
+            'Pabrik Roti Manis Bandung', 'Pabrik Coklat Premium Bali', 'Pabrik Keripik Pedas Madiun',
+            'LPK Komputer Nusantara', 'LPK Bahasa Inggris Global', 'LPK Tata Boga Indonesia',
+            'Toko Kerajinan Tangan Bali', 'Toko Batik Nusantara', 'Restoran Sunda Khas Priangan',
+            'Koperasi Pengrajin Wayang Kulit', 'Koperasi Petani Sayur Organik', 'Koperasi Produsen Susu Kambing',
+            'Pabrik Minuman Tradisional', 'Pabrik Jamu Herbal Jawa', 'Pabrik Minyak Kelapa VCO',
+            'CV Kontraktor Bangunan', 'CV Advertising Kreatif', 'CV Event Organizer Profesional',
+            'UD Percetakan Modern', 'UD Fotokopi Digital', 'UD Alat Tulis Kantor',
+            'Peternakan Burung Puyuh', 'Peternakan Domba Garut', 'Peternakan Udang Vaname',
+            'Perkebunan Jeruk Pontianak', 'Perkebunan Salak Pondoh', 'Perkebunan Durian Medan',
+            'Desa Wisata Dieng Plateau', 'Desa Wisata Kete Kesu Toraja', 'Desa Wisata Osing Banyuwangi',
+            'Balai Pelatihan Teknologi', 'Balai Pengembangan Perikanan', 'Balai Penelitian Pertanian',
+            'BUMDES Wisata Alam', 'BUMDES Energi Terbarukan', 'BUMDES Keuangan Mikro',
         ];
 
         for ($i = 0; $i < count($companyNames); $i++) {

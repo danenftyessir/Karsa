@@ -54,8 +54,10 @@ class ProjectsSeeder extends Seeder
      */
     public function run(): void
     {
+        \DB::reconnect('pgsql');
+
         $this->command->info('🚀 Membuat projects dari accepted applications...');
-        
+
         // disable query log untuk performa
         DB::connection()->disableQueryLog();
         
