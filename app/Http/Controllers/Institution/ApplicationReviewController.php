@@ -11,11 +11,6 @@ use Illuminate\Support\Facades\Log;
 
 /**
  * controller untuk review aplikasi mahasiswa oleh instansi
- * 
- * PERBAIKAN BUG:
- * - ubah status 'reviewed' menjadi 'under_review' untuk konsistensi
- * - status tidak berubah otomatis saat aplikasi dibuka
- * - hanya ada 4 status: pending, under_review, accepted, rejected
  */
 class ApplicationReviewController extends Controller
 {
@@ -44,7 +39,6 @@ class ApplicationReviewController extends Controller
             });
         }
 
-        // PERBAIKAN: filter status menggunakan 'under_review' bukan 'reviewed'
         if ($request->filled('status')) {
             $query->where('status', $request->status);
         }
@@ -71,7 +65,6 @@ class ApplicationReviewController extends Controller
 
         $applications = $query->paginate(10)->withQueryString();
 
-        // PERBAIKAN: statistik menggunakan 'under_review' bukan 'reviewed'
         $baseQuery = Application::whereHas('problem', function($q) use ($institution) {
             $q->where('institution_id', $institution->id);
         });
@@ -93,8 +86,6 @@ class ApplicationReviewController extends Controller
     /**
      * tampilkan detail aplikasi untuk review
      * 
-     * PERBAIKAN: status TIDAK berubah otomatis saat dibuka
-     * status hanya berubah saat institution melakukan action
      */
     public function show($id)
     {
@@ -111,10 +102,6 @@ class ApplicationReviewController extends Controller
             $q->where('institution_id', $institution->id);
         })
         ->findOrFail($id);
-
-        // PERBAIKAN: HAPUS auto-update status saat view
-        // biarkan status tetap seperti semula
-        // status hanya berubah saat institution melakukan action (accept/reject)
 
         return view('institution.applications.show', compact('application'));
     }
@@ -136,7 +123,6 @@ class ApplicationReviewController extends Controller
         })
         ->findOrFail($id);
 
-        // PERBAIKAN: hanya bisa review jika status pending atau under_review
         if (!in_array($application->status, ['pending', 'under_review'])) {
             return redirect()->route('institution.applications.show', $application->id)
                            ->with('error', 'aplikasi ini sudah diproses');
@@ -158,7 +144,6 @@ class ApplicationReviewController extends Controller
             })
             ->findOrFail($id);
 
-        // PERBAIKAN: validasi status menggunakan 'under_review'
         if (!in_array($application->status, ['pending', 'under_review'])) {
             return back()->with('error', 'aplikasi ini sudah diproses');
         }
@@ -228,7 +213,6 @@ class ApplicationReviewController extends Controller
             })
             ->findOrFail($id);
 
-        // PERBAIKAN: validasi menggunakan 'under_review'
         if (!in_array($application->status, ['pending', 'under_review'])) {
             return back()->with('error', 'aplikasi ini sudah diproses');
         }
@@ -394,7 +378,6 @@ class ApplicationReviewController extends Controller
 
                     switch ($validated['action']) {
                         case 'accept':
-                            // PERBAIKAN: cek status menggunakan 'under_review'
                             if (in_array($application->status, ['pending', 'under_review'])) {
                                 $problem = $application->problem;
                                 
@@ -431,7 +414,6 @@ class ApplicationReviewController extends Controller
                             break;
 
                         case 'reject':
-                            // PERBAIKAN: cek status menggunakan 'under_review'
                             if (in_array($application->status, ['pending', 'under_review'])) {
                                 $application->update([
                                     'status' => 'rejected',

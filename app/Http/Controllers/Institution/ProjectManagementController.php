@@ -65,9 +65,9 @@ class ProjectManagementController extends Controller
         // statistik untuk summary cards
         $stats = [
             'total' => (clone $baseQuery)->count(),
-            'planning' => 0, // fix: tambahkan key 'planning' dengan value 0 karena tidak ada status planning di database
+            'planning' => 0, // key 'planning' dengan value 0 karena tidak ada status planning di database
             'active' => (clone $baseQuery)->where('status', 'active')->count(),
-            'review' => 0, // fix: tambahkan key 'review' dengan value 0 karena tidak ada status review di database
+            'review' => 0, // key 'review' dengan value 0 karena tidak ada status review di database
             'on_hold' => (clone $baseQuery)->where('status', 'on_hold')->count(),
             'completed' => (clone $baseQuery)->where('status', 'completed')->count(),
             'cancelled' => (clone $baseQuery)->where('status', 'cancelled')->count(),

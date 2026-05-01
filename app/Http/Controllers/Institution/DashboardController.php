@@ -217,12 +217,7 @@ class DashboardController extends Controller
      */
     private function getJobsCategoryData($institutionId)
     {
-        // TODO: tambahkan kolom 'category' pada table problems jika belum ada
-        // untuk sementara gunakan hardcoded categories atau data dari field lain
-
         // ambil problems dengan group by category
-        // FIX: gunakan json_array_elements_text untuk unnest array JSON di Postgres
-        // karena tidak bisa group by column JSON secara langsung
         $problems = Problem::where('institution_id', $institutionId)
                         ->selectRaw('json_array_elements_text(sdg_categories) as category, COUNT(*) as count')
                         ->whereNotNull('sdg_categories')
