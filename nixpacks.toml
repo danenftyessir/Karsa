@@ -1,16 +1,18 @@
 [phases.setup]
-nixPkgs = ["nodejs", "php82", "php82Packages.composer"]
+nixPkgs = ["nodejs", "php83", "php83Packages.composer"]
 
 [phases.install]
 cmds = [
     "composer install --optimize-autoloader --no-dev",
-    "npm ci"
+    "npm ci",
+    "npm prune --omit=dev --ignore-scripts"
 ]
 
 [phases.build]
 cmds = [
     "npm run build",
-    "php artisan config:cache",
+    "mkdir -p storage/framework/{sessions,views,cache,testing} storage/logs bootstrap/cache && chmod -R a+rw storage",
+    "php artisan config:cache --no-interaction",
     "php artisan route:cache",
     "php artisan view:cache"
 ]
