@@ -52,7 +52,6 @@ class NotificationController extends Controller
 
     /**
      * dapatkan notifikasi terbaru (untuk dropdown)
-     * check untuk ajax request only
      */
     public function getLatest(Request $request)
     {
@@ -72,7 +71,6 @@ class NotificationController extends Controller
 
     /**
      * tandai notifikasi sebagai sudah dibaca
-     * support ajax request tanpa redirect
      */
     public function markAsRead(Request $request, $id)
     {
@@ -100,7 +98,6 @@ class NotificationController extends Controller
 
     /**
      * tandai semua notifikasi sebagai sudah dibaca
-     * support ajax request
      */
     public function markAllAsRead(Request $request)
     {

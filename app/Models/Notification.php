@@ -93,7 +93,6 @@ class Notification extends Model
     }
 
     /**
-     * FIXED: accessor untuk action_url dengan validasi
      * pastikan action_url tidak mengarah ke endpoint yang invalid
      */
     public function getActionUrlAttribute($value)

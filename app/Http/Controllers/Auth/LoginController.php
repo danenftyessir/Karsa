@@ -27,6 +27,7 @@ class LoginController extends Controller
      */
     public function login(Request $request)
     {
+        // validasi input
         $request->validate([
             'email' => 'required|string',
             'password' => 'required|string',
@@ -94,8 +95,7 @@ class LoginController extends Controller
         if (Auth::attempt($credentials, $remember)) {
             RateLimiter::clear($throttleKey);
             
-            $request->session()->regenerate();
-            
+            $request->session()->regenerate();            
             session()->save();
             
             Log::info('Auth::attempt SUCCESS', [
@@ -202,7 +202,9 @@ class LoginController extends Controller
             'redirect_to' => $route,
         ]);
 
+        // cek apakah request adalah AJAX/API
         if ($request->expectsJson() || $request->ajax()) {
+            // buat token untuk API authentication
             $token = $user->createToken('api-token')->plainTextToken;
 
             return response()->json([

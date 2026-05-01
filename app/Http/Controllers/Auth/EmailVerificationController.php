@@ -17,7 +17,9 @@ class EmailVerificationController extends Controller
      */
     public function notice()
     {
+        // jika sudah terverifikasi, redirect ke dashboard
         if (auth()->user()->email_verified_at) {
+            // redirect ke dashboard yang sesuai
             $redirectRoute = match(auth()->user()->user_type) {
                 'student' => 'student.dashboard',
                 'institution' => 'institution.dashboard',
@@ -26,6 +28,7 @@ class EmailVerificationController extends Controller
             return redirect()->route($redirectRoute);
         }
         
+        // kirim data pengguna yang sedang login ke view
         return view('auth.verify-email', [
             'user' => auth()->user()
         ]);
@@ -47,6 +50,7 @@ class EmailVerificationController extends Controller
 
         // cek apakah sudah terverifikasi
         if ($user->email_verified_at) {
+            // redirect ke dashboard sesuai user type
             $redirectRoute = match($user->user_type) {
                 'student' => 'student.dashboard',
                 'institution' => 'institution.dashboard',

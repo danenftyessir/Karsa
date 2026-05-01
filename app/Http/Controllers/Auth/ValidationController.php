@@ -22,10 +22,12 @@ class ValidationController extends Controller
     {
         $step = $request->input('step');
 
+        // buat instance dari form request hanya untuk mendapatkan aturannya
         $formRequest = new StudentRegisterRequest();
         $allRules = $formRequest->rules();
         $allMessages = $formRequest->messages();
         
+        // tentukan field mana yang akan divalidasi untuk setiap langkah
         $rulesForStep = [];
         if ($step == 1) {
             $fields = ['first_name', 'last_name', 'email', 'whatsapp_number', 'profile_photo'];
@@ -37,18 +39,22 @@ class ValidationController extends Controller
             return response()->json(['message' => 'Langkah tidak valid.'], 400);
         }
 
+        // filter aturan validasi hanya untuk field di langkah saat ini
         foreach ($fields as $field) {
             if (isset($allRules[$field])) {
                 $rulesForStep[$field] = $allRules[$field];
             }
         }
         
+        // lakukan validasi secara manual menggunakan validator facade
         $validator = Validator::make($request->all(), $rulesForStep, $allMessages);
 
         if ($validator->fails()) {
+            // jika validasi gagal, kembalikan error dalam format json
             return response()->json(['errors' => $validator->errors()], 422);
         }
 
+        // jika validasi berhasil
         return response()->json(['message' => 'Validasi berhasil.'], 200);
     }
 
@@ -59,10 +65,12 @@ class ValidationController extends Controller
     {
         $step = $request->input('step');
 
+        // buat instance dari form request
         $formRequest = new InstitutionRegisterRequest();
         $allRules = $formRequest->rules();
         $allMessages = $formRequest->messages();
         
+        // tentukan field untuk setiap step
         $rulesForStep = [];
         if ($step == 1) {
             $fields = ['institution_name', 'institution_type', 'official_email'];
@@ -76,12 +84,14 @@ class ValidationController extends Controller
             return response()->json(['message' => 'Langkah tidak valid.'], 400);
         }
 
+        // filter rules
         foreach ($fields as $field) {
             if (isset($allRules[$field])) {
                 $rulesForStep[$field] = $allRules[$field];
             }
         }
         
+        // validasi
         $validator = Validator::make($request->all(), $rulesForStep, $allMessages);
 
         if ($validator->fails()) {

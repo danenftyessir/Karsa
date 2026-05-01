@@ -27,7 +27,6 @@ class ReviewController extends Controller
     {
         $institution = auth()->user()->institution;
 
-        // FIXED: tambah eager loading untuk reviewee.student dan reviewee.student.university
         $query = Review::with([
             'reviewee.student.university', // eager load user -> student -> university
             'project.problem'
@@ -185,7 +184,6 @@ class ReviewController extends Controller
     {
         $institution = auth()->user()->institution;
 
-        // FIXED: tambah eager loading lengkap
         $review = Review::with([
             'reviewee.student.university',
             'project.problem'
@@ -206,7 +204,6 @@ class ReviewController extends Controller
     {
         $institution = auth()->user()->institution;
 
-        // FIXED: tambah eager loading lengkap
         $review = Review::with([
             'reviewee.student.university',
             'project.problem'
