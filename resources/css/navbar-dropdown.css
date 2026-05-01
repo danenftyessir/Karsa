@@ -178,7 +178,7 @@ nav button[type="submit"]:hover {
     }
 }
 
-/* for dropdown positioning */
+/* dropdown positioning */
 .fixed.z-50 {
     will-change: auto;
 }

@@ -1,5 +1,4 @@
 {{-- components/notification-dropdown.blade.php --}}
-{{-- notification dropdown tanpa redirect, hanya mark as read --}}
 <div x-data="notificationDropdown()" x-init="init()" class="relative">
     {{-- notification bell button --}}
     <button @click="toggleDropdown()" 
@@ -126,7 +125,6 @@ function notificationDropdown() {
             }
         },
 
-        // hanya mark as read tanpa redirect
         async handleNotificationClick(notification) {
             // tandai sebagai dibaca jika belum dibaca
             if (!notification.is_read) {

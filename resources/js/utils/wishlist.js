@@ -70,7 +70,6 @@ function showNotification(message, type = 'success') {
     
     // buat notification element
     const notification = document.createElement('div');
-    // z-[1100]
     notification.className = `wishlist-notification fixed bottom-4 right-4 z-[1100] flex items-center space-x-3 px-4 py-3 rounded-lg shadow-lg transition-all duration-300 ${
         type === 'success' ? 'bg-gray-900 text-white' : 'bg-red-600 text-white'
     }`;
