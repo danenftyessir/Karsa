@@ -21,6 +21,8 @@ class PortfolioService
     {
         $student = Student::with(['user', 'university'])->findOrFail($studentId);
 
+        // ambil SEMUA completed projects (untuk private view, tampilkan semua)
+        // user bisa toggle visibility untuk menampilkan/menyembunyikan di public profile
         $completedProjects = Project::with([
             'problem.institution',
             'problem.province',
@@ -29,15 +31,19 @@ class PortfolioService
         ])
         ->where('student_id', $studentId)
         ->where('status', 'completed')
+        // REMOVED: ->portfolioVisible() untuk private view
         ->orderBy('actual_end_date', 'desc')
         ->get();
 
+        // ambil reviews
         $reviews = Review::where('type', 'institution_to_student')
             ->whereIn('project_id', $completedProjects->pluck('id'))
             ->get();
 
+        // hitung total impact beneficiaries
         $totalImpactBeneficiaries = $this->calculateTotalImpactBeneficiaries($completedProjects);
 
+        // hitung statistik
         $statistics = [
             'completed_projects' => $completedProjects->count(),
             'sdgs_addressed' => $this->countUniqueSDGs($completedProjects),
@@ -46,12 +52,13 @@ class PortfolioService
             'average_rating' => $reviews->isEmpty() ? 0 : round($reviews->avg('rating'), 1),
         ];
 
+        // generate skills dari completed projects
         $skills = $this->generateSkillsFromProjects($completedProjects);
 
         return [
             'student' => $student,
             'completedProjects' => $completedProjects,
-            'completed_projects' => $completedProjects,
+            'completed_projects' => $completedProjects, // backward compatibility
             'reviews' => $reviews,
             'statistics' => $statistics,
             'skills' => $skills,
@@ -63,12 +70,14 @@ class PortfolioService
      */
     public function getPublicPortfolio($username)
     {
+        // cari student berdasarkan username
         $student = Student::whereHas('user', function($query) use ($username) {
             $query->where('username', $username);
         })
         ->with(['user', 'university'])
         ->firstOrFail();
 
+        // ambil completed projects yang visible
         $completedProjects = Project::with([
             'problem.institution',
             'problem.province',
@@ -81,12 +90,15 @@ class PortfolioService
         ->orderBy('actual_end_date', 'desc')
         ->get();
 
+        // ambil reviews
         $reviews = Review::where('type', 'institution_to_student')
             ->whereIn('project_id', $completedProjects->pluck('id'))
             ->get();
 
+        // hitung total impact beneficiaries
         $totalImpactBeneficiaries = $this->calculateTotalImpactBeneficiaries($completedProjects);
 
+        // hitung statistik
         $statistics = [
             'completed_projects' => $completedProjects->count(),
             'sdgs_addressed' => $this->countUniqueSDGs($completedProjects),
@@ -95,12 +107,13 @@ class PortfolioService
             'average_rating' => $reviews->isEmpty() ? 0 : round($reviews->avg('rating'), 1),
         ];
 
+        // generate skills
         $skills = $this->generateSkillsFromProjects($completedProjects);
 
         return [
             'student' => $student,
             'completedProjects' => $completedProjects,
-            'completed_projects' => $completedProjects,
+            'completed_projects' => $completedProjects, // backward compatibility
             'reviews' => $reviews,
             'statistics' => $statistics,
             'skills' => $skills,
@@ -138,6 +151,7 @@ class PortfolioService
             if ($project->problem && $project->problem->sdg_categories) {
                 $categories = $project->problem->sdg_categories;
                 
+                // pastikan dalam bentuk array
                 if (is_string($categories)) {
                     $categories = json_decode($categories, true) ?? [];
                 }
@@ -162,6 +176,7 @@ class PortfolioService
             if ($project->impact_metrics) {
                 $impactMetrics = $project->impact_metrics;
                 
+                // pastikan dalam bentuk array
                 if (is_string($impactMetrics)) {
                     $impactMetrics = json_decode($impactMetrics, true) ?? [];
                 }
@@ -186,6 +201,7 @@ class PortfolioService
             if ($project->problem && $project->problem->required_skills) {
                 $requiredSkills = $project->problem->required_skills;
                 
+                // pastikan dalam bentuk array
                 if (is_string($requiredSkills)) {
                     $requiredSkills = json_decode($requiredSkills, true) ?? [];
                 }

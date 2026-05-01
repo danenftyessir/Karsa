@@ -173,7 +173,7 @@
 
                 <!-- title dan stats -->
                 <div>
-                    <h1 class="text-3xl font-bold mb-2" style="font-family: 'Space Grotesk', sans-serif; color: white !important;">Manajemen Lamaran</h1>
+                    <h1 class="text-3xl font-bold mb-2" style="font-family: 'Outfit', sans-serif; color: white !important;">Manajemen Lamaran</h1>
                     <p class="mt-1 text-base text-blue-100">
                         Total <span class="font-semibold text-white" x-text="totalApplications"></span> lamaran aktif
                         <span x-show="selectedApplications.length > 0" class="ml-2 text-yellow-300">
@@ -758,6 +758,7 @@ function applicationsKanban() {
         applications: [],
         totalApplications: {{ $stats['total'] ?? 0 }},
 
+        // inisialisasi
         init() {
             // flatten applications dari columns
             this.flattenApplications();
@@ -914,6 +915,7 @@ function applicationsKanban() {
                 });
 
                 if (response.ok) {
+                    // update local state
                     const app = this.applications.find(a => a.id === this.selectedApplication.id);
                     if (app) {
                         app.status = this.newStatus;
@@ -1059,6 +1061,7 @@ function applicationsKanban() {
         },
 
         async loadTimeline(applicationId) {
+            // simulasi data timeline - seharusnya dari API
             this.timelineActivities = [
                 {
                     title: 'Lamaran Diterima',

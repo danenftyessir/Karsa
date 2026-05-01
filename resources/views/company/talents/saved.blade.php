@@ -169,7 +169,7 @@
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
             <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
                 <div>
-                    <h1 class="text-3xl font-bold mb-2" style="font-family: 'Space Grotesk', sans-serif; color: white;">Talent Tersimpan</h1>
+                    <h1 class="text-3xl font-bold mb-2" style="font-family: 'Outfit', sans-serif; color: white;">Talent Tersimpan</h1>
                     <p class="mt-1 text-base text-blue-100">
                         Total <span class="font-semibold text-white" x-text="totalTalents"></span> talent tersimpan
                         <span x-show="selectedTalents.length > 0" class="ml-2 text-yellow-300">
@@ -778,6 +778,7 @@ function savedTalentsPage() {
         ],
 
         init() {
+            // parse data dari backend
             this.parseBackendData();
         },
 
@@ -860,6 +861,7 @@ function savedTalentsPage() {
             setTimeout(() => { this.toast.show = false; }, 3000);
         },
 
+        // drag and drop
         dragStart(event, talent) {
             this.draggedTalent = talent;
             event.target.classList.add('dragging');
@@ -878,6 +880,7 @@ function savedTalentsPage() {
             const oldFolder = this.draggedTalent.folder_id;
             this.draggedTalent.folder_id = folderId;
 
+            // sync ke backend
             try {
                 await this.updateTalentFolder(this.draggedTalent.id, folderId);
                 this.showToast('Talent dipindahkan ke folder');
@@ -893,12 +896,14 @@ function savedTalentsPage() {
             talent.rating = rating;
 
             try {
+                // placeholder - would call API
                 this.showToast('Rating disimpan');
             } catch (error) {
                 talent.rating = oldRating;
             }
         },
 
+        // quick actions
         openQuickActions(talent) {
             this.selectedTalent = talent;
             this.quickActionTab = 'status';
@@ -1004,6 +1009,7 @@ function savedTalentsPage() {
         },
 
         async updateTalentFolder(talentId, folderId) {
+            // placeholder untuk API call
             console.log('Update folder:', talentId, folderId);
         },
 
@@ -1041,6 +1047,7 @@ function savedTalentsPage() {
         async deleteFolder() {
             if (!this.editingFolder) return;
 
+            // pindahkan talents ke uncategorized
             this.talents.forEach(t => {
                 if (t.folder_id === this.editingFolder.id) {
                     t.folder_id = null;
@@ -1062,10 +1069,12 @@ function savedTalentsPage() {
 
         // bulk actions
         bulkMoveToFolder() {
+            // placeholder - would open folder selection modal
             this.showToast('Pilih folder untuk memindahkan talent');
         },
 
         bulkUpdateStatus() {
+            // placeholder - would open status selection modal
             this.showToast('Pilih status baru');
         },
 

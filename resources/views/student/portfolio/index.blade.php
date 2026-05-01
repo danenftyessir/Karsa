@@ -28,7 +28,6 @@
             <div class="px-8 pb-8">
                 <div class="flex items-end justify-between -mt-16 mb-6">
                     <div class="flex items-end space-x-6">
-                        {{-- gunakan accessor profile_photo_url --}}
                         @if($student->profile_photo_path)
                             <img src="{{ $student->profile_photo_url }}" 
                                  alt="{{ $student->user->name }}"

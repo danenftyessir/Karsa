@@ -9,7 +9,7 @@
     <div class="relative h-48 bg-cover bg-center" style="background-image: url('{{ asset('company3.jpg') }}');">
         <div class="absolute inset-0 bg-black/50"></div>
         <div class="relative z-10 flex flex-col items-center justify-center h-full text-center text-white px-4">
-            <h1 class="text-2xl md:text-3xl font-bold mb-2 text-white fade-in-up" style="font-family: 'Space Grotesk', sans-serif; color: white !important;">
+            <h1 class="text-2xl md:text-3xl font-bold mb-2 text-white fade-in-up" style="font-family: 'Outfit', sans-serif; color: white !important;">
                 Buat Lowongan Baru
             </h1>
             <p class="text-sm md:text-base text-gray-300 max-w-xl fade-in-up" style="animation-delay: 0.1s;">
@@ -677,6 +677,8 @@ function jobWizard() {
                 return;
             }
 
+            // TODO: Implement actual salary API call
+            // For now, showing placeholder based on title keywords
             let benchmark = '';
             const title = this.formData.title.toLowerCase();
 
@@ -733,6 +735,7 @@ function jobWizard() {
         submitForm() {
             if (!this.validateCurrentStep()) return;
 
+            // TO DO: kirim data ke server via AJAX atau form submit
             console.log('Form data:', this.formData);
 
             // simulasi submit

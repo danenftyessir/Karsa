@@ -34,12 +34,15 @@ class CertificateService
     public function generateCertificate(Project $project)
     {
         try {
+            // Load relasi yang dibutuhkan
             $project->load(['student.user', 'institution']);
 
+            // Validasi: pastikan project sudah completed
             if ($project->status !== 'completed') {
                 throw new \Exception('Project belum completed');
             }
 
+            // Validasi: cek apakah sudah punya sertifikat
             if ($project->certificate_path) {
                 Log::info("Project {$project->id} sudah punya sertifikat: {$project->certificate_path}");
                 return [
@@ -54,9 +57,10 @@ class CertificateService
             $certificateNumber = $this->generateCertificateNumber();
             $certificateYear = now()->year;
 
+            // Prepare data untuk sertifikat
             $certificateData = [
-                'no_sertifikat' => $certificateNumber,
-                'thn_sertifikat' => $certificateYear,
+                'no_sertifikat' => $certificateNumber,       // "001"
+                'thn_sertifikat' => $certificateYear,        // "2024"
                 'nama_penerima' => $project->student->user->name,
                 'nim_penerima' => $project->student->nim,
                 'thn_laksana' => $project->start_date->format('Y'),
@@ -71,12 +75,15 @@ class CertificateService
                 throw new \Exception('Gagal membuat gambar sertifikat');
             }
 
+            // Upload ke Supabase
             $uploadedPath = $this->supabaseService->uploadCertificate($imagePath, $project->student->id);
 
+            // Hapus file lokal temporary
             if (file_exists($imagePath)) {
                 unlink($imagePath);
             }
 
+            // Update project dengan info sertifikat
             $fullCertificateNumber = "{$certificateNumber}/KKN/MHS/KARSA/XI/{$certificateYear}";
             $project->update([
                 'certificate_path' => $uploadedPath,
@@ -108,6 +115,7 @@ class CertificateService
      */
     private function generateCertificateNumber()
     {
+        // Ambil nomor terakhir dari database
         $lastProject = Project::whereNotNull('certificate_number')
                             ->orderBy('certificate_generated_at', 'desc')
                             ->first();
@@ -120,6 +128,7 @@ class CertificateService
         $parts = explode('/', $lastProject->certificate_number);
         $lastNumber = intval($parts[0]);
 
+        // Increment dan format 3 digit
         $newNumber = $lastNumber + 1;
         return str_pad($newNumber, 3, '0', STR_PAD_LEFT);
     }
@@ -147,10 +156,12 @@ class CertificateService
      */
     private function createCertificateImage($data)
     {
+        // Path ke template dan fonts
         $templatePath = public_path('assets/certificate/template.png');
         $fontRegular = public_path('assets/certificate/fonts/Poppins-Regular.ttf');
         $fontScript = public_path('assets/certificate/fonts/PinyonScript-Regular.ttf');
 
+        // Validasi file exists
         if (!file_exists($templatePath)) {
             throw new \Exception('Template sertifikat tidak ditemukan');
         }
@@ -161,11 +172,13 @@ class CertificateService
             throw new \Exception('Font PinyonScript tidak ditemukan');
         }
 
+        // Load template image
         $image = imagecreatefrompng($templatePath);
         if (!$image) {
             throw new \Exception('Gagal load template image');
         }
 
+        // Konfigurasi posisi teks (sesuai dengan kode asli)
         $textConfig = [
             'no_sertifikat' => [
                 'text' => $data['no_sertifikat'],
@@ -189,7 +202,7 @@ class CertificateService
                 'y' => 760,
                 'size' => 90,
                 'font' => $fontScript,
-                'color' => [225, 167, 48]
+                'color' => [225, 167, 48]  // Gold color
             ],
             'nim_penerima' => [
                 'text' => $data['nim_penerima'],
@@ -225,9 +238,11 @@ class CertificateService
             ]
         ];
 
+        // Loop untuk menulis semua teks
         foreach ($textConfig as $key => $config) {
             $color = imagecolorallocate($image, $config['color'][0], $config['color'][1], $config['color'][2]);
 
+            // Hitung posisi X
             if (strtoupper($config['x']) === 'CENTER') {
                 $bbox = imagettfbbox($config['size'], 0, $config['font'], $config['text']);
                 $textWidth = $bbox[2] - $bbox[0];
@@ -237,6 +252,7 @@ class CertificateService
                 $posX = intval($config['x']);
             }
 
+            // Tulis teks ke image
             imagettftext(
                 $image,
                 $config['size'],
@@ -249,6 +265,7 @@ class CertificateService
             );
         }
 
+        // Save ke temporary file
         $tempPath = storage_path('app/temp_certificate_' . uniqid() . '.png');
         imagepng($image, $tempPath);
         imagedestroy($image);

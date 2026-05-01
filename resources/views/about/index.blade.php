@@ -27,7 +27,7 @@
                     <div class="relative h-full">
                         <div class="container mx-auto px-24 md:px-32 h-full flex items-end pb-20">
                             <div class="max-w-4xl">
-                                <h1 class="text-6xl md:text-7xl lg:text-8xl font-black leading-tight tracking-tight drop-shadow-2xl" style="font-family: 'Montserrat', 'Poppins', 'Space Grotesk', sans-serif; font-weight: 900; color: #FFFFFF; text-shadow: 0 4px 20px rgba(0, 0, 0, 0.8);">
+                                <h1 class="text-6xl md:text-7xl lg:text-8xl font-black leading-tight tracking-tight drop-shadow-2xl" style="font-family: 'Montserrat', 'Poppins', 'Outfit', sans-serif; font-weight: 900; color: #FFFFFF; text-shadow: 0 4px 20px rgba(0, 0, 0, 0.8);">
                                     About Us
                                 </h1>
                             </div>

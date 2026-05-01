@@ -33,7 +33,7 @@
 
                 <!-- Company Info -->
                 <div class="flex-1">
-                    <h1 class="text-5xl font-bold mb-3" style="font-family: 'Space Grotesk', sans-serif; color: white !important;">
+                    <h1 class="text-5xl font-bold mb-3" style="font-family: 'Outfit', sans-serif; color: white !important;">
                         {{ $company->name }}
                     </h1>
                     @if($company->tagline)

@@ -3,7 +3,7 @@
 @section('title', 'Temukan Talenta')
 
 @push('styles')
-{{-- Import Google Font - Space Grotesk for Hero --}}
+{{-- Import Google Font - Outfit for Hero --}}
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@600;700&display=swap" rel="stylesheet">
@@ -97,7 +97,7 @@
         <div class="container mx-auto px-6 relative z-10">
             <div class="flex justify-between items-center fade-in-up">
                 <div>
-                    <h1 class="text-4xl font-extrabold text-white mb-2" style="font-family: 'Space Grotesk', sans-serif; color: white !important;">
+                    <h1 class="text-4xl font-extrabold text-white mb-2" style="font-family: 'Outfit', sans-serif; color: white !important;">
                         Temukan Talenta Terbaik
                     </h1>
                     <p class="text-white text-lg font-medium">
@@ -711,7 +711,7 @@ function talentBrowser() {
             verified_only: false
         },
         talents: @json($talents->items()),
-        savedTalents: [],
+        savedTalents: [], // IDs of saved talents
         savedSearches: [],
         comparisonMode: false,
         selectedForComparison: [],
@@ -800,16 +800,19 @@ function talentBrowser() {
             const pages = [];
 
             if (total <= 7) {
+                // Show all pages if total is 7 or less
                 for (let i = 1; i <= total; i++) {
                     pages.push(i);
                 }
             } else {
+                // Always show first page
                 pages.push(1);
 
                 if (current > 3) {
                     pages.push('...');
                 }
 
+                // Show pages around current page
                 const start = Math.max(2, current - 1);
                 const end = Math.min(total - 1, current + 1);
 
@@ -821,6 +824,7 @@ function talentBrowser() {
                     pages.push('...');
                 }
 
+                // Always show last page
                 pages.push(total);
             }
 
@@ -828,12 +832,14 @@ function talentBrowser() {
         },
 
         handleSearch() {
+            // Reset to first page when searching
             this.currentPage = 1;
         },
 
         goToPage(page) {
             if (page < 1 || page > this.totalPages) return;
             this.currentPage = page;
+            // Scroll to top of results
             window.scrollTo({ top: 300, behavior: 'smooth' });
         },
 
@@ -842,6 +848,7 @@ function talentBrowser() {
             console.log('Filters applied:', this.filters);
         },
 
+        // Saved Searches functionality
         saveCurrentSearch() {
             const name = prompt('Beri nama untuk pencarian ini:');
             if (!name) return;
@@ -888,11 +895,12 @@ function talentBrowser() {
                 impact_score_max: 100,
                 verified_only: false
             };
-            this.searchQuery = '';
-            this.currentPage = 1;
+            this.searchQuery = ''; // Reset search query
+            this.currentPage = 1; // Reset to first page
             window.showNotification('Filter dan pencarian direset', 'info');
         },
 
+        // Comparison Mode functionality
         toggleComparisonMode() {
             this.comparisonMode = !this.comparisonMode;
             if (!this.comparisonMode) {
@@ -962,12 +970,14 @@ function talentBrowser() {
             return this.savedTalents.includes(talentId);
         },
 
+        // Pagination handler
         perPageChanged() {
             this.currentPage = 1; // Reset to first page
             console.log('Per page changed to:', this.perPage);
             window.showNotification(`Menampilkan ${this.perPage} talenta per halaman`, 'info');
         },
 
+        // Load More functionality (kept for compatibility if needed later)
         async loadMore() {
             if (this.loading || !this.hasMore) return;
 
@@ -985,6 +995,7 @@ function talentBrowser() {
                 const data = await response.json();
 
                 if (data.talents && data.talents.length > 0) {
+                    // Append new talents to existing array
                     this.talents = [...this.talents, ...data.talents];
                     this.currentPage = nextPage;
                     this.hasMore = data.hasMore;

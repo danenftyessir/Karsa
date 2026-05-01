@@ -21,7 +21,7 @@
     }
 
     .hero-title-chatbot {
-        font-family: 'Space Grotesk', sans-serif;
+        font-family: 'Outfit', sans-serif;
         font-weight: 700;
         letter-spacing: -0.02em;
     }

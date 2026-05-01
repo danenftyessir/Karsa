@@ -53,7 +53,6 @@
     <div class="hero-gradient py-16">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex flex-col md:flex-row items-center gap-8 portfolio-container">
-                <!-- accessor profile_photo_url -->
                 <div class="flex-shrink-0">
                     @if($student->profile_photo_path)
                         <img src="{{ $student->profile_photo_url }}" 
