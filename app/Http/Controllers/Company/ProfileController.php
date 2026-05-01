@@ -12,8 +12,9 @@ use Illuminate\Support\Str;
 
 /**
  * ProfileController - Manage Company Profile
- * Semua operasi CRUD langsung ke Supabase PostgreSQL
- * Semua foto/logo langsung ke Supabase Storage
+ *
+ * IMPLEMENTED: Semua operasi CRUD langsung ke Supabase PostgreSQL
+ * IMPLEMENTED: Semua foto/logo langsung ke Supabase Storage
  */
 class ProfileController extends Controller
 {
@@ -28,6 +29,7 @@ class ProfileController extends Controller
 
     /**
      * Display company profile
+     * IMPLEMENTED: Data dari Supabase PostgreSQL
      */
     public function index()
     {
@@ -39,6 +41,7 @@ class ProfileController extends Controller
                 ->with('error', 'profil perusahaan tidak ditemukan');
         }
 
+        // Statistics
         $stats = [
             'total_jobs' => $company->jobPostings()->count(),
             'active_jobs' => $company->jobPostings()->active()->count(),
@@ -51,18 +54,21 @@ class ProfileController extends Controller
 
     /**
      * Display public company profile
+     * IMPLEMENTED: Data dari Supabase PostgreSQL
      * Accessible by all users (students, companies, guests)
      */
     public function showPublic($id)
     {
         $company = Company::with('province')->findOrFail($id);
 
+        // Get active job postings (limit to 5 for display)
         $activeJobs = $company->jobPostings()
             ->active()
             ->orderBy('created_at', 'desc')
             ->limit(5)
             ->get();
 
+        // Statistics for public view
         $stats = [
             'total_jobs' => $company->jobPostings()->count(),
             'active_jobs' => $company->jobPostings()->active()->count(),
@@ -73,14 +79,17 @@ class ProfileController extends Controller
 
     /**
      * Show edit profile form
+     * IMPLEMENTED: Data dari Supabase PostgreSQL
      */
     public function edit()
     {
         $user = Auth::user();
         $company = $user->company()->with('province')->first();
 
+        // Get provinces for dropdown
         $provinces = \App\Models\Province::orderBy('name')->get();
 
+        // Industry options
         $industries = [
             'Technology',
             'Healthcare',
@@ -97,6 +106,7 @@ class ProfileController extends Controller
             'Other',
         ];
 
+        // Company size options
         $companySizes = [
             '1-10',
             '11-50',
@@ -117,6 +127,8 @@ class ProfileController extends Controller
 
     /**
      * Update company profile
+     * IMPLEMENTED: Update langsung ke Supabase PostgreSQL
+     * IMPLEMENTED: Logo upload langsung ke Supabase Storage
      */
     public function update(Request $request)
     {
@@ -146,13 +158,16 @@ class ProfileController extends Controller
             'logo' => 'nullable|image|mimes:jpeg,png,jpg,webp|max:5120', // 5MB max
         ]);
 
+        // Handle logo upload to Supabase Storage
         if ($request->hasFile('logo')) {
             $logoFile = $request->file('logo');
 
+            // Delete old logo from Supabase Storage if exists
             if ($company->logo) {
                 $this->storageService->delete($company->logo);
             }
 
+            // IMPLEMENTED: Upload to Supabase Storage using proper service
             $logoPath = $this->storageService->uploadCompanyLogo($logoFile, $company->id);
 
             // jika upload berhasil, simpan path. Jika gagal, tetap gunakan logo lama
@@ -160,10 +175,13 @@ class ProfileController extends Controller
                 $validated['logo'] = $logoPath;
                 \Log::info("Logo berhasil diupload untuk company ID {$company->id}", ['path' => $logoPath]);
             } else {
+                // tetap gunakan logo lama jika upload gagal
                 $validated['logo'] = $company->logo;
                 \Log::warning("Gagal upload logo untuk company ID {$company->id}, menggunakan logo lama");
             }
         }
+
+        // IMPLEMENTED: Update di Supabase PostgreSQL
         $company->update($validated);
 
         return redirect()->route('company.profile.index')
@@ -172,6 +190,7 @@ class ProfileController extends Controller
 
     /**
      * Upload or update company logo
+     * IMPLEMENTED: Upload langsung ke Supabase Storage
      */
     public function uploadLogo(Request $request)
     {
@@ -189,10 +208,12 @@ class ProfileController extends Controller
             $this->storageService->delete($company->logo);
         }
 
+        // IMPLEMENTED: Upload to Supabase Storage
         $logoPath = $this->storageService->uploadCompanyLogo($logoFile, $company->id);
 
         // jika upload berhasil, update logo. Jika gagal, kembalikan error
         if ($logoPath) {
+            // IMPLEMENTED: Update logo path di Supabase PostgreSQL
             $company->update(['logo' => $logoPath]);
 
             \Log::info("Logo berhasil diupload untuk company ID {$company->id}", ['path' => $logoPath]);
@@ -214,6 +235,7 @@ class ProfileController extends Controller
 
     /**
      * Delete company logo
+     * IMPLEMENTED: Delete dari Supabase Storage
      */
     public function deleteLogo()
     {
@@ -226,8 +248,11 @@ class ProfileController extends Controller
                 'message' => 'No logo to delete',
             ], 400);
         }
+
+        // IMPLEMENTED: Delete from Supabase Storage
         $this->storageService->delete($company->logo);
 
+        // IMPLEMENTED: Update di Supabase PostgreSQL
         $company->update(['logo' => null]);
 
         return response()->json([
@@ -238,6 +263,7 @@ class ProfileController extends Controller
 
     /**
      * Request verification for company
+     * IMPLEMENTED: Update langsung ke Supabase PostgreSQL
      */
     public function requestVerification(Request $request)
     {
@@ -249,6 +275,7 @@ class ProfileController extends Controller
         $user = Auth::user();
         $company = $user->company;
 
+        // IMPLEMENTED: Upload verification documents to Supabase Storage
         $documentUrls = [];
         if ($request->hasFile('verification_documents')) {
             foreach ($request->file('verification_documents') as $index => $file) {
@@ -258,6 +285,7 @@ class ProfileController extends Controller
             }
         }
 
+        // IMPLEMENTED: Update verification status di Supabase PostgreSQL
         $company->update([
             'verification_status' => 'pending_verification',
             'verification_documents' => json_encode($documentUrls),
@@ -269,6 +297,7 @@ class ProfileController extends Controller
 
     /**
      * Update company settings
+     * IMPLEMENTED: Update langsung ke Supabase PostgreSQL
      */
     public function updateSettings(Request $request)
     {
@@ -277,8 +306,11 @@ class ProfileController extends Controller
             'application_notifications' => 'nullable|boolean',
             'marketing_emails' => 'nullable|boolean',
         ]);
+
         $user = Auth::user();
         $company = $user->company;
+
+        // IMPLEMENTED: Update settings di Supabase PostgreSQL
         $company->update([
             'settings' => json_encode($validated),
         ]);

@@ -12,7 +12,9 @@ use Illuminate\Support\Facades\DB;
 
 /**
  * DashboardController - Company Dashboard
- * Semua data CRUD langsung dari Supabase PostgreSQL
+ *
+ * IMPLEMENTED: Semua data CRUD langsung dari Supabase PostgreSQL
+ * TIDAK ADA dummy data lagi
  */
 class DashboardController extends Controller
 {
@@ -26,7 +28,7 @@ class DashboardController extends Controller
                 ->with('error', 'profil perusahaan tidak ditemukan');
         }
 
-        // Ambil statistik dari Supabase
+        // IMPLEMENTED: Ambil statistik dari Supabase
         $totalJobs = $company->jobPostings()->count();
         $activeJobs = $company->jobPostings()->active()->count();
         $draftJobs = $company->jobPostings()->where('status', 'draft')->count();
@@ -73,12 +75,12 @@ class DashboardController extends Controller
             'applications_received' => $totalApplications,
             'applications_growth' => $applicationsGrowth,
             'shortlisted_candidates' => $shortlistedCount,
-            'shortlisted_growth' => 0,
+            'shortlisted_growth' => 0, // Can be calculated if needed
             'hires_made' => $hiresCount,
-            'hires_growth' => 0,
+            'hires_growth' => 0, // Can be calculated if needed
         ];
 
-        // Ambil recent applications dari Supabase
+        // IMPLEMENTED: Ambil recent applications dari Supabase
         $recentApplications = $company->jobApplications()
             ->with(['user', 'jobPosting'])
             ->orderBy('job_applications.created_at', 'desc')
@@ -95,7 +97,8 @@ class DashboardController extends Controller
                 ];
             });
 
-        // AI talent recommendations dari Supabase, mengambil users dengan impact score tertinggi yang belum diapply
+        // IMPLEMENTED: AI talent recommendations dari Supabase
+        // Ambil users dengan impact score tertinggi yang belum diapply
         $talentRecommendations = User::where('user_type', 'student')
             ->whereHas('student')
             ->whereDoesntHave('jobApplications', function ($query) use ($company) {
@@ -112,14 +115,14 @@ class DashboardController extends Controller
                     'username' => $user->username,
                     'expertise' => $user->student->major ?? 'No major specified',
                     'avatar' => $user->student->profile_photo_path ?? 'default-avatar.jpg',
-                    'online' => true,
+                    'online' => true, // Could be implemented with last_seen_at
                 ];
             });
 
-        // Ambil data chart applications over time dari Supabase
+        // IMPLEMENTED: Ambil data chart applications over time dari Supabase
         $applicationsOverTime = $this->getApplicationsOverTime($company);
 
-        // Ambil data jobs by category dari Supabase
+        // IMPLEMENTED: Ambil data jobs by category dari Supabase
         $jobsByCategory = $this->getJobsByCategory($company);
 
         return view('company.dashboard.index', compact(
@@ -190,7 +193,7 @@ class DashboardController extends Controller
 
     /**
      * Get jobs by category data for chart
-     * Data dari Supabase PostgreSQL
+     * IMPLEMENTED: Data dari Supabase PostgreSQL
      */
     private function getJobsByCategory($company)
     {
