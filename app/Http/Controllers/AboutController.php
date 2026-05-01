@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 
 /**
  * controller untuk halaman about us
+ * menampilkan informasi tentang platform karsa
  */
 class AboutController extends Controller
 {
@@ -30,12 +31,12 @@ class AboutController extends Controller
                 'institution' => 'Institut Teknologi Bandung',
             ],
             [
-                'name' => 'Kenzie Raffa Ardhana',
+                'name' => 'Muhammad Raihaan Perdana',
                 'role' => 'Backend Developer',
                 'institution' => 'Institut Teknologi Bandung',
             ],
             [
-                'name' => 'M. Abizzar Gamadrian',
+                'name' => 'Ardell Aghna Mahendra',
                 'role' => 'Frontend Developer',
                 'institution' => 'Institut Teknologi Bandung',
             ],

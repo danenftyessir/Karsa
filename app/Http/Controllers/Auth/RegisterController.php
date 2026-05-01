@@ -63,6 +63,7 @@ class RegisterController extends Controller
      */
     public function showStudentForm()
     {
+        // ambil data universities untuk dropdown
         $universities = University::orderBy('name', 'asc')->get();
         
         return view('auth.student-register', compact('universities'));
@@ -81,10 +82,13 @@ class RegisterController extends Controller
      */
     public function showInstitutionForm()
     {
+        // ambil data provinces untuk dropdown
         $provinces = Province::orderBy('name', 'asc')->get();
         
+        // siapkan regencies collection kosong untuk kondisi awal
         $regencies = collect();
         
+        // jika ada old input province_id (ketika validasi gagal), load regencies-nya
         if (old('province_id')) {
             $regencies = Regency::where('province_id', old('province_id'))
                                ->orderBy('name', 'asc')
@@ -107,6 +111,7 @@ class RegisterController extends Controller
      */
     public function showCompanyForm()
     {
+        // ambil data provinces untuk dropdown
         $provinces = Province::orderBy('name', 'asc')->get();
 
         return view('auth.company-register', compact('provinces'));
@@ -133,8 +138,10 @@ class RegisterController extends Controller
                 'last_name' => $request->last_name
             ]);
 
+            // gunakan database transaction untuk memastikan atomicity
             DB::beginTransaction();
             
+            // buat user account
             $user = User::create([
                 'name' => $request->first_name . ' ' . $request->last_name,
                 'email' => $request->email,
@@ -146,6 +153,7 @@ class RegisterController extends Controller
             
             Log::info('User created successfully', ['user_id' => $user->id]);
             
+            // buat student profile dengan data awal
             $student = Student::create([
                 'user_id' => $user->id,
                 'first_name' => $request->first_name,
@@ -160,13 +168,16 @@ class RegisterController extends Controller
             
             Log::info('Student profile created', ['student_id' => $student->id]);
             
+            // upload foto menggunakan SupabaseStorageService
             if ($request->hasFile('profile_photo')) {
                 try {
                     $file = $request->file('profile_photo');
                     
+                    // gunakan method uploadProfilePhoto dari SupabaseStorageService
                     $uploadedPath = $this->storageService->uploadProfilePhoto($file, $student->id);
                     
                     if ($uploadedPath) {
+                        // update student profile dengan path foto yang baru
                         $student->update(['profile_photo_path' => $uploadedPath]);
                         Log::info('Profile photo uploaded successfully', [
                             'student_id' => $student->id,
@@ -177,13 +188,16 @@ class RegisterController extends Controller
                     }
                 } catch (\Exception $e) {
                     Log::error('Error uploading profile photo: ' . $e->getMessage());
+                    // tidak perlu throw exception, foto profil bersifat opsional
                 }
             }
             
             DB::commit();
             
+            // picu event bahwa user baru telah terdaftar (untuk kirim email verifikasi)
             event(new Registered($user));
 
+            // log successful registration
             Log::info('Student registered successfully', [
                 'user_id' => $user->id,
                 'student_id' => $student->id,
@@ -191,6 +205,7 @@ class RegisterController extends Controller
                 'username' => $user->username
             ]);
 
+            // auto-login user setelah registrasi berhasil
             Auth::login($user);
             
             // refresh session untuk memuat data terbaru termasuk foto profil
@@ -198,14 +213,16 @@ class RegisterController extends Controller
             $user = $user->fresh(['student']);
             Auth::setUser($user);
 
+            // cek apakah request adalah AJAX
             if ($request->expectsJson() || $request->ajax()) {
                 return response()->json([
                     'success' => true,
                     'message' => 'Registrasi Berhasil! Selamat Datang Di Karsa.',
-                    'redirect_url' => route('student.dashboard')
+                    'redirect_url' => route('student.dashboard') // gunakan redirect_url bukan redirect
                 ], 200);
             }
 
+            // redirect ke dashboard student dengan pesan sukses
             return redirect()
                 ->route('student.dashboard')
                 ->with('success', 'Selamat Datang Di Karsa! Akun Anda Berhasil Dibuat. Silakan Lengkapi Profil Dan Mulai Mencari Proyek KKN Yang Sesuai Dengan Minat Anda.');
@@ -215,6 +232,7 @@ class RegisterController extends Controller
             Log::error('Student registration failed: ' . $e->getMessage());
             Log::error('Stack trace: ' . $e->getTraceAsString());
             
+            // cek apakah request adalah AJAX
             if ($request->expectsJson() || $request->ajax()) {
                 return response()->json([
                     'success' => false,
@@ -379,6 +397,7 @@ class RegisterController extends Controller
             // TIDAK auto-login user - biarkan menunggu verifikasi AI
             // User akan login manual setelah akun diverifikasi
 
+            // cek apakah request adalah AJAX
             if ($request->expectsJson() || $request->ajax()) {
                 return response()->json([
                     'success' => true,
@@ -405,6 +424,7 @@ class RegisterController extends Controller
             Log::error('Institution registration failed: ' . $e->getMessage());
             Log::error('Stack trace: ' . $e->getTraceAsString());
             
+            // cek apakah request adalah AJAX
             if ($request->expectsJson() || $request->ajax()) {
                 return response()->json([
                     'success' => false,
@@ -497,6 +517,7 @@ class RegisterController extends Controller
                     }
                 } catch (\Exception $e) {
                     Log::error('Error uploading company logo to Supabase: ' . $e->getMessage());
+                    // tidak perlu throw exception, logo bersifat opsional
                 }
             }
 
@@ -509,12 +530,38 @@ class RegisterController extends Controller
                 'company_name' => $company->name
             ]);
 
+            // DISABLED: Email verification untuk company (SMTP timeout di Railway)
+            // Kirim email verifikasi SETELAH response dikirim (async)
+            // Ini mencegah blocking redirect jika email server lambat
+            // CATATAN: Aktifkan kembali setelah SMTP dikonfigurasi dengan benar
+            /*
+            $userId = $user->id;
+            dispatch(function () use ($userId) {
+                try {
+                    $user = User::find($userId);
+                    if ($user) {
+                        event(new Registered($user));
+                        Log::info('Email verification event dispatched', ['user_id' => $userId]);
+                    }
+                } catch (\Exception $e) {
+                    Log::warning('Failed to dispatch email verification event', [
+                        'user_id' => $userId,
+                        'error' => $e->getMessage()
+                    ]);
+                }
+            })->afterResponse();
+            */
+
+            // TIDAK auto-login user - konsisten dengan institution
+            // User akan login manual setelah registrasi
+
             Log::info('Preparing response for company registration', [
                 'user_id' => $user->id,
                 'is_ajax' => $request->ajax(),
                 'expects_json' => $request->expectsJson()
             ]);
 
+            // cek apakah request adalah AJAX
             if ($request->expectsJson() || $request->ajax()) {
                 Log::info('Returning JSON response for company registration');
                 return response()->json([
@@ -532,6 +579,7 @@ class RegisterController extends Controller
                 ], 201);
             }
 
+            // redirect ke homepage dengan pesan sukses
             Log::info('Redirecting to home after company registration');
             return redirect()
                 ->route('home')
@@ -542,6 +590,7 @@ class RegisterController extends Controller
             Log::error('Company registration failed: ' . $e->getMessage());
             Log::error('Stack trace: ' . $e->getTraceAsString());
 
+            // cek apakah request adalah AJAX
             if ($request->expectsJson() || $request->ajax()) {
                 return response()->json([
                     'success' => false,
@@ -561,12 +610,13 @@ class RegisterController extends Controller
      */
     private function getEmployeeCountFromSize(string $size): ?string
     {
+        // Return string langsung untuk konsistensi dengan database dan seeder
         return match($size) {
             '1-10' => '1-10',
             '11-50' => '11-50',
-            '51-200' => '51-100',
-            '201-500' => '101-200',
-            '501-1000' => '201-500',
+            '51-200' => '51-100', // Mapping ke format yang digunakan di seeder
+            '201-500' => '101-200', // Mapping ke format yang digunakan di seeder
+            '501-1000' => '201-500', // Mapping ke format yang digunakan di seeder
             '1000+' => '201-500',
             default => null,
         };
