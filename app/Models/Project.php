@@ -175,7 +175,6 @@ class Project extends Model
 
     /**
      * mark project as completed
-     * ✅ PERBAIKAN: hapus field completed_at, gunakan actual_end_date saja
      */
     public function markAsCompleted()
     {
