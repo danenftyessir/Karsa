@@ -35,16 +35,19 @@ class ReviewService
         DB::beginTransaction();
         
         try {
+            // cek apakah proyek milik institution ini
             $project = Project::where('id', $projectId)
                              ->where('institution_id', $institutionId)
                              ->firstOrFail();
 
+            // update project dengan rating dan review
             $project->update([
                 'rating' => $data['rating'],
                 'institution_review' => $data['review'],
                 'reviewed_at' => now(),
             ]);
 
+            // buat entry di tabel reviews
             $review = Review::create([
                 'project_id' => $project->id,
                 'reviewer_id' => auth()->id(), // user_id dari institution
@@ -96,6 +99,7 @@ class ReviewService
                 'improvements' => $data['improvements'] ?? $review->improvements,
             ]);
 
+            // update juga di project
             $review->project->update([
                 'rating' => $data['rating'],
                 'institution_review' => $data['review'],
@@ -139,6 +143,7 @@ class ReviewService
         $totalReviews = $reviewsQuery->count();
         $avgRating = $reviewsQuery->avg('rating') ?? 0;
 
+        // distribusi rating
         $ratingDistribution = [
             5 => (clone $reviewsQuery)->where('rating', 5)->count(),
             4 => (clone $reviewsQuery)->where('rating', 4)->count(),
@@ -163,7 +168,7 @@ class ReviewService
                     ->whereHas('project', function($q) use ($studentId) {
                         $q->where('student_id', $studentId);
                     })
-                    ->where('rating', '>=', 4)
+                    ->where('rating', '>=', 4) // hanya tampilkan review positif
                     ->where('is_public', true)
                     ->with(['project.problem', 'project.institution', 'reviewer'])
                     ->latest()
@@ -205,6 +210,7 @@ class ReviewService
                              ->where('status', 'completed')
                              ->firstOrFail();
 
+            // cek apakah sudah pernah review
             $existingReview = Review::where('project_id', $projectId)
                                    ->where('type', 'student_to_institution')
                                    ->where('reviewer_id', auth()->id())
@@ -214,6 +220,7 @@ class ReviewService
                 throw new \Exception('Anda sudah memberikan review untuk proyek ini.');
             }
 
+            // buat review
             $review = Review::create([
                 'project_id' => $project->id,
                 'reviewer_id' => auth()->id(), // user_id dari student

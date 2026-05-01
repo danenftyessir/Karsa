@@ -12,10 +12,10 @@ use App\Models\Province;
 
 /*
 |--------------------------------------------------------------------------
-| API Routes - Karsa Platform
+| API Routes - KKN-GO Platform
 |--------------------------------------------------------------------------
 |
-| file ini berisi semua API routes untuk aplikasi Karsa
+| file ini berisi semua API routes untuk aplikasi KKN-GO
 | terutama untuk AJAX calls, validasi form, dan data loading
 |
 | CATATAN: Semua routes di sini otomatis mendapat prefix '/api/'

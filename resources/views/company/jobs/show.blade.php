@@ -582,6 +582,7 @@ function jobShowPage() {
                 return;
             }
 
+            // TODO: Send invite via API
             console.log('Sending invite to:', this.inviteEmail, 'Message:', this.inviteMessage);
 
             this.inviteModalOpen = false;

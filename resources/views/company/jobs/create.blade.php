@@ -677,6 +677,8 @@ function jobWizard() {
                 return;
             }
 
+            // TODO: Implement actual salary API call
+            // For now, showing placeholder based on title keywords
             let benchmark = '';
             const title = this.formData.title.toLowerCase();
 
@@ -733,6 +735,7 @@ function jobWizard() {
         submitForm() {
             if (!this.validateCurrentStep()) return;
 
+            // TO DO: kirim data ke server via AJAX atau form submit
             console.log('Form data:', this.formData);
 
             // simulasi submit

@@ -67,7 +67,6 @@ class DashboardController extends Controller
                                         ->get();
 
         // rekomendasi proyek berdasarkan jurusan dan skills untuk sidebar
-        // gunakan whereRaw untuk comparison dengan subquery
         $recommendedProblems = Problem::where('status', 'open')
                                      ->where('application_deadline', '>=', Carbon::now())
                                      ->with([
@@ -97,7 +96,6 @@ class DashboardController extends Controller
                                          }
                                      })
                                      ->withCount('applications')
-                                     // filter problems yang masih punya slot kosong
                                      ->whereRaw('(SELECT COUNT(*) FROM applications WHERE applications.problem_id = problems.id) < problems.required_students')
                                      ->inRandomOrder()
                                      ->take(4)

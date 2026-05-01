@@ -1014,7 +1014,6 @@
         window.scrollTo({ top: 0, behavior: 'smooth' });
     }
 
-    // showStep untuk handle 4 steps dengan step-circle
     function showStep(step) {
         // hide semua step content
         for (let i = 1; i <= 4; i++) {
