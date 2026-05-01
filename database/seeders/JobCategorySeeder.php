@@ -268,18 +268,15 @@ class JobCategorySeeder extends Seeder
             }
 
             try {
-                // Check if category already exists - use DB facade
                 $existingCount = \DB::table('job_categories')->where('slug', $category['slug'])->count();
 
                 if ($existingCount == 0) {
-                    // Insert if not exists
                     \DB::table('job_categories')->insert($category);
                     $insertedCount++;
                 } else {
                     $skippedCount++;
                 }
             } catch (\Exception $e) {
-                // Skip duplicates
                 if (strpos($e->getMessage(), 'duplicate key') !== false || strpos($e->getMessage(), 'Duplicate entry') !== false) {
                     $skippedCount++;
                 } else {

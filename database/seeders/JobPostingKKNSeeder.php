@@ -14,8 +14,6 @@ use Illuminate\Support\Str;
  * - SDG alignment
  * - Project evidence
  * - Impact-driven criteria
- *
- * Sub-tema: Teknologi, Kesehatan, Pendidikan, Lingkungan, Sosial Budaya
  */
 class JobPostingKKNSeeder extends Seeder
 {
@@ -30,29 +28,24 @@ class JobPostingKKNSeeder extends Seeder
     {
         $this->command->info('🌱 Seeding realistic KKN-based job postings...');
 
-        // Get all companies - use DB facade
         $companies = \DB::table('companies')->select('id', 'name', 'industry')->get();
 
-        // Get all job categories - use DB facade
         $categories = \DB::table('job_categories')->select('id', 'name', 'slug')->get();
         $categoriesMap = collect($categories)->keyBy('slug')->toArray();
 
         $jobCount = 0;
         $skippedCount = 0;
         foreach ($companies as $index => $company) {
-            // Reconnect every 20 iterations
             if ($index % 20 == 0) {
                 \DB::reconnect('pgsql');
             }
 
-            // Check existing job count for this company - use DB facade
             $existingJobs = \DB::table('job_postings')
                 ->select('id', 'job_category_id')
                 ->where('company_id', $company->id)
                 ->get();
             $existingJobCount = count($existingJobs);
 
-            // Skip if company already has enough jobs
             if ($existingJobCount >= 4) {
                 $skippedCount++;
                 continue;
@@ -124,7 +117,7 @@ class JobPostingKKNSeeder extends Seeder
         $title = $template['title'];
         $slug = Str::slug($title . '-' . $company->name . '-' . rand(100, 999));
 
-        // Random location di Indonesia
+        // Random location in Indonesia
         $locations = [
             'Jakarta Utara', 'Jakarta Selatan', 'Jakarta Barat', 'Jakarta Timur', 'Jakarta Pusat',
             'Bandung', 'Surabaya', 'Yogyakarta', 'Semarang', 'Medan', 'Makassar', 'Palembang',
