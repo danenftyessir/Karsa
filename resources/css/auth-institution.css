@@ -1,0 +1,345 @@
+/* ============================================
+   INSTITUTION REGISTER - THEME HIJAU
+   resources/css/auth-institution.css
+   ============================================ */
+
+/* background gradient yang lebih subtle */
+.institution-register .register-container {
+    min-height: 100vh;
+    background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 50%, #f0fdf4 100%);
+    position: relative;
+    overflow: hidden;
+}
+
+/* pattern background dengan opacity lebih rendah */
+.institution-register .register-container::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: 
+        radial-gradient(circle at 25% 40%, rgba(34, 197, 94, 0.05) 0%, transparent 50%), 
+        radial-gradient(circle at 75% 70%, rgba(16, 185, 129, 0.05) 0%, transparent 50%);
+    animation: bgPulse 15s ease-in-out infinite;
+}
+
+@keyframes bgPulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.7; }
+}
+
+/* ============================================
+   STEP INDICATOR - MINIMALIS & CLEAN
+   ============================================ */
+
+/* step container dengan spacing yang lebih baik */
+.institution-register .step-indicator-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    width: 100%;
+    max-width: 600px;
+    margin: 0 auto;
+    position: relative;
+    padding: 0 1rem;
+}
+
+/* step item wrapper */
+.institution-register .step-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.75rem;
+    position: relative;
+    z-index: 2;
+    flex-shrink: 0;
+    opacity: 0;
+    animation: fadeInStep 0.5s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+.institution-register .step-item:nth-child(1) { animation-delay: 0.1s; }
+.institution-register .step-item:nth-child(3) { animation-delay: 0.2s; }
+.institution-register .step-item:nth-child(5) { animation-delay: 0.3s; }
+
+@keyframes fadeInStep {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* step circle - design minimalis */
+.institution-register .step-circle {
+    width: 52px;
+    height: 52px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 1.25rem;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+    background: white;
+    border: 3px solid #e5e7eb;
+    color: #9ca3af;
+}
+
+/* state inactive - subtle */
+.institution-register .step-circle.inactive {
+    background: white;
+    border-color: #e5e7eb;
+    color: #9ca3af;
+}
+
+/* state active - clean dengan gradient lembut */
+.institution-register .step-circle.active {
+    background: linear-gradient(135deg, #10b981 0%, #14b8a6 100%);
+    border-color: #10b981;
+    color: white;
+    transform: scale(1.08);
+    box-shadow: 
+        0 4px 12px rgba(16, 185, 129, 0.25),
+        0 2px 4px rgba(16, 185, 129, 0.15);
+}
+
+/* ring effect saat active - lebih subtle */
+.institution-register .step-circle.active::before {
+    content: '';
+    position: absolute;
+    inset: -6px;
+    border-radius: 50%;
+    background: rgba(16, 185, 129, 0.12);
+    animation: pulseRing 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+@keyframes pulseRing {
+    0%, 100% {
+        transform: scale(1);
+        opacity: 0.5;
+    }
+    50% {
+        transform: scale(1.15);
+        opacity: 0.2;
+    }
+}
+
+/* state completed - gradient berbeda */
+.institution-register .step-circle.completed {
+    background: linear-gradient(135deg, #14b8a6 0%, #06b6d4 100%);
+    border-color: #14b8a6;
+    color: white;
+    box-shadow: 0 2px 8px rgba(20, 184, 166, 0.2);
+}
+
+/* checkmark icon untuk completed */
+.institution-register .step-circle.completed .step-number {
+    display: none;
+}
+
+.institution-register .step-circle.completed::after {
+    content: '✓';
+    font-size: 1.5rem;
+    font-weight: 800;
+}
+
+/* ============================================
+   STEP LABEL - MINIMALIS
+   ============================================ */
+
+.institution-register .step-label {
+    font-size: 0.875rem;
+    color: #6b7280;
+    font-weight: 500;
+    text-align: center;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    letter-spacing: 0.01em;
+}
+
+/* label saat step active - hanya bold tanpa warna berlebih */
+.institution-register .step-item:has(.step-circle.active) .step-label {
+    font-weight: 700;
+    color: #374151;
+}
+
+/* label saat step completed */
+.institution-register .step-item:has(.step-circle.completed) .step-label {
+    font-weight: 500;
+    color: #6b7280;
+}
+
+/* ============================================
+   STEP CONNECTOR - LINE ANTAR STEP
+   ============================================ */
+
+.institution-register .step-connector {
+    flex: 1;
+    height: 2px;
+    background: #d1d5db;
+    position: relative;
+    margin: 0 1.5rem;
+    margin-top: 26px;
+    border-radius: 1px;
+}
+
+/* animated progress line */
+.institution-register .step-connector::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    height: 100%;
+    width: 0;
+    background: linear-gradient(90deg, #10b981 0%, #14b8a6 100%);
+    border-radius: 1px;
+    transition: width 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 0 0 8px rgba(16, 185, 129, 0.3);
+}
+
+/* connector completed dengan smooth transition */
+.institution-register .step-connector.completed::before {
+    width: 100%;
+}
+
+/* ============================================
+   FORM ELEMENTS - KONSISTEN DENGAN STEP
+   ============================================ */
+
+/* input focus dengan warna theme */
+.institution-register .form-input:focus {
+    border-color: #10b981;
+    box-shadow: 
+        0 0 0 3px rgba(16, 185, 129, 0.1),
+        0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.institution-register .form-input:focus ~ .form-input-icon {
+    color: #10b981;
+}
+
+/* spacing untuk input dengan icon dan dropdown */
+.institution-register .form-input-wrapper .form-input {
+    padding-right: 3.5rem;
+}
+
+/* spacing untuk select dengan icon */
+.institution-register select.form-input {
+    padding-right: 3rem;
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3E%3Cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3E%3C/svg%3E");
+    background-position: right 0.75rem center;
+    background-repeat: no-repeat;
+    background-size: 1.25rem 1.25rem;
+}
+
+/* icon positioning - lebih ke kiri */
+.institution-register .form-input-icon {
+    right: 2.5rem;
+}
+
+/* ============================================
+   BUTTONS - SMOOTH INTERACTIONS
+   ============================================ */
+
+.institution-register .btn-primary {
+    background: linear-gradient(135deg, #10b981 0%, #14b8a6 100%);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.institution-register .btn-primary:hover:not(:disabled) {
+    background: linear-gradient(135deg, #059669 0%, #0d9488 100%);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(16, 185, 129, 0.3);
+}
+
+.institution-register .btn-primary:active:not(:disabled) {
+    transform: translateY(0);
+}
+
+/* button secondary */
+.institution-register .btn-secondary:hover {
+    border-color: #10b981;
+    color: #10b981;
+}
+
+/* ============================================
+   FILE UPLOAD - HOVER EFFECT
+   ============================================ */
+
+.institution-register .file-upload-area:hover {
+    border-color: #10b981;
+    background: rgba(16, 185, 129, 0.03);
+    box-shadow: 0 4px 12px rgba(16, 185, 129, 0.08);
+}
+
+.institution-register .file-upload-area:hover .file-upload-icon {
+    color: #10b981;
+    transform: scale(1.05);
+}
+
+/* ============================================
+   LINKS & ACCENT COLORS
+   ============================================ */
+
+.institution-register a.text-green-600 {
+    color: #10b981;
+    transition: color 0.2s ease;
+}
+
+.institution-register a.text-green-600:hover {
+    color: #059669;
+}
+
+/* ============================================
+   LOADING SPINNER
+   ============================================ */
+
+.institution-register .spinner {
+    border-top-color: #10b981;
+}
+
+/* ============================================
+   RESPONSIVE DESIGN
+   ============================================ */
+
+@media (max-width: 768px) {
+    .institution-register .step-indicator-container {
+        max-width: 100%;
+        padding: 0 0.5rem;
+    }
+    
+    .institution-register .step-circle {
+        width: 44px;
+        height: 44px;
+        font-size: 1.125rem;
+    }
+    
+    .institution-register .step-label {
+        font-size: 0.8125rem;
+    }
+    
+    .institution-register .step-connector {
+        margin: 0 1rem;
+        margin-top: 22px;
+    }
+}
+
+/* ============================================
+   ACCESSIBILITY - REDUCED MOTION
+   ============================================ */
+
+@media (prefers-reduced-motion: reduce) {
+    .institution-register .step-item,
+    .institution-register .step-circle,
+    .institution-register .step-connector::before {
+        animation: none !important;
+        transition-duration: 0.05s !important;
+    }
+    
+    .institution-register .register-container::before {
+        animation: none;
+    }
+}

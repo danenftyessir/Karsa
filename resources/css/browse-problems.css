@@ -1,0 +1,464 @@
+/* resources/css/browse-problems.css */
+/* primary colors dari logo Karsa */
+:root {
+    --primary-blue: #0066CC;
+    --primary-green: #66CC00;
+    --primary-blue-dark: #004D99;
+    --primary-green-dark: #4D9900;
+}
+
+/* GPU acceleration untuk semua transitions */
+* {
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+/* smooth scrolling dengan GPU */
+html {
+    scroll-behavior: smooth;
+}
+
+/* container utama dengan GPU acceleration */
+.page-container {
+    will-change: transform;
+    transform: translate3d(0, 0, 0);
+}
+
+/* problem card dengan GPU acceleration */
+.problem-card {
+    will-change: transform, box-shadow;
+    transform: translate3d(0, 0, 0);
+    backface-visibility: hidden;
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+                box-shadow 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.problem-card:hover {
+    transform: translate3d(0, -4px, 0) scale(1.02);
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1),
+                0 10px 10px -5px rgba(0, 0, 0, 0.04);
+}
+
+/* problem card list dengan smooth transition */
+.problem-card-list {
+    will-change: transform, box-shadow;
+    transform: translate3d(0, 0, 0);
+    backface-visibility: hidden;
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+                box-shadow 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.problem-card-list:hover {
+    transform: translate3d(0, -2px, 0);
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1),
+                0 10px 10px -5px rgba(0, 0, 0, 0.04);
+}
+
+/* image hover effect dengan GPU */
+.problem-card img,
+.problem-card-list img {
+    will-change: transform;
+    transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.problem-card:hover img,
+.problem-card-list:hover img {
+    transform: scale(1.1);
+}
+
+/* badge animations */
+.badge {
+    will-change: transform;
+    transition: transform 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.badge:hover {
+    transform: scale(1.05);
+}
+
+/* filter sidebar sticky dengan smooth scroll */
+.filter-sidebar {
+    position: sticky;
+    top: 5rem;
+    max-height: calc(100vh - 6rem);
+    overflow-y: auto;
+    scroll-behavior: smooth;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: thin;
+    scrollbar-color: var(--primary-blue) transparent;
+}
+
+.filter-sidebar::-webkit-scrollbar {
+    width: 6px;
+}
+
+.filter-sidebar::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.filter-sidebar::-webkit-scrollbar-thumb {
+    background-color: var(--primary-blue);
+    border-radius: 3px;
+}
+
+/* view toggle buttons dengan smooth transition */
+.view-toggle-btn {
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+}
+
+.view-toggle-btn.active {
+    background-color: var(--primary-blue);
+    color: white;
+    transform: scale(1.05);
+}
+
+.view-toggle-btn.active::before {
+    content: '';
+    position: absolute;
+    bottom: -2px;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: var(--primary-blue);
+}
+
+/* tab buttons smooth transition */
+.tab-button {
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+}
+
+.tab-button:hover {
+    transform: translateY(-1px);
+}
+
+/* loading skeleton animations */
+.skeleton {
+    background: linear-gradient(
+        90deg,
+        #f0f0f0 0%,
+        #e0e0e0 50%,
+        #f0f0f0 100%
+    );
+    background-size: 200% 100%;
+    animation: skeleton-loading 1.5s ease-in-out infinite;
+}
+
+@keyframes skeleton-loading {
+    0% {
+        background-position: 200% 0;
+    }
+    100% {
+        background-position: -200% 0;
+    }
+}
+
+/* fade in animations dengan GPU */
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translate3d(0, 20px, 0);
+    }
+    to {
+        opacity: 1;
+        transform: translate3d(0, 0, 0);
+    }
+}
+
+.fade-in-up {
+    animation: fadeInUp 0.6s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+    opacity: 0;
+    will-change: transform, opacity;
+}
+
+/* slide in animation */
+@keyframes slideInUp {
+    from {
+        opacity: 0;
+        transform: translate3d(0, 30px, 0);
+    }
+    to {
+        opacity: 1;
+        transform: translate3d(0, 0, 0);
+    }
+}
+
+.slide-in-up {
+    animation: slideInUp 0.5s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+    opacity: 0;
+    will-change: transform, opacity;
+}
+
+/* stagger animation untuk cards */
+.problem-card:nth-child(1) { animation-delay: 0.05s; }
+.problem-card:nth-child(2) { animation-delay: 0.10s; }
+.problem-card:nth-child(3) { animation-delay: 0.15s; }
+.problem-card:nth-child(4) { animation-delay: 0.20s; }
+.problem-card:nth-child(5) { animation-delay: 0.25s; }
+.problem-card:nth-child(6) { animation-delay: 0.30s; }
+.problem-card:nth-child(7) { animation-delay: 0.35s; }
+.problem-card:nth-child(8) { animation-delay: 0.40s; }
+.problem-card:nth-child(9) { animation-delay: 0.45s; }
+.problem-card:nth-child(10) { animation-delay: 0.50s; }
+.problem-card:nth-child(11) { animation-delay: 0.55s; }
+.problem-card:nth-child(12) { animation-delay: 0.60s; }
+
+/* pulse animation untuk urgent badge */
+@keyframes pulse {
+    0%, 100% {
+        opacity: 1;
+    }
+    50% {
+        opacity: 0.7;
+    }
+}
+
+.animate-pulse {
+    animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+/* button hover effects dengan smooth transition */
+.btn-primary {
+    background-color: var(--primary-blue);
+    color: white;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    will-change: transform, box-shadow, background-color;
+}
+
+.btn-primary:hover {
+    background-color: var(--primary-blue-dark);
+    transform: translateY(-2px);
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1),
+                0 4px 6px -2px rgba(0, 0, 0, 0.05);
+}
+
+.btn-secondary {
+    background-color: var(--primary-green);
+    color: white;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    will-change: transform, box-shadow, background-color;
+}
+
+.btn-secondary:hover {
+    background-color: var(--primary-green-dark);
+    transform: translateY(-2px);
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1),
+                0 4px 6px -2px rgba(0, 0, 0, 0.05);
+}
+
+/* custom scrollbar untuk halaman utama */
+body::-webkit-scrollbar {
+    width: 10px;
+}
+
+body::-webkit-scrollbar-track {
+    background: #f1f1f1;
+}
+
+body::-webkit-scrollbar-thumb {
+    background: var(--primary-blue);
+    border-radius: 5px;
+}
+
+body::-webkit-scrollbar-thumb:hover {
+    background: var(--primary-blue-dark);
+}
+
+/* line clamp utilities */
+.line-clamp-2 {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+.line-clamp-3 {
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+/* responsive grid dengan smooth transition */
+.problem-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 1.5rem;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* wishlist button smooth animation */
+.wishlist-btn {
+    transition: all 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+    will-change: transform;
+}
+
+.wishlist-btn:hover {
+    transform: scale(1.1);
+}
+
+.wishlist-btn:active {
+    transform: scale(0.95);
+}
+
+/* share dropdown smooth appearance */
+.share-dropdown {
+    animation: dropdownSlideIn 0.2s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+@keyframes dropdownSlideIn {
+    from {
+        opacity: 0;
+        transform: translate3d(0, -10px, 0) scale(0.95);
+    }
+    to {
+        opacity: 1;
+        transform: translate3d(0, 0, 0) scale(1);
+    }
+}
+
+/* map container smooth transition */
+#problems-map {
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* loading indicator dengan smooth spin */
+.loading-spinner {
+    animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+/* notification toast smooth appearance */
+.toast-notification {
+    animation: toastSlideIn 0.3s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+@keyframes toastSlideIn {
+    from {
+        opacity: 0;
+        transform: translate3d(100%, 0, 0);
+    }
+    to {
+        opacity: 1;
+        transform: translate3d(0, 0, 0);
+    }
+}
+
+/* focus states untuk accessibility */
+button:focus-visible,
+a:focus-visible,
+input:focus-visible,
+select:focus-visible {
+    outline: 2px solid var(--primary-blue);
+    outline-offset: 2px;
+}
+
+/* smooth transitions untuk semua interactive elements */
+button,
+a,
+input,
+select {
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* responsive breakpoints */
+@media (max-width: 768px) {
+    .problem-grid {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+    }
+    
+    .filter-sidebar {
+        position: static;
+        max-height: none;
+    }
+    
+    .problem-card:hover,
+    .problem-card-list:hover {
+        transform: none;
+    }
+}
+
+/* accessibility - prefers reduced motion */
+@media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
+    }
+    
+    .problem-card:hover,
+    .problem-card-list:hover {
+        transform: none;
+    }
+    
+    .btn-primary:hover,
+    .btn-secondary:hover {
+        transform: none;
+    }
+}
+
+/* pagination smooth hover effects */
+.pagination-link {
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.pagination-link:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+}
+
+/* filter tag smooth transitions */
+.filter-tag {
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.filter-tag:hover {
+    transform: scale(1.05);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* view mode transition wrapper */
+.view-transition-wrapper {
+    position: relative;
+}
+
+.view-transition-wrapper > div {
+    transition: opacity 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+                transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* stats counter animation */
+.stat-number {
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* smooth opacity transition untuk container updates */
+.opacity-transition {
+    transition: opacity 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* leaflet custom marker pulse animation */
+.marker-pulse {
+    animation: markerPulse 1.5s ease-in-out infinite;
+}
+
+@keyframes markerPulse {
+    0%, 100% {
+        opacity: 1;
+        transform: scale(1);
+    }
+    50% {
+        opacity: 0.7;
+        transform: scale(1.1);
+    }
+}
