@@ -298,7 +298,6 @@ class CompanySeeder extends Seeder
 
         $template = $templates[$industry] ?? "Usaha yang bergerak di bidang {field} dengan komitmen pada kualitas dan pelayanan terbaik untuk pelanggan.";
 
-        // Replace placeholders
         $description = str_replace(
             ['{field}', '{product}', '{animal}', '{crop}', '{service}', '{training}', '{food}'],
             [$this->getFieldFromName($name), $this->getProductFromName($name), $this->getAnimalFromName($name),
