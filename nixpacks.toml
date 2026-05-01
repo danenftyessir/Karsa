@@ -1,11 +1,11 @@
-providers = ["php", "node"]
+providers = ["php"]
 
 [variables]
 PHP_VERSION = "8.3"
 NODE_VERSION = "22"
 
 [phases.setup]
-nixPkgs = ["php83", "php83Packages.composer"]
+nixPkgs = ["php83", "php83Packages.composer", "nodejs_22"]
 
 [phases.install]
 cmds = [
