@@ -15,11 +15,11 @@ return [
     */
 
     'postmark' => [
-        'key' => env('POSTMARK_API_KEY'),
+        'token' => env('POSTMARK_TOKEN'),
     ],
 
     'resend' => [
-        'key' => env('RESEND_API_KEY'),
+        'key' => env('RESEND_KEY'),
     ],
 
     'ses' => [
@@ -33,6 +33,33 @@ return [
             'bot_user_oauth_token' => env('SLACK_BOT_USER_OAUTH_TOKEN'),
             'channel' => env('SLACK_BOT_USER_DEFAULT_CHANNEL'),
         ],
+    ],
+
+    'claude' => [
+        'api_key' => env('CLAUDE_API_KEY'),
+        'api_url' => env('CLAUDE_API_URL', 'https://api.anthropic.com/v1/messages'),
+        'model_sonnet' => 'claude-3-5-sonnet-20241022',
+        'model_haiku' => 'claude-3-haiku-20240307',
+    ],
+
+    'anthropic' => [
+        'api_key' => env('ANTHROPIC_API_KEY', env('CLAUDE_API_KEY')),
+        'api_url' => env('ANTHROPIC_API_URL', 'https://api.anthropic.com/v1/messages'),
+        'model_sonnet' => 'claude-3-5-sonnet-20241022',
+        'model_haiku' => 'claude-3-haiku-20240307',
+    ],
+
+    'cohere' => [
+        'api_key' => env('COHERE_API_KEY'),
+        'api_url' => env('COHERE_API_URL', 'https://api.cohere.ai'),
+    ],
+
+    'supabase' => [
+        'project_id' => env('SUPABASE_PROJECT_ID'),
+        'service_key' => env('SUPABASE_SERVICE_KEY'),
+        'anon_key' => env('SUPABASE_ANON_KEY'),
+        'url' => env('SUPABASE_URL'),
+        'bucket' => env('SUPABASE_BUCKET', 'kkngo-storage'),
     ],
 
 ];

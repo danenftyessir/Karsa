@@ -60,6 +60,19 @@ return [
             'report' => false,
         ],
 
+        'supabase' => [
+            'driver' => 's3',
+            'key' => env('SUPABASE_PROJECT_ID'),
+            'secret' => env('SUPABASE_SERVICE_KEY'),
+            'region' => 'auto',
+            'bucket' => env('SUPABASE_BUCKET', 'kkngo-storage'),
+            'url' => env('SUPABASE_URL'),
+            'endpoint' => env('SUPABASE_URL') . '/storage/v1/s3',
+            'use_path_style_endpoint' => true,
+            'throw' => false,
+            'report' => false,
+        ],
+
     ],
 
     /*
