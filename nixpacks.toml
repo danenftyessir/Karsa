@@ -1,4 +1,4 @@
-providers = ["php", "nodejs"]
+providers = ["php", "node"]
 
 [variables]
 PHP_VERSION = "8.3"
