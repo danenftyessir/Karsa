@@ -385,7 +385,6 @@ html {
                             </div>
                         </div>
 
-                        {{-- safety check untuk required_skills --}}
                         @php
                             $skills = is_array($problem->required_skills) ? $problem->required_skills : (json_decode($problem->required_skills, true) ?? []);
                         @endphp
@@ -425,7 +424,6 @@ html {
                             <div class="bg-gradient-to-br from-blue-500 to-blue-600 rounded-lg p-6 text-white mb-6">
                                 <h3 class="font-bold text-lg mb-2">Tertarik Dengan Proyek Ini?</h3>
                                 <p class="text-sm mb-4 text-blue-50">Aplikasikan dirimu sekarang dan mulai berkontribusi!</p>
-                                {{-- ubah parameter route dari problem_id menjadi problemId --}}
                                 <a href="{{ route('student.applications.create', $problem->id) }}" 
                                    class="apply-btn block w-full text-center px-4 py-3 bg-white text-blue-600 font-semibold rounded-lg hover:bg-blue-50 transition-colors">
                                     Apply Sekarang

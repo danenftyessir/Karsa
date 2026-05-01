@@ -725,8 +725,8 @@
                                             </ul>
                                             <p class="text-sm text-yellow-700 mt-3">
                                                 <span class="font-semibold">Contoh password yang valid:</span>
-                                                <code class="bg-yellow-100 px-2 py-1 rounded text-yellow-900 font-mono">Mahasiswa2024!</code> atau
-                                                <code class="bg-yellow-100 px-2 py-1 rounded text-yellow-900 font-mono">Karsa#2024</code>
+                                                <code class="bg-yellow-100 px-2 py-1 rounded text-yellow-900 font-mono">Mahasiswa2026!</code> atau
+                                                <code class="bg-yellow-100 px-2 py-1 rounded text-yellow-900 font-mono">Karsa#2026</code>
                                             </p>
                                         </div>
                                     </div>
@@ -992,7 +992,6 @@
         }
     }
 
-    // event listener untuk submit form dengan AJAX
     document.getElementById('studentRegisterForm')?.addEventListener('submit', async function(e) {
         e.preventDefault(); // batalkan submit bawaan
 
@@ -1050,7 +1049,6 @@
                 return;
             }
 
-            // jika sukses (status 200 dan success = true), redirect
             if (response.ok && data.success && data.redirect_url) {
                 // redirect ke dashboard student
                 window.location.href = data.redirect_url;

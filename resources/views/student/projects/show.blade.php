@@ -325,7 +325,6 @@
                             <div>
                                 <p class="text-gray-600 mb-2">Kategori SDG</p>
                                 <div class="flex flex-wrap gap-1">
-                                    {{-- safety check untuk sdg_categories --}}
                                     @php
                                         // pastikan sdg_categories adalah array
                                         $sdgCategories = is_array($project->problem->sdg_categories) 

@@ -758,6 +758,7 @@ function applicationsKanban() {
         applications: [],
         totalApplications: {{ $stats['total'] ?? 0 }},
 
+        // inisialisasi
         init() {
             // flatten applications dari columns
             this.flattenApplications();
@@ -914,6 +915,7 @@ function applicationsKanban() {
                 });
 
                 if (response.ok) {
+                    // update local state
                     const app = this.applications.find(a => a.id === this.selectedApplication.id);
                     if (app) {
                         app.status = this.newStatus;
@@ -1059,6 +1061,7 @@ function applicationsKanban() {
         },
 
         async loadTimeline(applicationId) {
+            // simulasi data timeline - seharusnya dari API
             this.timelineActivities = [
                 {
                     title: 'Lamaran Diterima',

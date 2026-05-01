@@ -216,7 +216,6 @@
                 @endforeach
             </div>
 
-            {{-- gunakan pagination laravel default, BUKAN custom pagination --}}
             <div class="mt-8">
                 {{ $wishlists->links() }}
             </div>
