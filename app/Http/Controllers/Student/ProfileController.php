@@ -117,7 +117,6 @@ class ProfileController extends Controller
                     $this->storageService->delete($profilePhotoPath);
                 }
 
-                // gunakan uploadProfilePhoto() yang tersedia di SupabaseStorageService
                 $uploadedPath = $this->storageService->uploadProfilePhoto($file, $student->id);
 
                 // jika upload berhasil, gunakan path baru. Jika gagal, tetap gunakan foto lama

@@ -9,7 +9,7 @@ use Carbon\Carbon;
 
 /**
  * service untuk analytics dan statistik
- */
+*/
 class AnalyticsService
 {
     /**
@@ -52,7 +52,6 @@ class AnalyticsService
             $q->where('institution_id', $institutionId);
         })->count();
         $avgApplications = $total > 0 ? $totalApplications / $total : 0;
-
         $totalViews = Problem::where('institution_id', $institutionId)->sum('views_count');
         $avgViewsPerProblem = $total > 0 ? $totalViews / $total : 0;
 
@@ -94,6 +93,7 @@ class AnalyticsService
         $accepted = (clone $applications)->where('status', 'accepted')->count();
         $rejected = (clone $applications)->where('status', 'rejected')->count();
 
+        // acceptance rate
         $acceptanceRate = $total > 0 ? ($accepted / $total) * 100 : 0;
 
         // hitung growth dari bulan lalu
@@ -159,6 +159,7 @@ class AnalyticsService
             $avgCompletionDays = $completedProjects->count() > 0 ? $totalDays / $completedProjects->count() : 0;
         }
 
+        // completion rate
         $completionRate = $total > 0 ? ($completed / $total) * 100 : 0;
 
         // hitung growth dari bulan lalu
@@ -249,7 +250,7 @@ class AnalyticsService
         return [
             'total' => $total,
             'pending' => $pending,
-            'under_review' => $underReview,
+            'under_review' => $underReview, 
             'accepted' => $accepted,
             'rejected' => $rejected,
             'pending_percentage' => $total > 0 ? round(($pending / $total) * 100, 1) : 0,
