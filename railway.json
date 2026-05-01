@@ -1,0 +1,11 @@
+{
+  "$schema": "https://railway.app/railway.schema.json",
+  "build": {
+    "builder": "NIXPACKS",
+    "buildCommand": "npm run build && mkdir -p storage/framework/{sessions,views,cache,testing} storage/logs bootstrap/cache && chmod -R a+rw storage"
+  },
+  "deploy": {
+    "startCommand": "php artisan serve --host=0.0.0.0 --port=$PORT",
+    "restartMarkerFile": "./bootstrap/cache/restart marker"
+  }
+}

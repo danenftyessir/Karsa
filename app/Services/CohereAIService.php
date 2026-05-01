@@ -25,9 +25,17 @@ class CohereAIService
         $this->apiKey = config('services.cohere.api_key');
 
         if (empty($this->apiKey)) {
-            Log::error('❌ Cohere API key not configured!');
-            throw new \Exception('Cohere API key is not configured in services.php');
+            Log::warning('⚠️ Cohere API key not configured - AI features will be disabled');
+            $this->apiKey = null;
         }
+    }
+
+    /**
+     * Check if Cohere is properly configured
+     */
+    protected function isConfigured(): bool
+    {
+        return !empty($this->apiKey);
     }
 
     /**
@@ -35,6 +43,11 @@ class CohereAIService
      */
     public function generateEmbeddings(string $text, string $inputType = 'search_document'): ?array
     {
+        if (!$this->isConfigured()) {
+            Log::debug('⚠️ Cohere not configured, skipping embeddings');
+            return null;
+        }
+
         try {
             Log::info('🔍 Generating embeddings dengan Cohere', [
                 'text_length' => strlen($text),
@@ -136,6 +149,11 @@ class CohereAIService
      */
     public function classifyInstitutionType(string $description): ?string
     {
+        if (!$this->isConfigured()) {
+            Log::debug('⚠️ Cohere not configured, skipping classification');
+            return null;
+        }
+
         try {
             Log::info('🔍 Classifying institution type with Cohere');
 
@@ -205,6 +223,11 @@ class CohereAIService
      */
     public function analyzeTextLegitimacy(string $text): array
     {
+        if (!$this->isConfigured()) {
+            Log::debug('⚠️ Cohere not configured, skipping text legitimacy analysis');
+            return ['is_legitimate' => false, 'confidence' => 0, 'error' => 'cohere_not_configured'];
+        }
+
         try {
             Log::info('🔍 Analyzing text legitimacy with Cohere');
 
