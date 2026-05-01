@@ -173,7 +173,7 @@
 
                 <!-- title dan stats -->
                 <div>
-                    <h1 class="text-3xl font-bold mb-2" style="font-family: 'Space Grotesk', sans-serif; color: white !important;">Manajemen Lamaran</h1>
+                    <h1 class="text-3xl font-bold mb-2" style="font-family: 'Outfit', sans-serif; color: white !important;">Manajemen Lamaran</h1>
                     <p class="mt-1 text-base text-blue-100">
                         Total <span class="font-semibold text-white" x-text="totalApplications"></span> lamaran aktif
                         <span x-show="selectedApplications.length > 0" class="ml-2 text-yellow-300">

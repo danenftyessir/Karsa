@@ -169,7 +169,7 @@
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
             <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
                 <div>
-                    <h1 class="text-3xl font-bold mb-2" style="font-family: 'Space Grotesk', sans-serif; color: white;">Talent Tersimpan</h1>
+                    <h1 class="text-3xl font-bold mb-2" style="font-family: 'Outfit', sans-serif; color: white;">Talent Tersimpan</h1>
                     <p class="mt-1 text-base text-blue-100">
                         Total <span class="font-semibold text-white" x-text="totalTalents"></span> talent tersimpan
                         <span x-show="selectedTalents.length > 0" class="ml-2 text-yellow-300">
