@@ -99,6 +99,11 @@ return [
             'sslmode' => env('DB_SSLMODE', 'prefer'),
             'options' => [
                 PDO::PGSQL_ATTR_DISABLE_PREPARES => true,
+                // Supabase PgBouncer compatibility: increase statement timeout to 60s
+                PDO::ATTR_TIMEOUT => 60,
+            ],
+            'after_connect' => [
+                'SET statement_timeout = "60000"',
             ],
         ],
         'sqlsrv' => [
