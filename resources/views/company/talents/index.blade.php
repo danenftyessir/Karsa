@@ -3,7 +3,7 @@
 @section('title', 'Temukan Talenta')
 
 @push('styles')
-{{-- Import Google Font - Space Grotesk for Hero --}}
+{{-- Import Google Font - Outfit for Hero --}}
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@600;700&display=swap" rel="stylesheet">
@@ -97,7 +97,7 @@
         <div class="container mx-auto px-6 relative z-10">
             <div class="flex justify-between items-center fade-in-up">
                 <div>
-                    <h1 class="text-4xl font-extrabold text-white mb-2" style="font-family: 'Space Grotesk', sans-serif; color: white !important;">
+                    <h1 class="text-4xl font-extrabold text-white mb-2" style="font-family: 'Outfit', sans-serif; color: white !important;">
                         Temukan Talenta Terbaik
                     </h1>
                     <p class="text-white text-lg font-medium">

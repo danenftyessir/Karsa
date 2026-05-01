@@ -361,21 +361,21 @@
         </div>
 
         <div class="grid md:grid-cols-4 gap-6 mt-12" data-aos="fade-up" data-aos-delay="400">
-            <div class="bg-white rounded-xl p-6 shadow-lg border border-gray-100 text-center">
-                <div class="text-3xl font-bold text-primary-600 mb-2">34</div>
-                <div class="text-gray-600">Provinsi</div>
+            <div class="bg-white/10 backdrop-blur-xl rounded-2xl p-6 text-center hover:bg-white/20 transition-all duration-300">
+                <div class="text-4xl font-black mb-2 text-gray-900">34</div>
+                <div class="text-gray-700 font-medium tracking-wide">Provinsi</div>
             </div>
-            <div class="bg-white rounded-xl p-6 shadow-lg border border-gray-100 text-center">
-                <div class="text-3xl font-bold text-blue-600 mb-2">514</div>
-                <div class="text-gray-600">Kabupaten/Kota</div>
+            <div class="bg-white/10 backdrop-blur-xl rounded-2xl p-6 text-center hover:bg-white/20 transition-all duration-300">
+                <div class="text-4xl font-black mb-2 text-gray-900">514</div>
+                <div class="text-gray-700 font-medium tracking-wide">Kabupaten/Kota</div>
             </div>
-            <div class="bg-white rounded-xl p-6 shadow-lg border border-gray-100 text-center">
-                <div class="text-3xl font-bold text-green-600 mb-2">{{ $stats['total_institutions'] }}+</div>
-                <div class="text-gray-600">Instansi Mitra</div>
+            <div class="bg-white/10 backdrop-blur-xl rounded-2xl p-6 text-center hover:bg-white/20 transition-all duration-300">
+                <div class="text-4xl font-black mb-2 text-gray-900">{{ $stats['total_institutions'] }}+</div>
+                <div class="text-gray-700 font-medium tracking-wide">Instansi Mitra</div>
             </div>
-            <div class="bg-white rounded-xl p-6 shadow-lg border border-gray-100 text-center">
-                <div class="text-3xl font-bold text-purple-600 mb-2">{{ $stats['completed_projects'] }}+</div>
-                <div class="text-gray-600">Proyek Selesai</div>
+            <div class="bg-white/10 backdrop-blur-xl rounded-2xl p-6 text-center hover:bg-white/20 transition-all duration-300">
+                <div class="text-4xl font-black mb-2 text-gray-900">{{ $stats['completed_projects'] }}+</div>
+                <div class="text-gray-700 font-medium tracking-wide">Proyek Selesai</div>
             </div>
         </div>
     </div>

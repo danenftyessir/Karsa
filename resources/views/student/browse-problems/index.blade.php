@@ -4,7 +4,7 @@
 @section('title', 'Browse Problems')
 
 @push('styles')
-{{-- Import Google Font - Space Grotesk for Hero --}}
+{{-- Import Google Font - Outfit for Hero --}}
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@600;700&display=swap" rel="stylesheet">
@@ -29,7 +29,7 @@
     }
 
     .hero-title-browse {
-        font-family: 'Space Grotesk', sans-serif;
+        font-family: 'Outfit', sans-serif;
         font-weight: 700;
         letter-spacing: -0.02em;
     }

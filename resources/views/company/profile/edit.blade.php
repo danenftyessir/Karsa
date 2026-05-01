@@ -16,7 +16,7 @@
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/>
                     </svg>
                 </a>
-                <h1 class="text-3xl font-bold" style="font-family: 'Space Grotesk', sans-serif;">
+                <h1 class="text-3xl font-bold" style="font-family: 'Outfit', sans-serif;">
                     Edit Profil Perusahaan
                 </h1>
             </div>
