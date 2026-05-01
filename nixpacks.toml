@@ -1,8 +1,11 @@
-[providers.php]
-version = "8.3"
+[providers]
+list = ["php", "nodejs"]
+php_version = "8.3"
+node_version = "22"
 
-[nodejs]
-version = "22"
+[variables]
+PHP_VERSION = "8.3"
+NODE_VERSION = "22"
 
 [phases.setup]
 nixPkgs = ["php83", "php83Packages.composer"]
