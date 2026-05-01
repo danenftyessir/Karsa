@@ -1,7 +1,4 @@
-[providers]
-list = ["php", "nodejs"]
-php_version = "8.3"
-node_version = "22"
+providers = ["php", "nodejs"]
 
 [variables]
 PHP_VERSION = "8.3"
