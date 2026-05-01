@@ -14,6 +14,10 @@ return [
     |
     */
 
+    'cohere' => [
+        'api_key' => env('COHERE_API_KEY'),
+    ],
+
     'postmark' => [
         'key' => env('POSTMARK_API_KEY'),
     ],

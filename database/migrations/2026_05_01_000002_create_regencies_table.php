@@ -13,7 +13,7 @@ return new class extends Migration
             $table->foreignId('province_id')->constrained()->onDelete('cascade');
             $table->string('name');
             $table->string('code', 10)->unique();
-            
+
             $table->index('province_id');
         });
     }
