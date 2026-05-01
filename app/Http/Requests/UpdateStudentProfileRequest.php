@@ -28,7 +28,6 @@ class UpdateStudentProfileRequest extends FormRequest
         return [
             'first_name' => 'required|string|max:50',
             'last_name' => 'required|string|max:50',
-            // tambahkan validasi unique untuk email, tapi ignore email user sendiri
             'email' => [
                 'required',
                 'email',

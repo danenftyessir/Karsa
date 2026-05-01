@@ -9,10 +9,6 @@ use Illuminate\Database\Eloquent\Model;
  * model untuk tabel project_reports
  * mengelola laporan progress proyek dari mahasiswa
  * 
- * PERBAIKAN BUG:
- * - tambahkan accessor untuk file_url yang support Supabase
- * - tambahkan accessor document_url sebagai alias
- * 
  * path: app/Models/ProjectReport.php
  */
 class ProjectReport extends Model
@@ -62,7 +58,6 @@ class ProjectReport extends Model
     }
 
     /**
-     * PERBAIKAN: accessor untuk mendapatkan URL publik dokumen dari Supabase
      * 
      * usage di blade: {{ $report->file_url }}
      * atau: {{ $report->document_url }}
@@ -80,7 +75,6 @@ class ProjectReport extends Model
     }
 
     /**
-     * PERBAIKAN: alias untuk file_url
      * 
      * usage di blade: {{ $report->document_url }}
      * 

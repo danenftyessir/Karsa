@@ -12,7 +12,9 @@ use Illuminate\Support\Str;
 
 /**
  * JobPostingController - Manage Job Postings
- * Semua operasi CRUD langsung ke Supabase PostgreSQL
+ *
+ * IMPLEMENTED: Semua operasi CRUD langsung ke Supabase PostgreSQL
+ * TIDAK ADA data yang disimpan di local database
  */
 class JobPostingController extends Controller
 {
@@ -33,12 +35,14 @@ class JobPostingController extends Controller
                 ->with('error', 'profil perusahaan tidak ditemukan');
         }
 
+        // IMPLEMENTED: Ambil data job postings dari Supabase
         $jobPostings = $company->jobPostings()
             ->with('jobCategory')
             ->withCount('jobApplications')
             ->orderBy('created_at', 'desc')
             ->paginate(10);
 
+        // IMPLEMENTED: Ambil data job categories dari Supabase
         $categories = JobCategory::orderBy('name', 'asc')->get();
 
         return view('company.jobs.index', compact('company', 'jobPostings', 'categories'));
@@ -125,7 +129,7 @@ class JobPostingController extends Controller
 
     public function store(Request $request)
     {
-        // Validasi dan simpan job posting ke Supabase
+        // IMPLEMENTED: Validasi dan simpan job posting ke Supabase
         $validated = $request->validate([
             'title' => 'required|string|max:255',
             'job_category_id' => 'nullable|exists:job_categories,id',
@@ -153,6 +157,7 @@ class JobPostingController extends Controller
         // Generate slug dari title
         $slug = Str::slug($validated['title']);
 
+        // IMPLEMENTED: Simpan ke Supabase PostgreSQL
         $jobPosting = JobPosting::create([
             'company_id' => $company->id,
             'job_category_id' => $validated['job_category_id'] ?? null,
@@ -186,13 +191,16 @@ class JobPostingController extends Controller
         $user = Auth::user();
         $company = $user->company;
 
+        // IMPLEMENTED: Ambil data job posting dari Supabase
         $jobPosting = JobPosting::with(['jobCategory', 'jobApplications.user'])
             ->where('id', $id)
             ->where('company_id', $company->id)
             ->firstOrFail();
 
+        // Increment views count
         $jobPosting->incrementViews();
 
+        // IMPLEMENTED: Ambil recent applicants dari Supabase
         $recentApplicants = $jobPosting->jobApplications()
             ->with('user')
             ->orderBy('created_at', 'desc')
@@ -209,6 +217,7 @@ class JobPostingController extends Controller
                 ];
             });
 
+        // IMPLEMENTED: Ambil statistik dari Supabase
         $statistics = [
             'applications_received' => $jobPosting->applications_count,
             'total_views' => $jobPosting->views_count,
@@ -231,6 +240,7 @@ class JobPostingController extends Controller
         $user = Auth::user();
         $company = $user->company;
 
+        // IMPLEMENTED: Ambil data job posting dari Supabase untuk diedit
         $jobPosting = JobPosting::where('id', $id)
             ->where('company_id', $company->id)
             ->firstOrFail();
@@ -315,6 +325,7 @@ class JobPostingController extends Controller
         $user = Auth::user();
         $company = $user->company;
 
+        // IMPLEMENTED: Validasi dan update job posting di Supabase
         $validated = $request->validate([
             'title' => 'required|string|max:255',
             'job_category_id' => 'nullable|exists:job_categories,id',
@@ -336,6 +347,7 @@ class JobPostingController extends Controller
             'allow_guest_applications' => 'nullable|boolean',
         ]);
 
+        // IMPLEMENTED: Update di Supabase PostgreSQL
         $jobPosting = JobPosting::where('id', $id)
             ->where('company_id', $company->id)
             ->firstOrFail();
@@ -379,7 +391,7 @@ class JobPostingController extends Controller
         $company = $user->company;
 
         try {
-            // Hapus job posting dari Supabase (soft delete)
+            // IMPLEMENTED: Hapus job posting dari Supabase (soft delete)
             $jobPosting = JobPosting::where('id', $id)
                 ->where('company_id', $company->id)
                 ->firstOrFail();
@@ -413,14 +425,15 @@ class JobPostingController extends Controller
     {
         $user = Auth::user();
         $company = $user->company;
-        
+
+        // Validasi input
         $validated = $request->validate([
             'linkedin_url' => 'nullable|url',
             'sdg_goals' => 'nullable|array',
             'sdg_goals.*' => 'integer|min:1|max:17',
         ]);
 
-        // Update LinkedIn URL dan required SDGs di Supabase
+        // IMPLEMENTED: Update LinkedIn URL dan required SDGs di Supabase
         $jobPosting = JobPosting::where('id', $id)
             ->where('company_id', $company->id)
             ->firstOrFail();

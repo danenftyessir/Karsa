@@ -85,7 +85,6 @@ class ProblemController extends Controller
     
     /**
      * simpan problem baru
-     * FIX: handle array conversion untuk required_skills dan sdg_categories
      */
     public function store(Request $request)
     {
@@ -190,7 +189,6 @@ class ProblemController extends Controller
 
             Log::info('Problem Store - Problem Created', ['problem_id' => $problem->id]);
             
-            // upload images jika ada (FIX: gunakan disk supabase dengan fallback)
             if ($request->hasFile('images')) {
                 // Log disk configuration untuk debugging
                 Log::info('Problem Store - Disk Configuration', [
@@ -340,7 +338,6 @@ class ProblemController extends Controller
     
     /**
      * update problem
-     * FIX: handle array conversion dan validation lengkap seperti store
      */
     public function update(Request $request, $id)
     {
@@ -640,7 +637,6 @@ class ProblemController extends Controller
     
     /**
      * hapus problem
-     * FIX: support multi-disk deletion (public dan supabase)
      */
     public function destroy($id)
     {

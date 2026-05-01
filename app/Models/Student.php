@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 /**
  * model untuk tabel students
  *
+ * representasi mahasiswa yang menggunakan platform Karsa
  */
 class Student extends Model
 {

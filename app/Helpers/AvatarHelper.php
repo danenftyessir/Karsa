@@ -23,11 +23,14 @@ class AvatarHelper
         string $textColor = 'ffffff',
         int $size = 200
     ): string {
+        // Ambil initial (2 karakter pertama atau 1 jika nama pendek)
         $initial = self::getInitials($name);
 
+        // Pastikan color format tanpa #
         $bgColor = ltrim($bgColor, '#');
         $textColor = ltrim($textColor, '#');
 
+        // Font size proportional to avatar size
         $fontSize = (int)($size * 0.4);
 
         $svg = <<<SVG
@@ -74,15 +77,18 @@ SVG;
             return 'C';
         }
 
+        // Split berdasarkan spasi atau karakter khusus
         $words = preg_split('/[\s\-_\.]+/', $name);
 
         if (count($words) >= 2) {
+            // Ambil huruf pertama dari 2 kata pertama
             return strtoupper(
                 mb_substr($words[0], 0, 1) .
                 mb_substr($words[1], 0, 1)
             );
         }
 
+        // Jika hanya 1 kata, ambil 2 karakter pertama atau 1 jika pendek
         return strtoupper(mb_substr($name, 0, 2));
     }
 
@@ -95,10 +101,14 @@ SVG;
      */
     public static function generateColorFromString(string $string): string
     {
+        // Hash string untuk dapat nilai numeric
         $hash = md5($string);
 
+        // Ambil 6 karakter pertama sebagai color
         $color = substr($hash, 0, 6);
 
+        // Pastikan color cukup terang untuk text putih
+        // Convert ke HSL, adjust lightness, convert back
         return self::adjustBrightness($color);
     }
 
@@ -111,6 +121,7 @@ SVG;
      */
     protected static function adjustBrightness(string $hexColor): string
     {
+        // Pilih dari palette predefined yang bagus untuk avatar
         $palette = [
             'F59E0B', // amber-500
             '3B82F6', // blue-500
@@ -124,6 +135,7 @@ SVG;
             '06B6D4', // cyan-500
         ];
 
+        // Hash untuk dapat consistent index
         $index = hexdec(substr($hexColor, 0, 2)) % count($palette);
 
         return $palette[$index];

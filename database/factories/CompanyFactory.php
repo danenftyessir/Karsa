@@ -47,7 +47,7 @@ class CompanyFactory extends Factory
             'industry' => fake()->randomElement($industries),
             'description' => fake()->paragraph(3),
             'website' => fake()->url(),
-            'logo' => null,
+            'logo' => null, // akan diisi saat testing dengan upload
             'address' => fake()->streetAddress(),
             'city' => fake()->city(),
             'province_id' => Province::inRandomOrder()->first()?->id ?? 1,

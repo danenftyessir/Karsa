@@ -150,7 +150,6 @@ class Institution extends Model
 
     /**
      * get logo URL
-     * PERBAIKAN BUG: sekarang support Supabase storage
      */
     public function getLogoUrl(): string
     {

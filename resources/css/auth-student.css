@@ -1,0 +1,294 @@
+/* resources/css/auth-student.css */
+
+/* ============================================
+   STEP INDICATOR CONTAINER
+   ============================================ */
+
+.student-register .step-indicator-container {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+.student-register .step-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    flex: 0 0 auto;
+}
+
+/* ============================================
+   STEP CIRCLE - MODERN DESIGN
+   ============================================ */
+
+.student-register .step-circle {
+    width: 3.5rem;
+    height: 3.5rem;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 1.25rem;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+    z-index: 2;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+/* inactive state - abu-abu */
+.student-register .step-circle.inactive {
+    background: #f3f4f6;
+    border: 2px solid #d1d5db;
+    color: #9ca3af;
+}
+
+/* active state - biru gradient */
+.student-register .step-circle.active {
+    background: linear-gradient(135deg, #0ea5e9 0%, #06b6d4 100%);
+    border: 2px solid #0ea5e9;
+    color: white;
+    box-shadow: 0 6px 20px rgba(14, 165, 233, 0.4);
+    transform: scale(1.05);
+}
+
+/* completed state - biru solid dengan checkmark */
+.student-register .step-circle.completed {
+    background: linear-gradient(135deg, #06b6d4 0%, #14b8a6 100%);
+    border-color: #06b6d4;
+    color: white;
+    box-shadow: 0 2px 8px rgba(6, 182, 212, 0.2);
+}
+
+/* checkmark icon untuk completed */
+.student-register .step-circle.completed .step-number {
+    display: none;
+}
+
+.student-register .step-circle.completed::after {
+    content: '✓';
+    font-size: 1.5rem;
+    font-weight: 800;
+}
+
+/* ============================================
+   STEP LABEL - MINIMALIS
+   ============================================ */
+
+.student-register .step-label {
+    font-size: 0.875rem;
+    color: #6b7280;
+    font-weight: 500;
+    text-align: center;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    letter-spacing: 0.01em;
+    margin-top: 0.5rem;
+}
+
+/* label saat step active - hanya bold tanpa warna berlebih */
+.student-register .step-item:has(.step-circle.active) .step-label {
+    font-weight: 700;
+    color: #374151;
+}
+
+/* label saat step completed */
+.student-register .step-item:has(.step-circle.completed) .step-label {
+    font-weight: 500;
+    color: #6b7280;
+}
+
+/* ============================================
+   STEP CONNECTOR - LINE ANTAR STEP
+   ============================================ */
+
+.student-register .step-connector {
+    flex: 1;
+    height: 2px;
+    background: #d1d5db;
+    position: relative;
+    margin: 0 1.5rem;
+    margin-top: 26px;
+    border-radius: 1px;
+}
+
+/* animated progress line */
+.student-register .step-connector::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    height: 100%;
+    width: 0;
+    background: linear-gradient(90deg, #0ea5e9 0%, #06b6d4 100%);
+    border-radius: 1px;
+    transition: width 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 0 0 8px rgba(14, 165, 233, 0.3);
+}
+
+/* connector completed dengan smooth transition */
+.student-register .step-connector.completed::before {
+    width: 100%;
+}
+
+/* ============================================
+   CARD TRANSPARENCY - GLASS EFFECT
+   ============================================ */
+
+/* kotak putih form dengan glass morphism effect */
+.student-register .bg-white.rounded-2xl {
+    background: rgba(255, 255, 255, 0.75) !important;  /* 75% opacity - lebih transparan */
+    backdrop-filter: blur(20px) saturate(180%);
+    -webkit-backdrop-filter: blur(20px) saturate(180%);
+    border: 1px solid rgba(255, 255, 255, 0.4) !important;
+    box-shadow: 
+        0 8px 32px rgba(0, 0, 0, 0.12),
+        0 2px 8px rgba(0, 0, 0, 0.08),
+        inset 0 1px 0 rgba(255, 255, 255, 0.6) !important;
+}
+
+/* step indicator header dengan glass effect */
+.student-register .bg-gradient-to-r {
+    background: rgba(239, 246, 255, 0.6) !important;  /* lebih transparan */
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+}
+
+/* form content area */
+.student-register form > div {
+    background: transparent;
+}
+
+/* ============================================
+   FORM ELEMENTS - KONSISTEN DENGAN STEP
+   ============================================ */
+
+/* input dengan slight transparency untuk consistency */
+.student-register .form-input {
+    background: rgba(255, 255, 255, 0.9) !important;
+    backdrop-filter: blur(8px);
+    transition: all 0.3s ease;
+}
+
+/* input focus dengan warna theme */
+.student-register .form-input:focus {
+    background: rgba(255, 255, 255, 0.95) !important;
+    border-color: #0ea5e9;
+    box-shadow: 
+        0 0 0 3px rgba(14, 165, 233, 0.1),
+        0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.student-register .form-input:focus ~ .form-input-icon {
+    color: #0ea5e9;
+}
+
+/* file upload area */
+.student-register .file-upload-area {
+    background: rgba(249, 250, 251, 0.8) !important;
+    backdrop-filter: blur(8px);
+    transition: all 0.3s ease;
+}
+
+/* ============================================
+   BUTTONS - SMOOTH INTERACTIONS
+   ============================================ */
+
+.student-register .btn-primary {
+    background: linear-gradient(135deg, #0ea5e9 0%, #06b6d4 100%);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 0 4px 12px rgba(14, 165, 233, 0.3);
+}
+
+.student-register .btn-primary:hover:not(:disabled) {
+    background: linear-gradient(135deg, #0284c7 0%, #0891b2 100%);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(14, 165, 233, 0.4);
+}
+
+.student-register .btn-primary:active:not(:disabled) {
+    transform: translateY(0);
+}
+
+/* button secondary dengan glass effect */
+.student-register .btn-secondary {
+    background: rgba(255, 255, 255, 0.8) !important;
+    backdrop-filter: blur(10px);
+    transition: all 0.3s ease;
+}
+
+.student-register .btn-secondary:hover {
+    background: rgba(14, 165, 233, 0.1) !important;
+    border-color: #0ea5e9;
+    color: #0ea5e9;
+}
+
+/* ============================================
+   FILE UPLOAD - HOVER EFFECT
+   ============================================ */
+
+.student-register .file-upload-area:hover {
+    border-color: #0ea5e9;
+    background: rgba(14, 165, 233, 0.08) !important;
+    box-shadow: 0 4px 12px rgba(14, 165, 233, 0.15);
+}
+
+.student-register .file-upload-area:hover .file-upload-icon {
+    color: #0ea5e9;
+    transform: scale(1.05);
+}
+
+/* ============================================
+   LINKS & ACCENT COLORS
+   ============================================ */
+
+.student-register a.text-blue-600 {
+    color: #0ea5e9;
+    transition: color 0.2s ease;
+}
+
+.student-register a.text-blue-600:hover {
+    color: #0284c7;
+}
+
+/* ============================================
+   TEXT & TYPOGRAPHY ENHANCEMENT
+   ============================================ */
+
+/* enhance text readability on transparent background */
+.student-register h1,
+.student-register h2,
+.student-register .form-label,
+.student-register p {
+    text-shadow: 0 1px 2px rgba(255, 255, 255, 0.8);
+}
+
+/* ============================================
+   RESPONSIVE ADJUSTMENTS
+   ============================================ */
+
+@media (max-width: 640px) {
+    .student-register .step-indicator-container {
+        max-width: 100%;
+    }
+    
+    .student-register .step-circle {
+        width: 2.5rem;
+        height: 2.5rem;
+        font-size: 1rem;
+    }
+    
+    .student-register .step-label {
+        font-size: 0.75rem;
+    }
+    
+    .student-register .step-connector {
+        margin: 0 0.5rem;
+    }
+    
+    /* slightly less transparent on mobile for better readability */
+    .student-register .bg-white.rounded-2xl {
+        background: rgba(255, 255, 255, 0.85) !important;
+    }
+}

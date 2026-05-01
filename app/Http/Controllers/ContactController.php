@@ -14,12 +14,12 @@ class ContactController extends Controller
         // data tim untuk ditampilkan di halaman contact
         $teamMembers = [
             [
-                'name' => 'Kenzie Raffa Ardhana',
-                'role' => 'Project Manager',
-                'description' => 'Mengkoordinasi keseluruhan proyek dan memastikan semua berjalan sesuai rencana.',
+                'name' => 'Ardell Aghna Mahendra',
+                'role' => 'Frontend Developer',
+                'description' => 'Mengkoordinasi keseluruhan proyek sesuai dengan alur dan memastikan semua UI berjalan sesuai rencana.',
                 'photo' => 'profile_18223127.jpg',
-                'email' => 'kenzieraffa0709@gmail.com',
-                'whatsapp' => '+62 878-8533-1404'
+                'email' => '13523151@std.stei.itb.ac.id',
+                'whatsapp' => '+62 878-8843-9192'
             ],
             [
                 'name' => 'Danendra Shafi Athallah',
@@ -30,12 +30,12 @@ class ContactController extends Controller
                 'whatsapp' => '+62 812-2027-7660'
             ],
             [
-                'name' => 'M. Abizzar Gamadrian',
+                'name' => 'Muhammad Raihaan Perdana',
                 'role' => 'Backend Developer & Technical Support',
                 'description' => 'Mengembangkan sistem backend dan memberikan dukungan teknis untuk pengguna.',
-                'photo' => 'profile_13523155.jpg',
-                'email' => '13523155@std.stei.itb.ac.id',
-                'whatsapp' => '+62 822-8930-9848'
+                'photo' => 'profile_13523124.jpg',
+                'email' => '13523124@std.stei.itb.ac.id',
+                'whatsapp' => '+62 812-7445-6443'
             ],
         ];
 

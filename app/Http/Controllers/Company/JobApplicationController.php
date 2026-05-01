@@ -12,7 +12,9 @@ use Illuminate\Support\Facades\DB;
 
 /**
  * JobApplicationController - Manage Job Applications
- * Semua operasi CRUD langsung ke Supabase PostgreSQL
+ *
+ * IMPLEMENTED: Semua operasi CRUD langsung ke Supabase PostgreSQL
+ * TIDAK ADA data yang disimpan di local database
  */
 class JobApplicationController extends Controller
 {
@@ -25,6 +27,7 @@ class JobApplicationController extends Controller
 
     /**
      * Display all applications for company (Kanban view)
+     * IMPLEMENTED: Data dari Supabase PostgreSQL
      */
     public function index(Request $request)
     {
@@ -36,6 +39,7 @@ class JobApplicationController extends Controller
                 ->with('error', 'profil perusahaan tidak ditemukan');
         }
 
+        // IMPLEMENTED: Ambil data applications dari Supabase
         $jobPostingId = $request->get('job_posting_id');
         $status = $request->get('status');
         $search = $request->get('search');
@@ -43,6 +47,7 @@ class JobApplicationController extends Controller
         $applicationsQuery = $company->jobApplications()
             ->with(['user.student', 'jobPosting']);
 
+        // Apply filters
         if ($jobPostingId) {
             $applicationsQuery->where('job_posting_id', $jobPostingId);
         }
@@ -95,12 +100,14 @@ class JobApplicationController extends Controller
 
     /**
      * Display single application detail
+     * IMPLEMENTED: Data dari Supabase PostgreSQL
      */
     public function show($id)
     {
         $user = Auth::user();
         $company = $user->company;
 
+        // IMPLEMENTED: Ambil data application dari Supabase
         $application = JobApplication::with(['user.student', 'jobPosting', 'reviewer'])
             ->whereHas('jobPosting', function ($query) use ($company) {
                 $query->where('company_id', $company->id);
@@ -121,6 +128,7 @@ class JobApplicationController extends Controller
 
     /**
      * Update application status
+     * IMPLEMENTED: Update langsung ke Supabase PostgreSQL
      */
     public function updateStatus(Request $request, $id)
     {
@@ -133,6 +141,7 @@ class JobApplicationController extends Controller
         $user = Auth::user();
         $company = $user->company;
 
+        // IMPLEMENTED: Update status di Supabase PostgreSQL
         $application = JobApplication::whereHas('jobPosting', function ($query) use ($company) {
             $query->where('company_id', $company->id);
         })
@@ -154,6 +163,7 @@ class JobApplicationController extends Controller
 
     /**
      * Shortlist application
+     * IMPLEMENTED: Update langsung ke Supabase PostgreSQL
      */
     public function shortlist($id)
     {
@@ -176,6 +186,7 @@ class JobApplicationController extends Controller
 
     /**
      * Reject application
+     * IMPLEMENTED: Update langsung ke Supabase PostgreSQL
      */
     public function reject(Request $request, $id)
     {
@@ -202,6 +213,7 @@ class JobApplicationController extends Controller
 
     /**
      * Hire applicant
+     * IMPLEMENTED: Update langsung ke Supabase PostgreSQL
      */
     public function hire($id)
     {
@@ -224,6 +236,7 @@ class JobApplicationController extends Controller
 
     /**
      * Bulk update applications status
+     * IMPLEMENTED: Bulk update langsung ke Supabase PostgreSQL
      */
     public function bulkUpdateStatus(Request $request)
     {
@@ -237,6 +250,7 @@ class JobApplicationController extends Controller
         $user = Auth::user();
         $company = $user->company;
 
+        // IMPLEMENTED: Bulk update di Supabase PostgreSQL
         $applications = JobApplication::whereHas('jobPosting', function ($query) use ($company) {
             $query->where('company_id', $company->id);
         })
@@ -255,6 +269,7 @@ class JobApplicationController extends Controller
 
     /**
      * Export applications to CSV
+     * IMPLEMENTED: Data dari Supabase PostgreSQL
      */
     public function export(Request $request)
     {
@@ -312,6 +327,7 @@ class JobApplicationController extends Controller
 
     /**
      * Add rating to application
+     * IMPLEMENTED: Update langsung ke Supabase PostgreSQL
      */
     public function addRating(Request $request, $id)
     {
@@ -338,6 +354,7 @@ class JobApplicationController extends Controller
 
     /**
      * Add notes to application
+     * IMPLEMENTED: Update langsung ke Supabase PostgreSQL
      */
     public function addNotes(Request $request, $id)
     {

@@ -45,7 +45,6 @@ class StudentRegisterRequest extends FormRequest
                 'unique:users,username',
                 'min:4',
             ],
-            // tambahkan validasi password yang proper
             'password' => [
                 'required',
                 'string',

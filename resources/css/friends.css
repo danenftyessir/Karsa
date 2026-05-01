@@ -1,0 +1,303 @@
+/**
+ * styling khusus untuk fitur friends (network)
+ * desain mirip linkedin dengan smooth transitions
+ * TAMBAHKAN KE resources/css/app.css ATAU BUAT FILE TERPISAH
+ */
+
+/* smooth scroll untuk seluruh page */
+html {
+    scroll-behavior: smooth;
+}
+
+/* optimization untuk gpu acceleration */
+.profile-card,
+.friend-item,
+.connection-card {
+    transform: translateZ(0);
+    will-change: transform;
+    backface-visibility: hidden;
+}
+
+/* hover effects yang smooth */
+.profile-card:hover,
+.friend-item:hover,
+.connection-card:hover {
+    transform: translateY(-2px) translateZ(0);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* background image dengan overlay optimization */
+.hero-background {
+    position: relative;
+    overflow: hidden;
+}
+
+.hero-background::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(135deg, rgba(0,0,0,0.6) 0%, rgba(0,0,0,0.3) 100%);
+    z-index: 1;
+}
+
+.hero-background > * {
+    position: relative;
+    z-index: 2;
+}
+
+/* smooth fade in animation */
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.fade-in-up {
+    animation: fadeInUp 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* stagger animation untuk list items */
+.friend-item:nth-child(1) { animation-delay: 0.05s; }
+.friend-item:nth-child(2) { animation-delay: 0.1s; }
+.friend-item:nth-child(3) { animation-delay: 0.15s; }
+.friend-item:nth-child(4) { animation-delay: 0.2s; }
+.friend-item:nth-child(5) { animation-delay: 0.25s; }
+
+/* profile photo dengan smooth border */
+.profile-photo {
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.profile-photo:hover {
+    transform: scale(1.05);
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+}
+
+/* button transitions yang smooth */
+button,
+.btn {
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+button:active,
+.btn:active {
+    transform: scale(0.95);
+}
+
+/* badge styling untuk status */
+.status-badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.375rem 0.75rem;
+    border-radius: 9999px;
+    font-size: 0.875rem;
+    font-weight: 500;
+    transition: all 0.2s ease;
+}
+
+.status-badge:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+}
+
+/* loading skeleton untuk better ux */
+.skeleton {
+    background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+    background-size: 200% 100%;
+    animation: loading 1.5s ease-in-out infinite;
+}
+
+@keyframes loading {
+    0% {
+        background-position: 200% 0;
+    }
+    100% {
+        background-position: -200% 0;
+    }
+}
+
+/* notification badge pulse */
+.notification-badge {
+    animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+@keyframes pulse {
+    0%, 100% {
+        opacity: 1;
+    }
+    50% {
+        opacity: 0.8;
+    }
+}
+
+/* search input focus state yang smooth */
+input[type="text"]:focus,
+input[type="search"]:focus,
+select:focus {
+    outline: none;
+    border-color: #3b82f6;
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+    transition: all 0.2s ease;
+}
+
+/* connection line animation (untuk network visualization) */
+.connection-line {
+    stroke-dasharray: 1000;
+    stroke-dashoffset: 1000;
+    animation: draw 2s ease-in-out forwards;
+}
+
+@keyframes draw {
+    to {
+        stroke-dashoffset: 0;
+    }
+}
+
+/* glass morphism effect untuk cards */
+.glass-card {
+    background: rgba(255, 255, 255, 0.9);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+/* smooth scrollbar styling */
+::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: #f1f1f1;
+}
+
+::-webkit-scrollbar-thumb {
+    background: #888;
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: #555;
+}
+
+/* responsive utilities untuk mobile smooth experience */
+@media (max-width: 768px) {
+    .profile-card,
+    .friend-item,
+    .connection-card {
+        transform: none;
+    }
+    
+    .profile-card:hover,
+    .friend-item:hover,
+    .connection-card:hover {
+        transform: none;
+    }
+    
+    /* disable hover effects on mobile untuk better performance */
+    .profile-photo:hover {
+        transform: none;
+    }
+}
+
+/* prevent layout shift */
+.aspect-ratio-box {
+    position: relative;
+    width: 100%;
+    padding-bottom: 56.25%; /* 16:9 aspect ratio */
+}
+
+.aspect-ratio-box > * {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+}
+
+/* accessibility: reduce motion untuk users yang prefer */
+@media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+    }
+}
+
+/* print styles */
+@media print {
+    .no-print {
+        display: none !important;
+    }
+}
+
+/* custom scrollbar untuk smooth scrolling containers */
+.smooth-scroll-container {
+    overflow-y: auto;
+    scroll-behavior: smooth;
+    -webkit-overflow-scrolling: touch;
+}
+
+/* network stats animation */
+.stat-number {
+    font-variant-numeric: tabular-nums;
+    transition: all 0.3s ease;
+}
+
+.stat-number:hover {
+    transform: scale(1.1);
+}
+
+/* empty state illustration */
+.empty-state {
+    opacity: 0;
+    animation: fadeIn 0.5s ease forwards;
+}
+
+@keyframes fadeIn {
+    to {
+        opacity: 1;
+    }
+}
+
+/* mutual friends overlap avatar effect */
+.avatar-stack {
+    display: flex;
+    flex-direction: row-reverse;
+}
+
+.avatar-stack img {
+    border: 2px solid white;
+    margin-right: -12px;
+    transition: transform 0.2s ease;
+}
+
+.avatar-stack img:hover {
+    transform: translateY(-4px);
+    z-index: 10;
+}
+
+/* connection strength indicator */
+.connection-strength {
+    width: 4px;
+    height: 100%;
+    background: linear-gradient(to bottom, #10b981, #3b82f6, #8b5cf6);
+    transition: width 0.3s ease;
+}
+
+.connection-strength:hover {
+    width: 6px;
+}
