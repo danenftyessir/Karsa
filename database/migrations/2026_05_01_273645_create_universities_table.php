@@ -1,0 +1,30 @@
+<?php
+
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+
+return new class extends Migration
+{
+    public function up(): void
+    {
+        Schema::create('universities', function (Blueprint $table) {
+            $table->id();
+            $table->string('name');
+            $table->string('code', 50)->unique();
+            $table->foreignId('province_id')->constrained()->onDelete('cascade');
+            $table->foreignId('regency_id')->constrained()->onDelete('cascade');
+            $table->enum('type', ['negeri', 'swasta'])->default('swasta');
+            $table->string('accreditation')->nullable();
+            $table->timestamps();
+            
+            $table->index('province_id');
+            $table->index('regency_id');
+        });
+    }
+
+    public function down(): void
+    {
+        Schema::dropIfExists('universities');
+    }
+};
