@@ -299,7 +299,7 @@ class DocumentsSeeder extends Seeder
                 'view_count' => rand(0, 500),
                 'citation_count' => rand(0, 20),
                 'is_public' => true,
-                'is_featured' => fake()->boolean(30), // 30% chance
+                'is_featured' => (rand(1, 100) <= 30), // 30% chance
                 'status' => 'approved',
                 'approved_at' => Carbon::now(),
             ]);

@@ -72,12 +72,12 @@ class ProblemsSeeder extends Seeder
                 'regency_id' => $regency->id,
                 'village' => 'Desa ' . fake()->city(),
                 'detailed_location' => fake()->address(),
-                
+
                 // ✅ BENAR: langsung pass array of integers
                 'sdg_categories' => $template['sdg_categories'],
                 'required_skills' => $template['required_skills'],
                 'required_majors' => ['Semua Jurusan'],
-                
+
                 'required_students' => rand(2, 5),
                 'start_date' => $startDate,
                 'end_date' => $endDate,
@@ -96,8 +96,8 @@ class ProblemsSeeder extends Seeder
                     'Koordinasi dengan pihak terkait',
                     'Surat tugas resmi'
                 ],
-                'is_featured' => fake()->boolean(20),
-                'is_urgent' => fake()->boolean(10),
+                'is_featured' => rand(1, 100) <= 20,
+                'is_urgent' => rand(1, 100) <= 10,
             ]);
 
             // progress indicator
