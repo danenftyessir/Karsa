@@ -1,5 +1,11 @@
+providers = ["php"]
+
+[variables]
+PHP_VERSION = "8.3"
+NODE_VERSION = "22"
+
 [phases.setup]
-nixPkgs = ["nodejs", "php82", "php82Packages.composer"]
+nixPkgs = ["php83", "php83Packages.composer", "nodejs_22"]
 
 [phases.install]
 cmds = [
@@ -10,7 +16,9 @@ cmds = [
 [phases.build]
 cmds = [
     "npm run build",
-    "php artisan config:cache",
+    "npm prune --omit=dev --ignore-scripts",
+    "mkdir -p storage/framework/{sessions,views,cache,testing} storage/logs bootstrap/cache && chmod -R a+rw storage",
+    "php artisan config:cache --no-interaction",
     "php artisan route:cache",
     "php artisan view:cache"
 ]

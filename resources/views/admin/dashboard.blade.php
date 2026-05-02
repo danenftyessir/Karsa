@@ -43,7 +43,7 @@
                     </svg>
                 </div>
             </div>
-            <a href="{{ route('admin.institutions.manual-review') }}" class="text-purple-700 hover:text-purple-800 text-sm font-medium mt-4 inline-block">
+            <a href="{{ route('admin.institutions.manual-review') }}" class="text-purple-700 hover:text-purple-900 text-sm font-medium mt-4 inline-block">
                 Review Now →
             </a>
         </div>

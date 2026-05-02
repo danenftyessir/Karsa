@@ -1,58 +1,122 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+<div align="center">
+  <img src="public/karsa-logo.png" alt="Karsa Logo" width="300"/>
+</div>
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+# Karsa - Platform Magang dan Rekrutmen Mahasiswa
 
-## About Laravel
+Karsa adalah platform digital yang menghubungkan program Kuliah Kerja Nyata mahasiswa dengan perusahaan untuk program magang dan perekrutan, dengan dukungan penuh dari institusi pendidikan dan pemerintah.
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+## Latar Belakang
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+Banyak mahasiswa kesulitan menemukan kesempatan magang yang sesuai dengan jurusan dan minat mereka, selain itu mahasiswa pun merasa bahwa KKN tidak memberikan dampak yang signifikan terhadap karir mereka kedepannya. Di sisi lain, perusahaan membutuhkan talenta muda berkualitas namun menghadapi kendala dalam proses rekrutmen. Institusi pendidikan juga memerlukan sistem yang efektif untuk memantau dan memvalidasi kegiatan magang mahasiswa.
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+Karsa hadir sebagai solusi untuk menjembatani ketiga pihak ini dalam ekosistem yang terintegrasi dan efisien.
 
-## Learning Laravel
+## Manfaat Platform
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+### Untuk Mahasiswa
+- Akses mudah ke berbagai peluang magang dari perusahaan terpercaya
+- Proses aplikasi yang sederhana dan transparan
+- Pengembangan karir melalui pengalaman kerja nyata
+- Sertifikasi resmi yang meningkatkan nilai CV
 
-In addition, [Laracasts](https://laracasts.com) contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+### Untuk Perusahaan
+- Akses ke talent pool mahasiswa terverifikasi
+- Proses rekrutmen yang lebih efisien dan terstruktur
+- Kesempatan untuk merekrut karyawan tetap dari magang terbaik
+- Meningkatkan brand awareness di kalangan akademisi
 
-You can also watch bite-sized lessons with real-world projects on [Laravel Learn](https://laravel.com/learn), where you will be guided through building a Laravel application from scratch while learning PHP fundamentals.
+### Untuk Institusi
+- Monitoring real-time aktivitas magang mahasiswa
+- Data dan laporan komprehensif untuk evaluasi kurikulum
+- Kolaborasi lebih erat dengan industri
+- Meningkatkan kualitas dan relevansi program pendidikan
 
-## Agentic Development
+## Alur Relasi Sistem
 
-Laravel's predictable structure and conventions make it ideal for AI coding agents like Claude Code, Cursor, and GitHub Copilot. Install [Laravel Boost](https://laravel.com/docs/ai) to supercharge your AI workflow:
+### 1. Institusi (Universitas/Pemerintah)
+- Mendaftarkan dan memverifikasi mahasiswa
+- Memantau progress magang mahasiswa
+- Menyetujui program magang yang sesuai kurikulum
+- Mengakses laporan dan statistik kegiatan mahasiswa
+- Berkolaborasi dengan perusahaan untuk program bersertifikat
 
-```bash
-composer require laravel/boost --dev
+### 2. Mahasiswa
+- Membuat profil dan CV digital
+- Mencari lowongan magang sesuai minat dan jurusan
+- Melamar posisi magang di berbagai perusahaan
+- Melaporkan progress magang kepada institusi
+- Mendapatkan sertifikat setelah menyelesaikan program
 
-php artisan boost:install
+### 3. Perusahaan
+- Membuat profil perusahaan
+- Posting lowongan magang dengan persyaratan spesifik
+- Review dan seleksi kandidat mahasiswa
+- Mengelola program magang
+- Memberikan feedback dan evaluasi kepada mahasiswa
+- Rekrutmen karyawan tetap dari mahasiswa magang terbaik
+
+## Flow Proses
+
+```
+1. Institusi -> Verifikasi Mahasiswa -> Mahasiswa Terdaftar
+                                              |
+2. Perusahaan -> Post Lowongan <--- Browse <- Mahasiswa
+                                              |
+3. Perusahaan -> Seleksi Aplikasi <- Apply <- Mahasiswa
+                                              |
+4. Perusahaan -> Terima Mahasiswa -> Magang Dimulai
+                                              |
+5. Mahasiswa -> Laporan Progress -> Institusi Monitor
+                                              |
+6. Magang Selesai -> Evaluasi -> Sertifikat -> Peluang Rekrutmen
 ```
 
-Boost provides your agent 15+ tools and skills that help agents build Laravel applications while following best practices.
+## Fitur Utama
 
-## Contributing
+- **Dashboard Terpadu**: Interface khusus untuk institusi, mahasiswa, dan perusahaan
+- **Sistem Matching**: Algoritma pencocokan otomatis berdasarkan skills dan kebutuhan
+- **Real-time Tracking**: Monitoring progress magang secara langsung
+- **Sertifikasi Digital**: Penerbitan sertifikat otomatis setelah program selesai
+- **Analytics & Reporting**: Laporan terperinci untuk semua stakeholder
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+## Tim Pengembang
 
-## Code of Conduct
+### Kenzie Raffa Ardhana
+**Project Manager**
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+Mengkoordinasi keseluruhan proyek dan memastikan semua berjalan sesuai rencana.
 
-## Security Vulnerabilities
+### Danendra Shafi Athallah
+**Full Stack Developer**
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+Mengembangkan frontend dan backend untuk memastikan sistem berjalan optimal.
 
-## License
+### M. Abizzar Gamadrian
+**Backend Developer & Technical Support**
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+Mengembangkan sistem backend dan memberikan dukungan teknis untuk pengguna.
+
+## Teknologi
+
+- **Backend**: Laravel (PHP)
+- **Frontend**: Blade Templates, Tailwind CSS
+- **Database**: PostgreSQL, Supabase (SaaS)
+- **Authentication**: Laravel Sanctum
+
+## Target Pengguna
+
+Platform Karsa dirancang untuk tiga kelompok utama:
+- **Mahasiswa** dari berbagai universitas di Indonesia yang mencari pengalaman magang berkualitas
+- **Perusahaan** yang membutuhkan talenta muda untuk program magang dan rekrutmen
+- **Institusi Pendidikan** yang ingin memantau dan memfasilitasi program magang mahasiswa
+
+## Kontribusi
+
+Project ini dikembangkan sebagai solusi untuk memfasilitasi ekosistem magang dan rekrutmen mahasiswa di Indonesia. Untuk informasi lebih lanjut atau kerja sama, silakan hubungi tim pengembang.
+
+---
+
+<div align="center">
+  <p>Dibuat dengan dedikasi untuk memajukan program Kuliah Kerja Nyata Indonesia</p>
+</div>

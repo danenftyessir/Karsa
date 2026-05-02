@@ -33,9 +33,9 @@ class SupabaseStorageService
         $this->useSupabase = !empty($this->projectId) && !empty($this->serviceKey);
 
         // PRODUCTION: Supabase MUST be configured
-        if (config('app.env') === 'production' && !$this->useSupabase) {
-            throw new \Exception('Supabase configuration is REQUIRED in production! Check SUPABASE_PROJECT_ID and SUPABASE_SERVICE_KEY in .env');
-        }
+        // if (config('app.env') === 'production' && !$this->useSupabase) {
+        //     throw new \Exception('Supabase configuration is REQUIRED in production! Check SUPABASE_PROJECT_ID and SUPABASE_SERVICE_KEY in .env');
+        // }
 
         // LOCAL: Allow fallback to local storage with warning
         if (config('app.env') === 'local' && !$this->useSupabase) {
@@ -56,6 +56,9 @@ class SupabaseStorageService
      */
     public function uploadFile(UploadedFile $file, string $path)
     {
+        if (config('app.env') === 'production' && !$this->useSupabase) {
+            throw new \Exception('Supabase configuration is REQUIRED in production!...');
+        }
         // jika supabase tidak dikonfigurasi, gunakan local storage
         if (!$this->useSupabase) {
             return $this->uploadToLocal($file, $path);
