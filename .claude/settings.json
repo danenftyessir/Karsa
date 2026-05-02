@@ -1,0 +1,10 @@
+{
+  "permissions": {
+    "allow": [
+      "Read(//c/Users/HYPE R Series/Documents/GitHub/praktikum-pertanian/app/Http/Middleware/**)"
+    ],
+    "additionalDirectories": [
+      "c:\\Users\\HYPE R Series\\OneDrive - Institut Teknologi Bandung\\Documents\\ITB\\Competition\\Karsa"
+    ]
+  }
+}

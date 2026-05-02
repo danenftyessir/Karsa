@@ -336,6 +336,7 @@ Route::middleware(['auth', 'check.user.type:institution'])->prefix('institution'
         Route::get('/status', [VerificationController::class, 'showStatus'])->name('status');
     });
 
+});
 
 /*
 |--------------------------------------------------------------------------
@@ -343,11 +344,7 @@ Route::middleware(['auth', 'check.user.type:institution'])->prefix('institution'
 |--------------------------------------------------------------------------
 */
 
-// API untuk mendapatkan regencies berdasarkan province
-// digunakan di form create/edit problem untuk dynamic dropdown
 Route::get('/api/regencies/{provinceId}', [ProblemController::class, 'getRegencies'])->name('api.regencies');
-
-});
 
 /*
 |--------------------------------------------------------------------------
