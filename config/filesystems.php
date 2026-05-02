@@ -60,6 +60,19 @@ return [
             'report' => false,
         ],
 
+        'supabase' => [
+            'driver' => 's3',
+            'key' => env('SUPABASE_ANON_KEY'),
+            'secret' => env('SUPABASE_SERVICE_KEY'),
+            'region' => 'auto',
+            'bucket' => env('SUPABASE_BUCKET', 'karsa-storage'),
+            'url' => env('SUPABASE_URL') ? env('SUPABASE_URL') . '/storage/v1' : null,
+            'endpoint' => env('SUPABASE_URL') ? env('SUPABASE_URL') . '/storage/v1' : null,
+            'use_path_style_endpoint' => true,
+            'throw' => false,
+            'report' => false,
+        ],
+
     ],
 
     /*

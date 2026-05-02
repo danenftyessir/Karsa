@@ -143,7 +143,10 @@ if (!function_exists('supabase_url')) {
             return '';
         }
 
-        // Prioritas: Cek local storage dulu untuk backward compatibility
+        $projectId = config('services.supabase.project_id');
+        $bucket = config('services.supabase.bucket', 'karsa-storage');
+
+        // Prioritas 1: Cek local storage dulu untuk backward compatibility
         // File path yang ada di public disk biasanya relative path
         $publicStoragePath = storage_path('app/public/' . $path);
         if (file_exists($publicStoragePath)) {
@@ -151,23 +154,21 @@ if (!function_exists('supabase_url')) {
             return url('/storage/' . $path);
         }
 
-        $projectId = config('services.supabase.project_id');
-        $bucket = config('services.supabase.bucket', 'karsa-storage');
+        // Prioritas 2: Jika Supabase dikonfigurasi, gunakan Supabase Storage
+        if (!empty($projectId)) {
+            // hilangkan slash di awal jika ada
+            $path = ltrim($path, '/');
 
-        // Cek apakah Supabase dikonfigurasi
-        if (empty($projectId)) {
-            \Illuminate\Support\Facades\Log::warning('⚠️ Supabase project_id tidak dikonfigurasi', ['path' => $path]);
-            return '';
+            // encode path jika perlu (handle spasi dan karakter khusus)
+            $encodedPath = implode('/', array_map('rawurlencode', explode('/', $path)));
+
+            // ✅ format: https://PROJECT_ID.supabase.co/storage/v1/object/public/BUCKET_NAME/PATH
+            return "https://{$projectId}.supabase.co/storage/v1/object/public/{$bucket}/{$encodedPath}";
         }
 
-        // hilangkan slash di awal jika ada
-        $path = ltrim($path, '/');
-
-        // encode path jika perlu (handle spasi dan karakter khusus)
-        $encodedPath = implode('/', array_map('rawurlencode', explode('/', $path)));
-
-        // ✅ format: https://PROJECT_ID.supabase.co/storage/v1/object/public/BUCKET_NAME/PATH
-        return "https://{$projectId}.supabase.co/storage/v1/object/public/{$bucket}/{$encodedPath}";
+        // Fallback: Jika tidak ada yang tersedia, return empty string
+        \Illuminate\Support\Facades\Log::warning('⚠️ Supabase project_id tidak dikonfigurasi dan file tidak ditemukan di local storage', ['path' => $path]);
+        return '';
     }
 }
 

@@ -39,4 +39,23 @@ return [
         ],
     ],
 
+    /*
+    |--------------------------------------------------------------------------
+    | Supabase Configuration
+    |--------------------------------------------------------------------------
+    |
+    | Konfigurasi untuk Supabase database dan storage.
+    | Digunakan oleh SupabaseStorageService dan SupabaseService.
+    |
+    */
+
+    'supabase' => [
+        'url' => env('SUPABASE_URL'),
+        'anon_key' => env('SUPABASE_ANON_KEY'),
+        'service_key' => env('SUPABASE_SERVICE_KEY'),
+        'project_id' => env('SUPABASE_PROJECT_ID'),
+        'bucket' => env('SUPABASE_BUCKET', 'karsa-storage'),
+        'storage_url' => env('SUPABASE_URL') ? env('SUPABASE_URL') . '/storage/v1' : null,
+    ],
+
 ];
