@@ -22,7 +22,6 @@
         <div class="bg-white rounded-xl shadow-sm p-6 mb-6 border border-gray-100">
             <div class="flex items-start justify-between mb-4">
                 <div class="flex items-start gap-4">
-                    {{-- PERBAIKAN BUG: gunakan accessor profile_photo_url yang sudah support Supabase --}}
                     <img src="{{ $application->student->profile_photo_url }}" 
                          alt="{{ $application->student->user->name }}"
                          class="w-20 h-20 rounded-full object-cover border-2 border-gray-200">
