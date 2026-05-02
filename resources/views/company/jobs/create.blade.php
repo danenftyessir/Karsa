@@ -147,20 +147,10 @@
                     </div>
 
                     <div class="md:col-span-2">
-                        <div class="flex items-center justify-between mb-2">
-                            <label class="block text-sm font-medium text-gray-700">Rentang Gaji</label>
-                            <button type="button" @click="suggestSalary()"
-                                    class="text-xs text-violet-600 hover:text-violet-700 font-medium flex items-center gap-1">
-                                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/>
-                                </svg>
-                                Saran Gaji
-                            </button>
-                        </div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Rentang Gaji <span class="text-xs text-gray-400">(opsional)</span></label>
                         <input type="text" x-model="formData.salary_range"
                                placeholder="cth: Rp 15.000.000 - Rp 25.000.000 per bulan"
                                class="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-violet-500 focus:border-transparent transition-all">
-                        <p x-show="salaryBenchmark" class="mt-2 text-xs text-gray-500 bg-amber-50 border border-amber-200 rounded-lg p-2" x-text="salaryBenchmark"></p>
                     </div>
                 </div>
             </div>
@@ -539,7 +529,6 @@ function jobWizard() {
         showPreview: false,
         newTemplateName: '',
         savedTemplates: [],
-        salaryBenchmark: '',
 
         init() {
             // Load draft from localStorage
@@ -667,33 +656,6 @@ function jobWizard() {
                 localStorage.setItem('company_job_templates', JSON.stringify(this.savedTemplates));
                 window.showNotification('Template dihapus', 'info');
             }
-        },
-
-
-        // Salary Benchmarking (Placeholder)
-        suggestSalary() {
-            if (!this.formData.title) {
-                window.showNotification('Isi judul lowongan terlebih dahulu', 'warning');
-                return;
-            }
-
-            // TODO: Implement actual salary API call
-            // For now, showing placeholder based on title keywords
-            let benchmark = '';
-            const title = this.formData.title.toLowerCase();
-
-            if (title.includes('senior') || title.includes('lead')) {
-                benchmark = '💡 Berdasarkan data pasar untuk Senior positions: Rp 15.000.000 - Rp 30.000.000/bulan';
-            } else if (title.includes('junior') || title.includes('entry')) {
-                benchmark = '💡 Berdasarkan data pasar untuk Junior positions: Rp 6.000.000 - Rp 12.000.000/bulan';
-            } else if (title.includes('manager') || title.includes('head')) {
-                benchmark = '💡 Berdasarkan data pasar untuk Manager positions: Rp 20.000.000 - Rp 40.000.000/bulan';
-            } else {
-                benchmark = '💡 Berdasarkan data pasar untuk Mid-level positions: Rp 10.000.000 - Rp 20.000.000/bulan';
-            }
-
-            this.salaryBenchmark = benchmark;
-            window.showNotification('Saran gaji ditampilkan di bawah field', 'info');
         },
 
         nextStep() {

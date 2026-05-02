@@ -22,7 +22,7 @@ class ChatbotService
     protected $documentRetriever;
     protected $promptBuilder;
     protected $claudeApiKey;
-    protected $claudeModel = 'claude-sonnet-4-20250514';
+    protected $claudeModel = 'claude-sonnet-4-6';
     protected $maxTokens = 4096;
 
     public function __construct(
@@ -153,7 +153,7 @@ class ChatbotService
             $documentExcerpts = $this->documentRetriever->getDocumentExcerpts(
                 $documents,
                 $userMessage,
-                $excerptLength = 500
+                $excerptLength = 1500
             );
 
             Log::info('📚 Retrieved documents', [
@@ -172,6 +172,17 @@ class ChatbotService
                 $documentExcerpts,
                 $conversationHistory
             );
+
+            // DEBUG: Log the document excerpts being sent
+            Log::info('📝 Sending to Claude', [
+                'doc_count' => count($documentExcerpts),
+                'docs' => array_map(fn($d) => [
+                    'id' => $d['document_id'],
+                    'title' => $d['title'],
+                    'excerpt_length' => strlen($d['excerpt']),
+                    'has_kwaron' => stripos($d['excerpt'], 'Kwaron') !== false
+                ], $documentExcerpts)
+            ]);
 
             $aiResponse = $this->callClaudeAPI($userPrompt);
 

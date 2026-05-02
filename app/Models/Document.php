@@ -42,6 +42,7 @@ class Document extends Model
         'uploaded_by',
         'title',
         'description',
+        'content',
         'file_path',
         'file_type',
         'file_size',
