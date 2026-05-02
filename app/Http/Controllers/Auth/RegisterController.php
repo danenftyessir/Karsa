@@ -371,12 +371,12 @@ class RegisterController extends Controller
                 'username' => $user->username
             ]);
 
-            // Kirim email notifikasi registrasi
+            // Kirim email notifikasi registrasi - async via queue
             try {
-                Mail::to($institution->email)->send(new InstitutionRegistered($institution));
-                Log::info('Registration email sent successfully to: ' . $institution->email);
+                InstitutionRegistered::dispatch($institution);
+                Log::info('Registration email job dispatched for: ' . $institution->email);
             } catch (\Exception $e) {
-                Log::error('Failed to send registration email: ' . $e->getMessage());
+                Log::error('Failed to dispatch registration email job: ' . $e->getMessage());
                 // Tidak throw exception, registrasi tetap berhasil meski email gagal
             }
 
