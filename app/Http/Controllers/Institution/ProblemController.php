@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Institution;
 
 use App\Http\Controllers\Controller;
+use App\Services\SupabaseStorageService;
 use Illuminate\Http\Request;
 use App\Models\Problem;
 use App\Models\Province;
@@ -16,6 +17,12 @@ use Illuminate\Support\Facades\DB;
  */
 class ProblemController extends Controller
 {
+    protected $storageService;
+
+    public function __construct(SupabaseStorageService $storageService)
+    {
+        $this->storageService = $storageService;
+    }
     /**
      * tampilkan daftar problems yang dibuat institution
      */
@@ -200,63 +207,27 @@ class ProblemController extends Controller
 
                 foreach ($request->file('images') as $index => $image) {
                     try {
-                        Log::info('Problem Store - Attempting Image Upload', [
-                            'index' => $index,
-                            'original_name' => $image->getClientOriginalName(),
-                            'mime_type' => $image->getMimeType(),
+                        // Generate unique filename
+                        $filename = uniqid() . '_' . time() . '.' . $image->getClientOriginalExtension();
+                        $storagePath = "problems/{$problem->id}/{$filename}";
+
+                        Log::info('Problem Store - Starting Supabase Upload', [
+                            'file' => $image->getClientOriginalName(),
                             'size' => $image->getSize(),
-                            'problem_id' => $problem->id
+                            'storage_path' => $storagePath,
                         ]);
 
-                        // Try upload to Supabase
-                        try {
-                            Log::info('Problem Store - Starting Supabase Upload', [
-                                'file' => $image->getClientOriginalName(),
-                                'size' => $image->getSize(),
-                                'mime' => $image->getMimeType(),
-                                'bucket' => config('filesystems.disks.supabase.bucket'),
-                                'endpoint' => config('filesystems.disks.supabase.endpoint')
-                            ]);
+                        // Upload menggunakan SupabaseStorageService (HTTP-based)
+                        $path = $this->storageService->uploadFile($image, $storagePath);
 
-                            $path = $image->store('problems', 'supabase');
-
-                            if (!$path) {
-                                throw new \Exception("Store method returned false/empty path");
-                            }
-
-                            Log::info('Problem Store - Image Stored to Supabase Successfully', [
-                                'path' => $path,
-                                'problem_id' => $problem->id,
-                                'url' => supabase_url($path)
-                            ]);
-
-                        } catch (\Exception $supabaseException) {
-                            Log::error('Problem Store - Supabase Upload Failed', [
-                                'error' => $supabaseException->getMessage(),
-                                'file' => $image->getClientOriginalName(),
-                                'trace' => $supabaseException->getTraceAsString()
-                            ]);
-
-                            // Di production, jangan fallback ke local storage (ephemeral)
-                            if (app()->environment('production')) {
-                                throw new \Exception("Gagal upload gambar ke Supabase: " . $supabaseException->getMessage());
-                            }
-
-                            // Fallback ke public disk HANYA di local/development
-                            Log::warning('Problem Store - Using Public Disk Fallback (Development Only)', [
-                                'file' => $image->getClientOriginalName()
-                            ]);
-
-                            $path = $image->store('problems', 'public');
-
-                            if (!$path) {
-                                throw new \Exception("Fallback upload juga gagal. Error: " . $supabaseException->getMessage());
-                            }
-
-                            Log::info('Problem Store - Image Stored to Public Disk (Fallback)', [
-                                'path' => $path
-                            ]);
+                        if (!$path) {
+                            throw new \Exception("Upload returned false/empty path");
                         }
+
+                        Log::info('Problem Store - Image Stored to Supabase Successfully', [
+                            'path' => $path,
+                            'problem_id' => $problem->id,
+                        ]);
 
                         $problem->images()->create([
                             'problem_id' => $problem->id,
