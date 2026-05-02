@@ -177,9 +177,9 @@ class JobPostingController extends Controller
             'sdg_alignment' => isset($validated['sdg_alignment']) ? json_encode($validated['sdg_alignment']) : null,
             'impact_metrics' => $validated['impact_metrics'] ?? null,
             'success_criteria' => $validated['success_criteria'] ?? null,
-            'status' => $validated['status'] ?? 'draft',
+            'status' => $validated['status'] ?? 'posted',
             'allow_guest_applications' => $validated['allow_guest_applications'] ?? false,
-            'published_at' => ($validated['status'] ?? 'draft') === 'posted' ? now() : null,
+            'published_at' => now(),
         ]);
 
         return redirect()->route('company.jobs.show', $jobPosting->id)

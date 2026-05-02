@@ -271,7 +271,13 @@ class JobCategorySeeder extends Seeder
                 $existingCount = \DB::table('job_categories')->where('slug', $category['slug'])->count();
 
                 if ($existingCount == 0) {
-                    \DB::table('job_categories')->insert($category);
+                    \DB::table('job_categories')->insert([
+                        'name' => $category['name'],
+                        'slug' => $category['slug'],
+                        'description' => $category['description'],
+                        'created_at' => now(),
+                        'updated_at' => now(),
+                    ]);
                     $insertedCount++;
                 } else {
                     $skippedCount++;
