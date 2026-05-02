@@ -33,6 +33,7 @@
         font-family: 'Outfit', sans-serif;
         font-weight: 700;
         letter-spacing: -0.02em;
+        color: #ffffff !important;
     }
 
     .application-fade-in {
