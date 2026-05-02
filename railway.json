@@ -5,7 +5,7 @@
     "buildCommand": "npm run build && mkdir -p storage/framework/{sessions,views,cache,testing} storage/logs bootstrap/cache && chmod -R a+rw storage"
   },
   "deploy": {
-    "startCommand": "bash -c 'php artisan serve --host=0.0.0.0 --port=$PORT & sleep 2 && php artisan queue:work database --sleep=3 --tries=3'",
+    "startCommand": "php artisan serve --host=0.0.0.0 --port=$PORT",
     "restartMarkerFile": "./bootstrap/cache/restart_marker"
   }
 }
