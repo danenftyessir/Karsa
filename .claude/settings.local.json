@@ -1,0 +1,8 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(sed -n '118,130p' vendor/laravel/framework/src/Illuminate/Database/Eloquent/Factories/Factory.php)",
+      "Bash(sed -n '190,210p' vendor/laravel/framework/src/Illuminate/Database/Eloquent/Factories/Factory.php)"
+    ]
+  }
+}
