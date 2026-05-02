@@ -86,7 +86,6 @@
                 <div class="bg-white rounded-lg shadow-sm p-6 text-center profile-card">
                     <div class="inline-block relative profile-photo-wrapper">
                         @if($institution->logo_path)
-                            {{-- PERBAIKAN BUG: gunakan getLogoUrl() untuk support Supabase --}}
                             <img src="{{ $institution->getLogoUrl() }}" 
                                  alt="{{ $institution->name }}" 
                                  class="w-32 h-32 rounded-lg object-cover border-4 border-blue-500 mx-auto">

@@ -80,23 +80,6 @@ Karsa hadir sebagai solusi untuk menjembatani ketiga pihak ini dalam ekosistem y
 - **Sertifikasi Digital**: Penerbitan sertifikat otomatis setelah program selesai
 - **Analytics & Reporting**: Laporan terperinci untuk semua stakeholder
 
-## Tim Pengembang
-
-### Kenzie Raffa Ardhana
-**Project Manager**
-
-Mengkoordinasi keseluruhan proyek dan memastikan semua berjalan sesuai rencana.
-
-### Danendra Shafi Athallah
-**Full Stack Developer**
-
-Mengembangkan frontend dan backend untuk memastikan sistem berjalan optimal.
-
-### M. Abizzar Gamadrian
-**Backend Developer & Technical Support**
-
-Mengembangkan sistem backend dan memberikan dukungan teknis untuk pengguna.
-
 ## Teknologi
 
 - **Backend**: Laravel (PHP)

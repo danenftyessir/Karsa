@@ -42,7 +42,6 @@
         @endif
 
         {{-- form edit profile --}}
-        {{-- PERBAIKAN BUG: tambahkan enctype="multipart/form-data" untuk upload file --}}
         <form method="POST" action="{{ route('institution.profile.update') }}" enctype="multipart/form-data" class="space-y-6">
             @csrf
             @method('PUT')
