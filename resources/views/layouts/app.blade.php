@@ -35,8 +35,28 @@
         /* Apply Outfit for headings */
         h1, h2, h3, h4, h5, h6 {
             font-family: 'Outfit', sans-serif;
-            color: #000000; /* Pure Black */
         }
+
+        /* Hero section headings - force white text for visibility over background images */
+        .marketplace-hero-applications h1,
+        .marketplace-hero-applications h2,
+        .marketplace-hero-jobs h1,
+        .marketplace-hero-jobs h2 {
+            color: #ffffff !important;
+        }
+
+        /* Avatar sizes - prevent oversize bug */
+        .avatar-circle {
+            border-radius: 50%;
+            object-fit: cover;
+            flex-shrink: 0;
+        }
+        .avatar-xs  { width: 24px;  height: 24px; }
+        .avatar-sm  { width: 32px;  height: 32px; }
+        .avatar-md  { width: 40px;  height: 40px; }
+        .avatar-lg  { width: 56px;  height: 56px; }
+        .avatar-xl  { width: 80px;  height: 80px; }
+        .avatar-2xl { width: 120px; height: 120px; }
 
         /* Secondary text */
         .text-secondary {

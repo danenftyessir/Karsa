@@ -92,9 +92,10 @@
                                 title="{{ Auth::user()->name }}">
                             <img src="{{ Auth::user()->profile_photo_url }}"
                                  alt="{{ Auth::user()->name }}"
-                                 class="avatar-circle avatar-sm flex-shrink-0">
+                                 class="avatar-sm shrink-0 object-cover"
+                                 style="width: 32px; height: 32px;">
                             <span class="text-gray-700 font-medium truncate max-w-[150px]">{{ Auth::user()->name }}</span>
-                            <svg class="w-4 h-4 text-gray-500 flex-shrink-0" :class="{'rotate-180': open}" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <svg class="w-4 h-4 text-gray-500 shrink-0" :class="{'rotate-180': open}" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
                             </svg>
                         </button>
