@@ -68,7 +68,7 @@ class TalentController extends Controller
 
         $talents = $talentsQuery->with(['student.university', 'student.projects.problem'])
             ->orderBy('created_at', 'desc')
-            ->paginate(12);
+            ->paginate((int) $request->get('per_page', 12));
 
         // Transform data untuk view
         $talents->getCollection()->transform(function ($talent) {

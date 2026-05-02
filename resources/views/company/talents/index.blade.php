@@ -547,6 +547,28 @@
                                 </button>
                             </div>
 
+                            {{-- Load More Button --}}
+                            <div x-show="hasMore && !loading" class="flex justify-center mt-4 col-span-1 sm:col-span-2 lg:col-span-3 xl:col-span-4">
+                                <button @click="loadMore()"
+                                        class="px-8 py-3 bg-violet-600 text-white font-semibold rounded-xl hover:bg-violet-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2 shadow-lg">
+                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+                                    </svg>
+                                    Muat Lebih Banyak
+                                </button>
+                            </div>
+
+                            {{-- Loading Spinner for Load More --}}
+                            <div x-show="loading && hasMore" class="flex justify-center mt-4 col-span-1 sm:col-span-2 lg:col-span-3 xl:col-span-4">
+                                <div class="flex items-center gap-3 text-violet-600">
+                                    <svg class="animate-spin h-5 w-5" fill="none" viewBox="0 0 24 24">
+                                        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                                        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path>
+                                    </svg>
+                                    <span class="font-medium">Memuat...</span>
+                                </div>
+                            </div>
+
                             {{-- Per Page Selector --}}
                             <div class="flex items-center gap-2">
                                 <label class="text-sm text-gray-600 whitespace-nowrap">Per halaman:</label>
@@ -971,9 +993,31 @@ function talentBrowser() {
         },
 
         // Pagination handler
-        perPageChanged() {
-            this.currentPage = 1; // Reset to first page
-            console.log('Per page changed to:', this.perPage);
+        async perPageChanged() {
+            this.currentPage = 1;
+            this.loading = true;
+            try {
+                const params = new URLSearchParams({
+                    page: 1,
+                    per_page: this.perPage,
+                    view: this.viewMode
+                });
+                if (this.searchQuery) params.set('search', this.searchQuery);
+                if (this.filters.location) params.set('location', this.filters.location);
+                if (this.filters.verified_only) params.set('verified_only', '1');
+
+                const response = await fetch(`/company/talents?${params}`, {
+                    headers: {
+                        'X-Requested-With': 'XMLHttpRequest',
+                        'Accept': 'application/json'
+                    }
+                });
+                const data = await response.json();
+                this.talents = data.talents;
+                this.hasMore = data.hasMore;
+            } finally {
+                this.loading = false;
+            }
             window.showNotification(`Menampilkan ${this.perPage} talenta per halaman`, 'info');
         },
 
@@ -985,7 +1029,7 @@ function talentBrowser() {
             const nextPage = this.currentPage + 1;
 
             try {
-                const response = await fetch(`{{ route('company.talents.index') }}?page=${nextPage}`, {
+                const response = await fetch(`/company/talents?page=${nextPage}&per_page=${this.perPage}`, {
                     headers: {
                         'X-Requested-With': 'XMLHttpRequest',
                         'Accept': 'application/json'
