@@ -150,8 +150,8 @@
                             <img src="{{ asset('about.jpg') }}"
                                  alt="Karsa Background"
                                  class="w-full h-full object-cover">
-                            {{-- mesh gradient overlay biru-ungu --}}
-                            <div class="absolute inset-0 bg-gradient-to-br from-blue-600/90 via-indigo-700/85 to-purple-800/90"></div>
+                            {{-- overlay tipis untuk keterbacaan teks --}}
+                            <div class="absolute inset-0 bg-black/30"></div>
                         </div>
                         <div class="max-w-xl text-white relative z-10">
                             <div class="mb-6">
@@ -423,6 +423,9 @@
                                     </button>
                                     <button onclick="switchTab('institusi')" id="tabInstitusi" class="tab-button">
                                         Untuk Institusi
+                                    </button>
+                                    <button onclick="switchTab('company')" id="tabCompany" class="tab-button">
+                                        Untuk Company
                                     </button>
                                 </div>
                             </div>
@@ -696,6 +699,132 @@
                                 </div>
                             </div>
 
+                            {{-- timeline container company --}}
+                            <div id="contentCompany" class="tab-content">
+                                <div class="relative pb-6" id="timelineCompany">
+                                    <div class="flex min-w-max relative pt-10">
+
+                                        {{-- garis horizontal --}}
+                                        <div class="absolute left-0 right-0 bg-blue-600" style="top: 75px; height: 2px;"></div>
+
+                                        {{-- langkah 1 --}}
+                                        <div class="flex-shrink-0 px-3" style="width: 320px;">
+                                            <div class="flex flex-col items-start">
+                                                <p class="text-xs text-gray-600 mb-3">Langkah 1</p>
+                                                <div class="relative flex items-center justify-start w-full mb-4">
+                                                    <div class="w-3 h-3 bg-blue-600 rounded-full relative z-10"></div>
+                                                </div>
+                                                <div class="flex items-center gap-2 mb-2">
+                                                    <svg class="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/>
+                                                    </svg>
+                                                    <h3 class="text-base font-semibold text-gray-900">Daftar & Buat Profil Perusahaan</h3>
+                                                </div>
+                                                <p class="text-xs text-gray-700 leading-relaxed">
+                                                    Daftarkan perusahaan Anda dan lengkapi profil dengan informasi perusahaan, logo, dan deskripsi bisnis untuk membangun kredibilitas di platform.
+                                                </p>
+                                            </div>
+                                        </div>
+
+                                        {{-- langkah 2 --}}
+                                        <div class="flex-shrink-0 px-3" style="width: 320px;">
+                                            <div class="flex flex-col items-start">
+                                                <p class="text-xs text-gray-600 mb-3">Langkah 2</p>
+                                                <div class="relative flex items-center justify-start w-full mb-4">
+                                                    <div class="w-3 h-3 bg-blue-600 rounded-full relative z-10"></div>
+                                                </div>
+                                                <div class="flex items-center gap-2 mb-2">
+                                                    <svg class="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+                                                    </svg>
+                                                    <h3 class="text-base font-semibold text-gray-900">Jelajahi Talenta</h3>
+                                                </div>
+                                                <p class="text-xs text-gray-700 leading-relaxed">
+                                                    Gunakan fitur pencarian dan filter untuk menemukan mahasiswa dan lulusan terbaik yang sesuai dengan kebutuhan dan kriteria perusahaan Anda.
+                                                </p>
+                                            </div>
+                                        </div>
+
+                                        {{-- langkah 3 --}}
+                                        <div class="flex-shrink-0 px-3" style="width: 320px;">
+                                            <div class="flex flex-col items-start">
+                                                <p class="text-xs text-gray-600 mb-3">Langkah 3</p>
+                                                <div class="relative flex items-center justify-start w-full mb-4">
+                                                    <div class="w-3 h-3 bg-blue-600 rounded-full relative z-10"></div>
+                                                </div>
+                                                <div class="flex items-center gap-2 mb-2">
+                                                    <svg class="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z"/>
+                                                    </svg>
+                                                    <h3 class="text-base font-semibold text-gray-900">Posting Lowongan</h3>
+                                                </div>
+                                                <p class="text-xs text-gray-700 leading-relaxed">
+                                                    Buat dan publikasikan lowongan kerja atau magang dengan detail posisi, persyaratan, dan benefit untuk menarik kandidat yang tepat.
+                                                </p>
+                                            </div>
+                                        </div>
+
+                                        {{-- langkah 4 --}}
+                                        <div class="flex-shrink-0 px-3" style="width: 320px;">
+                                            <div class="flex flex-col items-start">
+                                                <p class="text-xs text-gray-600 mb-3">Langkah 4</p>
+                                                <div class="relative flex items-center justify-start w-full mb-4">
+                                                    <div class="w-3 h-3 bg-blue-600 rounded-full relative z-10"></div>
+                                                </div>
+                                                <div class="flex items-center gap-2 mb-2">
+                                                    <svg class="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"/>
+                                                    </svg>
+                                                    <h3 class="text-base font-semibold text-gray-900">Tinjau Lamaran</h3>
+                                                </div>
+                                                <p class="text-xs text-gray-700 leading-relaxed">
+                                                    Terima dan tinjau lamaran dari kandidat. Lihat portofolio, skill, dan rekam jejak mereka untuk menilai kesesuaian dengan posisi yang dibuka.
+                                                </p>
+                                            </div>
+                                        </div>
+
+                                        {{-- langkah 5 --}}
+                                        <div class="flex-shrink-0 px-3" style="width: 320px;">
+                                            <div class="flex flex-col items-start">
+                                                <p class="text-xs text-gray-600 mb-3">Langkah 5</p>
+                                                <div class="relative flex items-center justify-start w-full mb-4">
+                                                    <div class="w-3 h-3 bg-blue-600 rounded-full relative z-10"></div>
+                                                </div>
+                                                <div class="flex items-center gap-2 mb-2">
+                                                    <svg class="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/>
+                                                    </svg>
+                                                    <h3 class="text-base font-semibold text-gray-900">Hubungi & Wawancarai</h3>
+                                                </div>
+                                                <p class="text-xs text-gray-700 leading-relaxed">
+                                                    Hubungi kandidat potensial untuk wawancara atau diskusi lebih lanjut. Gunakan fitur kontak langsung di platform untuk memudahkan komunikasi.
+                                                </p>
+                                            </div>
+                                        </div>
+
+                                        {{-- langkah 6 --}}
+                                        <div class="flex-shrink-0 px-3" style="width: 320px;">
+                                            <div class="flex flex-col items-start">
+                                                <p class="text-xs text-gray-600 mb-3">Langkah 6</p>
+                                                <div class="relative flex items-center justify-start w-full mb-4">
+                                                    <div class="w-3 h-3 bg-blue-600 rounded-full relative z-10"></div>
+                                                </div>
+                                                <div class="flex items-center gap-2 mb-2">
+                                                    <svg class="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+                                                    </svg>
+                                                    <h3 class="text-base font-semibold text-gray-900">Rekrut & Beri Ulasan</h3>
+                                                </div>
+                                                <p class="text-xs text-gray-700 leading-relaxed">
+                                                    Pilih kandidat terbaik dan proses rekrutmen. Setelah masa magang atau kerja selesai, berikan ulasan untuk membangun reputasi di platform.
+                                                </p>
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>
+
                         </div>
                     </div>
                 </section>
@@ -779,14 +908,16 @@
 
     /* allow scrolling for timeline */
     #timelineMahasiswa,
-    #timelineInstitusi {
+    #timelineInstitusi,
+    #timelineCompany {
         overflow-x: auto;
         overflow-y: visible;
     }
 
     /* hide scrollbar styling */
     #timelineMahasiswa::-webkit-scrollbar,
-    #timelineInstitusi::-webkit-scrollbar {
+    #timelineInstitusi::-webkit-scrollbar,
+    #timelineCompany::-webkit-scrollbar {
         display: none;
     }
 
@@ -907,17 +1038,20 @@
 
     /* scrollbar */
     #timelineMahasiswa::-webkit-scrollbar,
-    #timelineInstitusi::-webkit-scrollbar {
+    #timelineInstitusi::-webkit-scrollbar,
+    #timelineCompany::-webkit-scrollbar {
         height: 6px;
     }
 
     #timelineMahasiswa::-webkit-scrollbar-track,
-    #timelineInstitusi::-webkit-scrollbar-track {
+    #timelineInstitusi::-webkit-scrollbar-track,
+    #timelineCompany::-webkit-scrollbar-track {
         background: #f3f4f6;
     }
 
     #timelineMahasiswa::-webkit-scrollbar-thumb,
-    #timelineInstitusi::-webkit-scrollbar-thumb {
+    #timelineInstitusi::-webkit-scrollbar-thumb,
+    #timelineCompany::-webkit-scrollbar-thumb {
         background: #2563eb;
         border-radius: 3px;
     }
@@ -925,23 +1059,8 @@
     /* keyboard navigation hint */
     @media (min-width: 768px) {
         .carousel-container::after {
-            content: 'Use ← → arrow keys to navigate';
-            position: absolute;
-            top: 20px;
-            right: 20px;
-            background: rgba(0, 0, 0, 0.7);
-            color: white;
-            padding: 8px 16px;
-            border-radius: 20px;
-            font-size: 14px;
-            z-index: 40;
-            animation: fadeInOut 3s ease-in-out infinite;
+            display: none;
         }
-    }
-
-    @keyframes fadeInOut {
-        0%, 100% { opacity: 0; }
-        50% { opacity: 1; }
     }
 </style>
 @endpush
@@ -1034,7 +1153,10 @@
     function scrollTimelineLeft() {
         // cek tab mana yang aktif
         const activeMahasiswa = document.getElementById('contentMahasiswa').classList.contains('active');
-        const timelineId = activeMahasiswa ? 'timelineMahasiswa' : 'timelineInstitusi';
+        const activeInstitusi = document.getElementById('contentInstitusi').classList.contains('active');
+        let timelineId = 'timelineMahasiswa';
+        if (activeInstitusi) timelineId = 'timelineInstitusi';
+        else if (document.getElementById('contentCompany').classList.contains('active')) timelineId = 'timelineCompany';
         const timeline = document.getElementById(timelineId);
         if (timeline) {
             timeline.scrollBy({ left: -320, behavior: 'smooth' });
@@ -1044,7 +1166,10 @@
     function scrollTimelineRight() {
         // cek tab mana yang aktif
         const activeMahasiswa = document.getElementById('contentMahasiswa').classList.contains('active');
-        const timelineId = activeMahasiswa ? 'timelineMahasiswa' : 'timelineInstitusi';
+        const activeInstitusi = document.getElementById('contentInstitusi').classList.contains('active');
+        let timelineId = 'timelineMahasiswa';
+        if (activeInstitusi) timelineId = 'timelineInstitusi';
+        else if (document.getElementById('contentCompany').classList.contains('active')) timelineId = 'timelineCompany';
         const timeline = document.getElementById(timelineId);
         if (timeline) {
             timeline.scrollBy({ left: 320, behavior: 'smooth' });
