@@ -67,13 +67,14 @@ class DocumentRetrieverService
                 $documentsQuery->where('regency_id', $filters['regency_id']);
             }
 
-            // Keyword search in title and description
+            // Keyword search in title, description, AND full content
             if (!empty($query)) {
                 $keywords = $this->extractKeywords($query);
                 $documentsQuery->where(function ($q) use ($keywords) {
                     foreach ($keywords as $keyword) {
                         $q->orWhere('title', 'ILIKE', "%{$keyword}%")
                           ->orWhere('description', 'ILIKE', "%{$keyword}%")
+                          ->orWhere('content', 'ILIKE', "%{$keyword}%")
                           ->orWhereJsonContains('tags', $keyword);
                     }
                 });
@@ -148,15 +149,16 @@ class DocumentRetrieverService
      */
     protected function extractRelevantExcerpt(Document $document, string $query, int $length): string
     {
-        $description = $document->description ?? '';
+        // Prioritize content field (extracted from PDF), then fallback to description
+        $text = $document->content ?? $document->description ?? '';
 
-        if (empty($description)) {
+        if (empty($text)) {
             return $document->title;
         }
 
-        // If description is short, return it all
-        if (strlen($description) <= $length) {
-            return $description;
+        // If text is short, return it all
+        if (strlen($text) <= $length) {
+            return $text;
         }
 
         // Try to find the most relevant part containing query keywords
@@ -165,9 +167,9 @@ class DocumentRetrieverService
         $bestMatchCount = 0;
 
         foreach ($keywords as $keyword) {
-            $position = stripos($description, $keyword);
+            $position = stripos($text, $keyword);
             if ($position !== false) {
-                $matchCount = substr_count(strtolower($description), strtolower($keyword));
+                $matchCount = substr_count(strtolower($text), strtolower($keyword));
                 if ($matchCount > $bestMatchCount) {
                     $bestMatchCount = $matchCount;
                     $bestPosition = max(0, $position - ($length / 2));
@@ -176,13 +178,13 @@ class DocumentRetrieverService
         }
 
         // Extract excerpt around the best position
-        $excerpt = substr($description, $bestPosition, $length);
+        $excerpt = substr($text, $bestPosition, $length);
 
         // Clean up excerpt
         if ($bestPosition > 0) {
             $excerpt = '...' . $excerpt;
         }
-        if (strlen($description) > $bestPosition + $length) {
+        if (strlen($text) > $bestPosition + $length) {
             $excerpt .= '...';
         }
 
@@ -227,8 +229,8 @@ class DocumentRetrieverService
     protected function calculateSemanticScore(Document $document, string $query): float
     {
         try {
-            // Combine title + description for document representation
-            $documentText = $document->title . '. ' . ($document->description ?? '');
+            // Combine title + content (PDF text) + description for document representation
+            $documentText = $document->title . '. ' . ($document->content ?? $document->description ?? '');
 
             // Calculate semantic similarity using Cohere
             $similarity = $this->cohereService->calculateSimilarity($query, $documentText);
@@ -314,12 +316,16 @@ class DocumentRetrieverService
             'yang', 'dan', 'di', 'dari', 'ke', 'pada', 'untuk', 'dengan', 'oleh',
             'adalah', 'ini', 'itu', 'tersebut', 'ada', 'atau', 'juga', 'akan',
             'apa', 'apakah', 'bagaimana', 'kapan', 'dimana', 'siapa', 'mengapa',
-            'karena', 'jika', 'saya', 'kamu', 'kami', 'mereka', 'nya', 'ku', 'mu'
+            'karena', 'jika', 'saya', 'kamu', 'kami', 'mereka', 'nya', 'ku', 'mu',
+            'kkn', 'tentang', 'info', 'informasi', 'dokumen', 'lokasi'
         ];
 
         $words = explode(' ', strtolower($query));
         $keywords = array_filter($words, function ($word) use ($stopWords) {
-            return strlen($word) > 2 && !in_array($word, $stopWords);
+            // Keep words that are not stop words
+            // AND either: longer than 2 chars OR contain uppercase (proper nouns like "Kwaron")
+            $isUppercase = preg_match('/[A-Z]/', $word);
+            return !in_array($word, $stopWords) && (strlen($word) > 2 || $isUppercase);
         });
 
         return array_values($keywords);

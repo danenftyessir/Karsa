@@ -120,7 +120,7 @@
                     </div>
 
                     <div class="md:col-span-2">
-                        <label class="block text-sm font-medium text-gray-700 mb-2">Rentang Gaji</label>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Rentang Gaji <span class="text-xs text-gray-400">(opsional)</span></label>
                         <input type="text" x-model="formData.salary_range"
                                placeholder="cth: Rp 15.000.000 - Rp 25.000.000 per bulan"
                                class="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-violet-500 focus:border-transparent transition-all">
